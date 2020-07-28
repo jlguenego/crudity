@@ -1,9 +1,8 @@
 import express from "express";
 import { Resource } from "./resource";
+import { CrudityOptions } from "./interfaces";
 
-interface CrudityOptions {
-  filename: string;
-}
+
 
 const app = express.Router();
 
@@ -16,7 +15,7 @@ const app = express.Router();
 export default function crudity<T extends { id?: string }>(
   options: CrudityOptions
 ) {
-  const resource = new Resource<T>();
+  const resource = new Resource<T>(options);
   app.get("/", (req, res) => {
     return res.json(resource.array$.value);
   });
