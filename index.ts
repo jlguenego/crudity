@@ -1,5 +1,4 @@
 import express from "express";
-import { BehaviorSubject } from "rxjs";
 import { Resource } from "./resource";
 
 interface CrudityOptions {
@@ -19,7 +18,7 @@ export default function crudity<T extends { id?: string }>(
 ) {
   const resource = new Resource<T>();
   app.get("/", (req, res) => {
-    return res.json(resource.array);
+    return res.json(resource.array$.value);
   });
   app.post("/", (req, res) => {
     const t: T = req.body;
