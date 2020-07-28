@@ -15,6 +15,11 @@ interface Article {
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(req.url);
+  next();
+});
+
 app.use(
   "/ws/articles",
   crudity<Article>({ filename: path.resolve(__dirname, "data.json") })
