@@ -7,7 +7,9 @@ import path from "path";
 export class Resource<T extends { id?: string }> {
   array$ = new BehaviorSubject<T[]>([]);
   map: { [key: string]: T } = {};
-  private nextId = 0;
+
+  private nextId = 1;
+
   constructor(options: CrudityOptions) {
     const opts = {
       filename: path.resolve(__dirname, "data.json"),
@@ -19,16 +21,18 @@ export class Resource<T extends { id?: string }> {
           encoding: "utf8",
         })
       );
+      this.nextId = Math.max(0, ...values.map((t) => +t.id)) + 1;
+      this.array$.next(values);
       this.map = values.reduce((acc, n) => {
         acc[n.id] = n;
         return acc;
       }, {});
-    })();
 
-    this.array$.pipe(debounceTime(2000)).subscribe((array) => {
-      const str = JSON.stringify(array, undefined, 2);
-      fs.writeFile(opts.filename, str);
-    });
+      this.array$.pipe(debounceTime(2000)).subscribe((array) => {
+        const str = JSON.stringify(array, undefined, 2);
+        fs.writeFile(opts.filename, str);
+      });
+    })();
   }
 
   add(t: T): T {
