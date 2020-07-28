@@ -28,6 +28,7 @@ export default function crudity<T extends { id?: string }>(
   });
   app.delete("/", (req, res) => {
     const ids: string[] = req.body;
+    console.log('ids: ', ids);
     resource.remove(ids);
     return res.status(204).end();
   });

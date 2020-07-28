@@ -1,16 +1,18 @@
+import { BehaviorSubject } from "rxjs";
+
 export class Resource<T extends { id?: string }> {
-  array: T[] = [];
+  array$ = new BehaviorSubject<T[]>([]);
   // map: { [key: string]: T } = {};
   private nextId = 0;
   constructor() {}
 
   add(t: T): T {
     const newT = { ...t, id: this.nextId + "" };
-    this.array.push(newT);
+    this.array$.next([...this.array$.value, newT]);
     return newT;
   }
 
   remove(ids: string[]) {
-    this.array = this.array.filter((t) => !ids.includes(t.id));
+    this.array$.next(this.array$.value.filter((t) => !ids.includes(t.id)));
   }
 }
