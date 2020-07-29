@@ -5,7 +5,7 @@ import { Article } from "../misc/Article";
 
 const app = express();
 const www = ".";
-const filename = path.resolve(__dirname, "../data/data.json");
+const filename = path.resolve(__dirname, "../data/test.json");
 
 app.use(express.json());
 app.use(
