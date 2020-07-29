@@ -103,6 +103,21 @@ describe("CRUD", function () {
     }
   });
 
+  it("should get one", async function () {
+    try {
+      const articles = await server.getArray();
+      const id = articles[0].id;
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/${id}`
+      );
+      assert.equal(response.status, 200);
+      const article = await response.json();
+      assert.equal(article.id, id);
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
   it("should remove only one", async function () {
     try {
       const articles = await server.getArray();

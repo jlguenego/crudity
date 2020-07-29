@@ -19,6 +19,14 @@ export default function crudity<T extends { id?: string }>(
     return res.json(resource.array$.value);
   });
 
+  app.get("/:id", (req, res) => {
+    const id = req.params.id;
+    if (!resource.map[id]) {
+      return res.status(404).end();
+    }
+    return res.json(resource.map[id]);
+  });
+
   app.post("/", (req, res) => {
     if (req.body instanceof Array) {
       // bulk scenario
