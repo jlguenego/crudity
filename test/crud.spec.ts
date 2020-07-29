@@ -169,6 +169,27 @@ describe("CRUD", function () {
     }
   });
 
+  it("should patch one", async function () {
+    try {
+      const articles = await server.getArray();
+      const id = articles[0].id;
+      const diff = { name: "Patch stuff" };
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/${id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(diff),
+        }
+      );
+      assert.equal(response.status, 200);
+      const patchedArticle = await response.json();
+      assert(_.isEqual(patchedArticle, { ...articles[0], ...diff }));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
   it("should remove only one", async function () {
     try {
       const articles = await server.getArray();

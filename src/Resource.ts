@@ -65,6 +65,12 @@ export class Resource<T extends { id?: string }> {
     return t;
   }
 
+  patch(id: string, body: any) {
+    this.map[id] = { ...this.map[id], ...body };
+    this.array$.next(Object.values(this.map));
+    return this.map[id];
+  }
+
   remove(ids: string[]) {
     for (const id of ids) {
       delete this.map[id];

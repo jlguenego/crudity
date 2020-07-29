@@ -55,6 +55,15 @@ export class Crudity<T extends Idable> {
       return res.json(t);
     });
 
+    app.patch("/:id", (req, res) => {
+      const id = req.params.id;
+      if (!this.resource.map[id]) {
+        return res.status(404).end();
+      }
+      const t = this.resource.patch(id, req.body);
+      return res.json(t);
+    });
+
     app.delete("/", (req, res) => {
       if (!(req.body instanceof Array)) {
         this.resource.removeAll();
@@ -74,4 +83,3 @@ export class Crudity<T extends Idable> {
     this.router = app;
   }
 }
-
