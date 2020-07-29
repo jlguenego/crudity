@@ -13,7 +13,7 @@ npm i crudity
 ```
 import express from "express";
 import path from "path";
-import crudity from "..";
+import crudity from "crudity";
 import { Article } from "../misc/Article";
 
 const app = express();
@@ -80,7 +80,7 @@ Delete Many
 DELETE /ws/articles HTTP/1.1
 Content-Type: application/json
 
-['1234']
+["1234"]
 ```
 
 Delete All
