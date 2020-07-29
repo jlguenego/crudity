@@ -71,6 +71,7 @@ describe("Error Management", function () {
   it("should start with an existing json filename", async function () {
     try {
       const article: Article = {
+        id: "12",
         name: "Tournevis",
         price: 2.99,
         qty: 100,

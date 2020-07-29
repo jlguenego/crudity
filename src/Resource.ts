@@ -56,6 +56,15 @@ export class Resource<T extends { id?: string }> {
     return newT;
   }
 
+  rewrite(t: T): T {
+    if (!t.id) {
+      throw new Error("no id");
+    }
+    this.map[t.id] = t;
+    this.array$.next(Object.values(this.map));
+    return t;
+  }
+
   remove(ids: string[]) {
     for (const id of ids) {
       delete this.map[id];

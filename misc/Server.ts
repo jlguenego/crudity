@@ -1,22 +1,24 @@
 import express from "express";
 import serveIndex from "serve-index";
-import crudity from "..";
+import { Crudity } from "..";
 import http from "http";
-import { promises as fs } from "fs";
 
 export class Server<T> {
   server: http.Server;
   app: express.Express;
+  crudity: Crudity<T>;
   constructor(private port, private filename: string) {
     const app = express();
     const www = ".";
 
     app.use(express.json());
 
-    app.use(
-      "/ws/articles",
-      crudity<T>({ filename: this.filename, debounceTimeDelay: 0 })
-    );
+    this.crudity = new Crudity<T>({
+      filename: this.filename,
+      debounceTimeDelay: 0,
+    });
+
+    app.use("/ws/articles", this.crudity.router);
 
     app.use(express.static(www));
     app.use(serveIndex(www, { icons: true }));
@@ -52,7 +54,6 @@ export class Server<T> {
   }
 
   async getArray(): Promise<T[]> {
-    const str = await fs.readFile(this.filename, { encoding: "utf8" });
-    return JSON.parse(str);
+    return this.crudity.resource.array$.value;
   }
 }

@@ -118,6 +118,57 @@ describe("CRUD", function () {
     }
   });
 
+  it("should get 404", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/not-exist`
+      );
+      assert.equal(response.status, 404);
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should rewrite one", async function () {
+    try {
+      const articles = await server.getArray();
+      const article = { ...articles[0] };
+      const id = article.id;
+      delete article.id;
+      article.name = "Rewrited stuff";
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(article),
+        }
+      );
+      assert.equal(response.status, 200);
+      article.id = id;
+      const rewroteArticle = await response.json();
+      assert(_.isEqual(rewroteArticle, article));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should rewrite none", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/not-existing`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        }
+      );
+      assert.equal(response.status, 404);
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
   it("should remove only one", async function () {
     try {
       const articles = await server.getArray();

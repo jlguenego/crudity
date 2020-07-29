@@ -1,61 +1,77 @@
-import express from "express";
+import express, { Router } from "express";
 import { Resource } from "./src/Resource";
 import { CrudityOptions } from "./src/CrudityOpions";
 
-const app = express.Router();
+export interface Idable {
+  id?: string;
+}
 
 /**
- * crudity middleware
+ * Middleware that exposes a CRUD on a resource
  *
  * @export
- * @param {*} options
+ * @class Crudity
+ * @template T
  */
-export default function crudity<T extends { id?: string }>(
-  options: CrudityOptions
-) {
-  const resource = new Resource<T>(options);
+export class Crudity<T extends Idable> {
+  resource = new Resource<T>(this.options);
+  router: Router;
+  constructor(private options: CrudityOptions) {
+    const app = express.Router();
 
-  app.get("/", (req, res) => {
-    return res.json(resource.array$.value);
-  });
-
-  app.get("/:id", (req, res) => {
-    const id = req.params.id;
-    if (!resource.map[id]) {
-      return res.status(404).end();
-    }
-    return res.json(resource.map[id]);
-  });
-
-  app.post("/", (req, res) => {
-    if (req.body instanceof Array) {
-      // bulk scenario
-      const array: T[] = [];
-      for (const item of req.body as T[]) {
-        array.push(resource.add(item));
+    app.post("/", (req, res) => {
+      if (req.body instanceof Array) {
+        // bulk scenario
+        const array: T[] = [];
+        for (const item of req.body as T[]) {
+          array.push(this.resource.add(item));
+        }
+        return res.status(201).json(array);
       }
-      return res.status(201).json(array);
-    }
-    const t: T = req.body;
-    const newT = resource.add(t);
-    return res.status(201).json(newT);
-  });
+      const t: T = req.body;
+      const newT = this.resource.add(t);
+      return res.status(201).json(newT);
+    });
 
-  app.delete("/", (req, res) => {
-    if (!(req.body instanceof Array)) {
-      resource.removeAll();
+    app.get("/", (req, res) => {
+      return res.json(this.resource.array$.value);
+    });
+
+    app.get("/:id", (req, res) => {
+      const id = req.params.id;
+      if (!this.resource.map[id]) {
+        return res.status(404).end();
+      }
+      return res.json(this.resource.map[id]);
+    });
+
+    app.put("/:id", (req, res) => {
+      const id = req.params.id;
+      if (!this.resource.map[id]) {
+        return res.status(404).end();
+      }
+      req.body.id = id;
+      const t = this.resource.rewrite(req.body as T);
+      return res.json(t);
+    });
+
+    app.delete("/", (req, res) => {
+      if (!(req.body instanceof Array)) {
+        this.resource.removeAll();
+        return res.status(204).end();
+      }
+      const ids: string[] = req.body;
+      this.resource.remove(ids);
       return res.status(204).end();
-    }
-    const ids: string[] = req.body;
-    resource.remove(ids);
-    return res.status(204).end();
-  });
+    });
 
-  app.delete("/:id", (req, res) => {
-    const id = req.params.id;
-    resource.remove([id]);
-    return res.status(204).end();
-  });
+    app.delete("/:id", (req, res) => {
+      const id = req.params.id;
+      this.resource.remove([id]);
+      return res.status(204).end();
+    });
 
-  return app;
+    this.router = app;
+  }
 }
+
