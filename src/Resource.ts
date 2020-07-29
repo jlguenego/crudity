@@ -26,6 +26,7 @@ export class Resource<T extends { id?: string }> {
           })
         );
       } catch (e) {
+        fs.writeFileSync(opts.filename, "[]");
         return [];
       }
     }
