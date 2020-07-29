@@ -20,6 +20,14 @@ export default function crudity<T extends { id?: string }>(
   });
 
   app.post("/", (req, res) => {
+    if (req.body instanceof Array) {
+      // bulk scenario
+      const array: T[] = [];
+      for (const item of req.body as T[]) {
+        array.push(resource.add(item));
+      }
+      return res.status(201).json(array);
+    }
     const t: T = req.body;
     const newT = resource.add(t);
     return res.status(201).json(newT);

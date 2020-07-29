@@ -13,11 +13,6 @@ export class Server<T> {
 
     app.use(express.json());
 
-    app.use((req, res, next) => {
-      console.log(req.url);
-      next();
-    });
-
     app.use(
       "/ws/articles",
       crudity<T>({ filename: this.filename, debounceTimeDelay: 0 })

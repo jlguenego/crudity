@@ -58,7 +58,40 @@ describe("CRUD", function () {
     }
   });
 
-  it("should get four", async function () {
+  it("should add three in bulk", async function () {
+    try {
+      const newArticles: Article[] = [
+        {
+          name: "Saw",
+          price: 2.99,
+          qty: 100,
+        },
+        {
+          name: "Pliers",
+          price: 2.99,
+          qty: 100,
+        },
+        {
+          name: "Screwdriver",
+          price: 2.99,
+          qty: 100,
+        },
+      ];
+      const response = await fetch(`http://localhost:${port}/ws/articles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newArticles),
+      });
+      assert.equal(response.status, 201);
+
+      const articles = await server.getArray();
+      assert.equal(articles.length, 7);
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should get all", async function () {
     try {
       const response = await fetch(`http://localhost:${port}/ws/articles`);
       const actualArticles = await response.json();
