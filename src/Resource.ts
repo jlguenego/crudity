@@ -19,16 +19,16 @@ export class Resource<T extends { id?: string }> {
       if (!opts.filename) {
         throw new Error("CrudityOptions.filename is not set.");
       }
-      try {
-        return JSON.parse(
+      if (fs.existsSync(opts.filename)) {
+        const result = JSON.parse(
           fs.readFileSync(opts.filename, {
             encoding: "utf8",
           })
         );
-      } catch (e) {
-        fs.writeFileSync(opts.filename, "[]");
-        return [];
+        return result;
       }
+      fs.writeFileSync(opts.filename, "[]");
+      return [];
     }
 
     const values: T[] = getValues();

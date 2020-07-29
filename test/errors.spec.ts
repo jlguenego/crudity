@@ -7,7 +7,7 @@ import { Article } from "../misc/Article";
 import { timer } from "rxjs";
 
 const port = 3000;
-const filename = path.resolve(__dirname, "../data/data.json");
+const filename = path.resolve(__dirname, "../data/test.json");
 
 describe("Error Management", function () {
   it("should says that filename is not set", async function () {
@@ -68,19 +68,20 @@ describe("Error Management", function () {
     }
   });
 
-  it("start with a new data.json file", async function () {
+  it("should start with an existing json filename", async function () {
     try {
-      fs.unlinkSync(filename);
-      const server = new Server<Article>(
-        port,
-        filename
-      );
+      const article: Article = {
+        name: "Tournevis",
+        price: 2.99,
+        qty: 100,
+      };
+      const articles = [article];
+      fs.writeFileSync(filename, JSON.stringify(articles));
+      const server = new Server(port, filename);
       await server.start();
       await server.stop();
-      const articles = await server.getArray();
-      assert.equal(articles.length, 0);
-    } catch (error) {
-      assert.fail(error);
+    } catch (e) {
+      assert.fail(e);
     }
   });
 });
