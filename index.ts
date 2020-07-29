@@ -14,7 +14,7 @@ export default function crudity<T extends { id?: string }>(
   options: CrudityOptions
 ) {
   const resource = new Resource<T>(options);
-  
+
   app.get("/", (req, res) => {
     return res.json(resource.array$.value);
   });
@@ -26,6 +26,10 @@ export default function crudity<T extends { id?: string }>(
   });
 
   app.delete("/", (req, res) => {
+    if (!(req.body instanceof Array)) {
+      resource.removeAll();
+      return res.status(204).end();
+    }
     const ids: string[] = req.body;
     console.log("ids: ", ids);
     resource.remove(ids);

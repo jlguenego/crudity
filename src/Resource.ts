@@ -2,7 +2,6 @@ import { BehaviorSubject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { CrudityOptions } from "./CrudityOpions";
 import fs from "fs";
-import path from "path";
 
 export class Resource<T extends { id?: string }> {
   array$ = new BehaviorSubject<T[]>([]);
@@ -11,16 +10,18 @@ export class Resource<T extends { id?: string }> {
   private nextId = 1;
 
   constructor(options: CrudityOptions) {
-    const opts = {
-      filename: path.resolve(__dirname, "data.json"),
+    const opts: CrudityOptions = {
       debounceTimeDelay: 2000,
     };
     Object.assign(opts, options);
 
-    function getValues(filename: string): T[] {
+    function getValues(): T[] {
+      if (!opts.filename) {
+        throw new Error("CrudityOptions.filename is not set.");
+      }
       try {
         return JSON.parse(
-          fs.readFileSync(filename, {
+          fs.readFileSync(opts.filename, {
             encoding: "utf8",
           })
         );
@@ -29,7 +30,7 @@ export class Resource<T extends { id?: string }> {
       }
     }
 
-    const values: T[] = getValues(opts.filename);
+    const values: T[] = getValues();
     this.nextId = Math.max(0, ...values.map((t) => +t.id)) + 1;
     this.array$.next(values);
     this.map = values.reduce((acc, n) => {
@@ -59,5 +60,10 @@ export class Resource<T extends { id?: string }> {
       delete this.map[id];
     }
     this.array$.next(Object.values(this.map));
+  }
+
+  removeAll() {
+    this.map = {};
+    this.array$.next([]);
   }
 }

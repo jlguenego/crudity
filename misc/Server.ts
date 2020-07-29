@@ -1,16 +1,13 @@
 import express from "express";
 import serveIndex from "serve-index";
 import crudity from "..";
-import path from "path";
 import http from "http";
 import { promises as fs } from "fs";
-
-const filename = path.resolve(__dirname, "../data/data.json");
 
 export class Server<T> {
   server: http.Server;
   app: express.Express;
-  constructor(private port = 3000) {
+  constructor(private port = 3000, private filename: string) {
     const app = express();
     const www = ".";
 
@@ -23,7 +20,7 @@ export class Server<T> {
 
     app.use(
       "/ws/articles",
-      crudity<T>({ filename, debounceTimeDelay: 0 })
+      crudity<T>({ filename: this.filename, debounceTimeDelay: 0 })
     );
 
     app.use(express.static(www));
@@ -60,7 +57,7 @@ export class Server<T> {
   }
 
   async getArray(): Promise<T[]> {
-    const str = await fs.readFile(filename, { encoding: "utf8" });
+    const str = await fs.readFile(this.filename, { encoding: "utf8" });
     return JSON.parse(str);
   }
 }

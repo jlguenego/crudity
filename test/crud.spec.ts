@@ -1,14 +1,16 @@
 import fetch from "node-fetch";
 import { strict as assert } from "assert";
+import path from "path";
 
 import { Server } from "../misc/Server";
 import { Article } from "../misc/Article";
 
 const port = 3000;
+const filename = path.resolve(__dirname, "../data/data.json");
 
-const server = new Server<Article>(port);
+const server = new Server<Article>(port, filename);
 
-describe("Delete", function () {
+describe("CRUD", function () {
   before(async () => {
     try {
       await server.start();
@@ -30,9 +32,9 @@ describe("Delete", function () {
       const response = await fetch(`http://localhost:${port}/ws/articles`, {
         method: "DELETE",
       });
-      assert(response.status === 204);
+      assert.equal(response.status, 204);
       const articles = await server.getArray();
-      assert(articles.length === 0);
+      assert.equal(articles.length, 0);
     } catch (e) {
       assert.fail(e);
     }
@@ -41,18 +43,18 @@ describe("Delete", function () {
   it("should add one", async function () {
     try {
       const article: Article = {
-        name: 'Tournevis',
+        name: "Tournevis",
         price: 2.99,
-        qty: 100
+        qty: 100,
       };
       const response = await fetch(`http://localhost:${port}/ws/articles`, {
         method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(article)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(article),
       });
-      assert(response.status === 201);
+      assert.equal(response.status, 201);
       const articles = await server.getArray();
-      assert(articles.length === 1);
+      assert.equal(articles.length, 1);
     } catch (e) {
       assert.fail(e);
     }

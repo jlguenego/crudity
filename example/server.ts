@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 
 app.use(
   "/ws/articles",
-  crudity<Article>({ filename: path.resolve(__dirname, "data.json") })
+  crudity<Article>({ filename: path.resolve(__dirname, "../data/data.json") })
 );
 
 app.use(express.static(www));
