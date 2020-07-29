@@ -32,46 +32,56 @@ describe("CRUD", function () {
     }
   });
 
-  it("should delete all", async function () {
+  it("should add four", async function () {
     try {
-      const response = await fetch(`http://localhost:${port}/ws/articles`, {
-        method: "DELETE",
-      });
-      assert.equal(response.status, 204);
+      async function add() {
+        const article: Article = {
+          name: "Tournevis",
+          price: 2.99,
+          qty: 100,
+        };
+        const response = await fetch(`http://localhost:${port}/ws/articles`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(article),
+        });
+        assert.equal(response.status, 201);
+      }
+      await add();
+      await add();
+      await add();
+      await add();
       const articles = await server.getArray();
-      assert.equal(articles.length, 0);
+      assert.equal(articles.length, 4);
     } catch (e) {
       assert.fail(e);
     }
   });
 
-  it("should add one", async function () {
-    try {
-      const article: Article = {
-        name: "Tournevis",
-        price: 2.99,
-        qty: 100,
-      };
-      const response = await fetch(`http://localhost:${port}/ws/articles`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(article),
-      });
-      assert.equal(response.status, 201);
-      const articles = await server.getArray();
-      assert.equal(articles.length, 1);
-    } catch (e) {
-      assert.fail(e);
-    }
-  });
-
-  it("should get one", async function () {
+  it("should get four", async function () {
     try {
       const response = await fetch(`http://localhost:${port}/ws/articles`);
       const actualArticles = await response.json();
       assert.equal(response.status, 200);
       const expectedArticles = await server.getArray();
       assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should remove only one", async function () {
+    try {
+      const articles = await server.getArray();
+      const id = articles[0].id;
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/${id}`,
+        { method: "DELETE" }
+      );
+      assert.equal(response.status, 204);
+      const articlesAfter = await server.getArray();
+      articles.shift();
+      assert(_.isEqual(articlesAfter, articles));
     } catch (e) {
       assert.fail(e);
     }
@@ -90,6 +100,19 @@ describe("CRUD", function () {
       const articlesAfter = await server.getArray();
       articles.shift();
       assert(_.isEqual(articlesAfter, articles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should delete all", async function () {
+    try {
+      const response = await fetch(`http://localhost:${port}/ws/articles`, {
+        method: "DELETE",
+      });
+      assert.equal(response.status, 204);
+      const articles = await server.getArray();
+      assert.equal(articles.length, 0);
     } catch (e) {
       assert.fail(e);
     }

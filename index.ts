@@ -35,5 +35,11 @@ export default function crudity<T extends { id?: string }>(
     return res.status(204).end();
   });
 
+  app.delete("/:id", (req, res) => {
+    const id = req.params.id;
+    resource.remove([id]);
+    return res.status(204).end();
+  });
+
   return app;
 }
