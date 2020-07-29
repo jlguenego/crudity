@@ -1,11 +1,12 @@
 {
   "name": "crudity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon example/server.ts",
-    "test": "nyc --reporter=html mocha"
+    "test": "nyc --reporter=html mocha",
+    "release": "standard-version"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "nyc": "^15.1.0",
     "serve-index": "^1.9.1",
     "source-map-support": "^0.5.19",
+    "standard-version": "^8.0.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
