@@ -2,16 +2,10 @@ import express from "express";
 import serveIndex from "serve-index";
 import path from "path";
 import crudity from "..";
+import { Article } from "../misc/Article";
 
 const app = express();
 const www = ".";
-
-interface Article {
-  id: string;
-  name: string;
-  price: number;
-  qty: number;
-}
 
 app.use(express.json());
 

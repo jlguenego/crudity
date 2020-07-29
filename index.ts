@@ -1,6 +1,6 @@
 import express from "express";
-import { Resource } from "./resource";
-import { CrudityOptions } from "./interfaces";
+import { Resource } from "./src/Resource";
+import { CrudityOptions } from "./src/CrudityOpions";
 
 const app = express.Router();
 

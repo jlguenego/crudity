@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
-import { CrudityOptions } from "./interfaces";
-import { promises as fs } from "fs";
+import { CrudityOptions } from "./CrudityOpions";
+import fs from "fs";
 import path from "path";
 
 export class Resource<T extends { id?: string }> {
@@ -13,26 +13,36 @@ export class Resource<T extends { id?: string }> {
   constructor(options: CrudityOptions) {
     const opts = {
       filename: path.resolve(__dirname, "data.json"),
+      debounceTimeDelay: 2000,
     };
     Object.assign(opts, options);
-    (async () => {
-      const values: T[] = JSON.parse(
-        await fs.readFile(opts.filename, {
-          encoding: "utf8",
-        })
-      );
-      this.nextId = Math.max(0, ...values.map((t) => +t.id)) + 1;
-      this.array$.next(values);
-      this.map = values.reduce((acc, n) => {
-        acc[n.id] = n;
-        return acc;
-      }, {});
 
-      this.array$.pipe(debounceTime(2000)).subscribe((array) => {
+    function getValues(filename: string): T[] {
+      try {
+        return JSON.parse(
+          fs.readFileSync(filename, {
+            encoding: "utf8",
+          })
+        );
+      } catch (e) {
+        return [];
+      }
+    }
+
+    const values: T[] = getValues(opts.filename);
+    this.nextId = Math.max(0, ...values.map((t) => +t.id)) + 1;
+    this.array$.next(values);
+    this.map = values.reduce((acc, n) => {
+      acc[n.id] = n;
+      return acc;
+    }, {});
+
+    this.array$
+      .pipe(debounceTime(opts.debounceTimeDelay))
+      .subscribe((array) => {
         const str = JSON.stringify(array, undefined, 2);
-        fs.writeFile(opts.filename, str);
+        fs.promises.writeFile(opts.filename, str);
       });
-    })();
   }
 
   add(t: T): T {
