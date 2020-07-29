@@ -7,7 +7,7 @@ import { promises as fs } from "fs";
 export class Server<T> {
   server: http.Server;
   app: express.Express;
-  constructor(private port = 3000, private filename: string) {
+  constructor(private port, private filename: string) {
     const app = express();
     const www = ".";
 
