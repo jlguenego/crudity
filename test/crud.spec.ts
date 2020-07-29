@@ -190,6 +190,22 @@ describe("CRUD", function () {
     }
   });
 
+  it("should patch none", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles/not-existing`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        }
+      );
+      assert.equal(response.status, 404);
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
   it("should remove only one", async function () {
     try {
       const articles = await server.getArray();
