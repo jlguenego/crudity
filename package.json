@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon example/server.ts",
-    "test": "nyc mocha"
+    "test": "nyc --reporter=html mocha"
   },
   "keywords": [],
   "author": "",
