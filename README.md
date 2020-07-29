@@ -29,6 +29,14 @@ app.use(
 app.listen(3000, () => console.log("Server started on port 3000"));
 ```
 
+## Middleware options
+
+The middleware `crudity(options: CrudityOptions)` has following options:
+
+- `filename`: path of the database json file. Mandatory.
+- `minimized`: Minimize the JSON before storing. `false` by default. 
+- `debounceTimeDelay`: Do not write in the file less than this delay. `2000` by default.
+
 ## Play
 
 ### Create
