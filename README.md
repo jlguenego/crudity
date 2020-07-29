@@ -54,22 +54,25 @@ Content-Type: application/json
 ### Retrieve
 
 Retrieve all.
+
 ```
 GET /ws/articles HTTP/1.1
 ```
 
 Retrieve with default pagination.
+
 ```
 GET /ws/articles?page(3) HTTP/1.1
 ```
 
 Retrieve with 50 item pagination, reverse order by name and filter by the first address city which must start by 'A' or 'a'.
+
 ```
 GET /ws/articles?page(2, 50)&orderDesc(name)&filter(addresses[0].city, /a.*/i) HTTP/1.1
 ```
 
-
 Retrieve one
+
 ```
 GET /ws/articles/1234 HTTP/1.1
 ```
@@ -112,6 +115,32 @@ Delete All
 
 ```
 DELETE /ws/articles HTTP/1.1
+```
+
+## HATEOAS
+
+In the HTTP request header you can set the key `X-Hateoas: <value>`. The possible values are:
+
+- `X-Hateoas: none`: No Hateoas info produced (default).
+- `X-Hateoas: header`: Hateoas info produced under the HTTP response header `X-Link` in a JSON format: .
+- `X-Hateoas: body`: Hateoas info produced under the body response in a JSON format. Warning, the result of the request will be under the `result` key.
+
+Example of request with HATEOAS in the body:
+
+```
+GET /ws/articles/1234 HTTP/1.1
+X-Hateoas: body
+```
+
+Response:
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+...
+
+{"result": {"id":1234, "name": "Pliers", "price": 1.50, "qty": 300},
+"links": ["next": "/ws/articles/1235", "previous": "/ws/articles/1233"]}
 ```
 
 ## Author
