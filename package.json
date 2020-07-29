@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon example/server.ts"
+    "start": "nodemon example/server.ts",
+    "test": "nyc mocha"
   },
   "keywords": [],
   "author": "",
@@ -12,14 +13,19 @@
   "devDependencies": {
     "@types/express": "^4.17.7",
     "@types/node": "^14.0.26",
+    "@types/node-fetch": "^2.5.7",
     "@types/serve-index": "^1.7.30",
     "express": "^4.17.1",
+    "mocha": "^8.0.1",
+    "node-fetch": "^2.6.0",
     "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
     "serve-index": "^1.9.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@types/mocha": "^8.0.0",
     "rxjs": "^6.6.0"
   }
 }
