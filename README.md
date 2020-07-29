@@ -119,17 +119,17 @@ DELETE /ws/articles HTTP/1.1
 
 ## HATEOAS
 
-In the HTTP request header you can set the key `X-Hateoas: <value>`. The possible values are:
+In the HTTP request header you can set the key `X-Crudity-Hateoas: <value>`. The possible values are:
 
-- `X-Hateoas: none`: No Hateoas info produced (default).
-- `X-Hateoas: header`: Hateoas info produced under the HTTP response header `X-Link` in a JSON format: .
-- `X-Hateoas: body`: Hateoas info produced under the body response in a JSON format. Warning, the result of the request will be under the `result` key.
+- `X-Crudity-Hateoas: none`: No Hateoas info produced (default).
+- `X-Crudity-Hateoas: header`: Hateoas info produced under the HTTP response header `X-Crudity-Link` in a JSON format: .
+- `X-Crudity-Hateoas: body`: Hateoas info produced under the body response in a JSON format. Warning, the result of the request will be under the `result` key.
 
 Example of request with HATEOAS in the body:
 
 ```
 GET /ws/articles/1234 HTTP/1.1
-X-Hateoas: body
+X-Crudity-Hateoas: body
 ```
 
 Response:
