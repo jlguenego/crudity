@@ -162,6 +162,11 @@ Content-Type: application/json
 "links": ["next": "/ws/articles/1235", "previous": "/ws/articles/1233"]}
 ```
 
+## Thanks
+
+Thanks to some url that helped me.
+- https://www.moesif.com/blog/technical/api-design/REST-API-Design-Filtering-Sorting-and-Pagination/
+
 ## Author
 
 Jean-Louis GUENEGO <jlguenego@gmail.com>
