@@ -4,7 +4,6 @@ import { Crudity } from "..";
 import { Article } from "../misc/Article";
 
 const app = express();
-const www = ".";
 const filename = path.resolve(__dirname, "../data/test.json");
 const articleRouter = new Crudity<Article>({ filename }).router;
 
