@@ -18,6 +18,8 @@ export function orderBy<T>(array: T[], orderBySpec: string): T[] {
   return _.orderBy(array, fields, ascArray);
 }
 
+const REGEXP = /^\/(.*)\/(i?)$/;
+
 export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
   if (!filterSpec) {
     return array;
@@ -27,16 +29,17 @@ export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
   if (keys.length === 0) {
     return array;
   }
+
   const key = keys[0];
   const newFilterSpec = { ...filterSpec };
   delete newFilterSpec[key];
 
   const value = filterSpec[key] as string;
-  const isRegexp = value.match(/^\/.*\/i?$/);
+  const isRegexp = value.match(REGEXP);
   let checkFn: (t: T, key: string) => boolean = (t, k) => value === t[k];
   if (isRegexp) {
-    const spec = value.replace(/^\/(.*)\/i?$/, "$1");
-    const flags = value.replace(/^\/.*\/(i?)$/, "$1");
+    const spec = value.replace(REGEXP, "$1");
+    const flags = value.replace(REGEXP, "$2");
     const regexp = new RegExp(spec, flags);
     checkFn = (t, k) => regexp.test(t[k]);
   }
