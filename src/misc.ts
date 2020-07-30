@@ -38,11 +38,12 @@ export function filter<T>(array: T[], filterSpec: CrudityFilter): T[] {
   delete newFilterSpec[key];
 
   const value = filterSpec[key] as string;
-  const isRegexp = value.match(/^\/.*\/?$/);
+  const isRegexp = value.match(/^\/.*\/i?$/);
   let checkFn: (t: T, key: string) => boolean = (t, k) => value === t[k];
   if (isRegexp) {
-    const spec = value.replace(/^\/(.*)\/$/, "$1");
-    const regexp = new RegExp(spec);
+    const spec = value.replace(/^\/(.*)\/i?$/, "$1");
+    const flags = value.replace(/^\/.*\/(i?)$/, "$1");
+    const regexp = new RegExp(spec, flags);
     checkFn = (t, k) => regexp.test(t[k]);
   }
   return filter(
