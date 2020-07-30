@@ -112,12 +112,27 @@ describe("Retrieve", function () {
   it("should retrieve with name filtered with regexp", async function () {
     try {
       const response = await fetch(
-        `http://localhost:${port}/ws/articles?filter[name]=/ 3/`
+        `http://localhost:${port}/ws/articles?filter[name]=/ 33/`
       );
       const actualArticles: Article[] = await response.json();
       assert.equal(response.status, 200);
       assert.equal(actualArticles.length, 1);
-      const expectedArticles = [{"name":"Screwdriver 22","price":0.35,"qty":88,"id":"22"}];
+      const expectedArticles = [{"name":"Screwdriver 33","price":0.1,"qty":132,"id":"33"}];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should retrieve with name filtered with regexp ignorecase", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?filter[name]=/SCREW.*24/i`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 1);
+      const expectedArticles = [{"name":"Screwdriver 24","price":0.15,"qty":96,"id":"24"}];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
       assert.fail(e);

@@ -19,7 +19,6 @@ export function orderBy<T>(array: T[], orderBySpec: string): T[] {
 }
 
 export function filter<T>(array: T[], filterSpec: CrudityFilter): T[] {
-  console.log("filterSpec: ", filterSpec);
   if (typeof filterSpec === "string") {
     throw new Error(
       "filterSpec cannot be a string, but an object. Please read filter documentation."
