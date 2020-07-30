@@ -50,3 +50,20 @@ export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
     newFilterSpec
   );
 }
+
+export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
+  const spec = selectSpec ?? "*";
+  if (spec === "*") {
+    return array;
+  }
+  const keys: (keyof T)[] = spec.split(",") as (keyof T)[];
+  return array.map((t) => {
+    const newT: Partial<T> = {};
+    for (const key of keys) {
+      if (key in t) {
+        newT[key] = t[key];
+      }
+    }
+    return newT;
+  });
+}
