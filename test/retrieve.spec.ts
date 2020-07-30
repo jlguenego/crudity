@@ -78,16 +78,16 @@ describe("Retrieve", function () {
   it("should retrieve with name ordered", async function () {
     try {
       const response = await fetch(
-        `http://localhost:${port}/ws/articles?orderBy=name`
+        `http://localhost:${port}/ws/articles?orderBy=-price,name&pageSize=4`
       );
       const actualArticles: Article[] = await response.json();
       assert.equal(response.status, 200);
       assert.equal(actualArticles.length, 4);
       const expectedArticles = [
-        { name: "Screwdriver 8", price: 0.05, qty: 32, id: "8" },
-        { name: "Screwdriver 9", price: 0.8, qty: 36, id: "9" },
-        { name: "Screwdriver 10", price: 0.7, qty: 40, id: "10" },
-        { name: "Screwdriver 11", price: 0.6, qty: 44, id: "11" },
+        { name: "Screwdriver 26", price: 0.8, qty: 104, id: "26" },
+        { name: "Screwdriver 43", price: 0.8, qty: 172, id: "43" },
+        { name: "Screwdriver 60", price: 0.8, qty: 240, id: "60" },
+        { name: "Screwdriver 77", price: 0.8, qty: 308, id: "77" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {

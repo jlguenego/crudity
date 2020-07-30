@@ -11,10 +11,8 @@ export function orderBy<T>(array: T[], orderBySpec: string): T[] {
     return array;
   }
   const fields = orderBySpec.split(",").map((s) => s.replace(/^[-+]/, ""));
-  console.log("fields: ", fields);
   const ascArray = orderBySpec
     .split(",")
     .map((s) => (s.startsWith("-") ? "desc" : "asc"));
-  console.log("ascArray: ", ascArray);
   return _.orderBy(array, fields, ascArray);
 }
