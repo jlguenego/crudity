@@ -1,7 +1,8 @@
 import express, { Router } from "express";
 import { Resource } from "./src/Resource";
 import { CrudityOptions } from "./src/CrudityOptions";
-import { getPageSlice, orderBy } from "./src/misc";
+import { getPageSlice, orderBy, filter } from "./src/misc";
+import { CrudityQueryString } from "./src/CrudityQueryString";
 
 export interface Idable {
   id?: string;
@@ -45,15 +46,24 @@ export class Crudity<T extends Idable> {
 
     app.get("/", (req, res) => {
       console.log("req.query", req.query);
+      const query = req.query as CrudityQueryString;
+
+      // filter
+      const filteredArray = filter<T>(this.resource.array$.value, query.filter);
+
+      // order by
+      const array = orderBy<T>(
+        filteredArray,
+        req.query.orderBy as string
+      );
+
+      // pagination
       const pageSize = isNaN(+req.query.pageSize)
         ? this.options.pageSize
         : +req.query.pageSize;
       const page = isNaN(+req.query.page) ? 1 : +req.query.page;
       const { start, end } = getPageSlice(pageSize, page);
-      const array = orderBy<T>(
-        this.resource.array$.value,
-        req.query.orderBy as string
-      );
+
       return res.json(array.slice(start, end));
     });
 

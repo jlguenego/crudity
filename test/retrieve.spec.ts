@@ -94,4 +94,33 @@ describe("Retrieve", function () {
       assert.fail(e);
     }
   });
+  it("should retrieve with name filtered", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?filter[name]=Screwdriver 22`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 1);
+      const expectedArticles = [{"name":"Screwdriver 22","price":0.35,"qty":88,"id":"22"}];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should retrieve with name filtered with regexp", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?filter[name]=/ 3/`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 1);
+      const expectedArticles = [{"name":"Screwdriver 22","price":0.35,"qty":88,"id":"22"}];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
 });
