@@ -40,12 +40,12 @@ describe("Error Management", function () {
     } catch (error) {}
   });
 
-  it("should continue to run even if an socket error is emitted", async function () {
+  it("should continue to run even if a socket error is emitted", async function () {
     try {
       const server = new Server<Article>(port, filename);
       await server.start();
       server.server.emit("error", { test: "fake error" });
-      await timer(10).toPromise();
+      await timer(100).toPromise();
       await server.stop();
     } catch (error) {
       assert.fail(error);
