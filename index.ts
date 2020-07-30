@@ -45,7 +45,6 @@ export class Crudity<T extends Idable> {
     });
 
     app.get("/", (req, res) => {
-      console.log("req.query", req.query);
       const query = req.query as CrudityQueryString;
 
       // check syntax

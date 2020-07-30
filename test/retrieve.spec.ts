@@ -155,4 +155,19 @@ describe("Retrieve", function () {
       assert.fail(e);
     }
   });
+
+  it("should retrieve with select on name and price", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?filter[name]=/33/&select=name,price`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 1);
+      const expectedArticles = [{ name: "Screwdriver 33", price: 0.1 }];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
 });
