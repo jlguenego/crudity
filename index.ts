@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import { Resource } from "./src/Resource";
 import { CrudityOptions } from "./src/CrudityOptions";
-import { getPageSlice } from "./src/misc";
+import { getPageSlice, orderBy } from "./src/misc";
 
 export interface Idable {
   id?: string;
@@ -44,13 +44,17 @@ export class Crudity<T extends Idable> {
     });
 
     app.get("/", (req, res) => {
-      console.log('req.query', req.query);
+      console.log("req.query", req.query);
       const pageSize = isNaN(+req.query.pageSize)
         ? this.options.pageSize
         : +req.query.pageSize;
       const page = isNaN(+req.query.page) ? 1 : +req.query.page;
       const { start, end } = getPageSlice(pageSize, page);
-      return res.json(this.resource.array$.value.slice(start, end));
+      const array = orderBy<T>(
+        this.resource.array$.value,
+        req.query.orderBy as string
+      );
+      return res.json(array.slice(start, end));
     });
 
     app.get("/:id", (req, res) => {

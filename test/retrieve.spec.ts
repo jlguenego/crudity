@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { strict as assert } from "assert";
 import path from "path";
 import fs from "fs";
+import _ from "lodash";
 
 import { Server } from "../misc/Server";
 import { Article } from "../misc/Article";
@@ -18,7 +19,7 @@ const server = new Server<Article>({ port, filename, pageSize });
 const getArticles = (nbr): Article[] =>
   new Array(100).fill(0).map((n, i) => ({
     name: "Screwdriver " + i,
-    price: 2.08,
+    price: ((i * 100) % 17) / 20,
     qty: i * 4,
   }));
 
@@ -49,6 +50,46 @@ describe("Retrieve", function () {
       const actualArticles: Article[] = await response.json();
       assert.equal(response.status, 200);
       assert.equal(actualArticles.length, pageSize);
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should retrieve with custom page size", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?page=3&pageSize=4`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 4);
+      const expectedArticles = [
+        { name: "Screwdriver 8", price: 0.05, qty: 32, id: "8" },
+        { name: "Screwdriver 9", price: 0.8, qty: 36, id: "9" },
+        { name: "Screwdriver 10", price: 0.7, qty: 40, id: "10" },
+        { name: "Screwdriver 11", price: 0.6, qty: 44, id: "11" },
+      ];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should retrieve with name ordered", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?orderBy=name`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 4);
+      const expectedArticles = [
+        { name: "Screwdriver 8", price: 0.05, qty: 32, id: "8" },
+        { name: "Screwdriver 9", price: 0.8, qty: 36, id: "9" },
+        { name: "Screwdriver 10", price: 0.7, qty: 40, id: "10" },
+        { name: "Screwdriver 11", price: 0.6, qty: 44, id: "11" },
+      ];
+      assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
       assert.fail(e);
     }
