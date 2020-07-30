@@ -1,7 +1,13 @@
 import express from "express";
 import path from "path";
 import { Crudity } from "..";
-import { Article } from "../misc/Article";
+
+interface Article {
+  id?: string;
+  name: string;
+  price: number;
+  qty: number;
+}
 
 const app = express();
 const filename = path.resolve(__dirname, "../data/test.json");

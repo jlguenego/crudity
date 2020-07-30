@@ -16,10 +16,15 @@ Typescript
 import express from "express";
 import path from "path";
 import { Crudity } from "crudity";
-import { Article } from "../misc/Article";
+
+interface Article {
+  id?: string;
+  name: string;
+  price: number;
+  qty: number;
+}
 
 const app = express();
-const www = ".";
 const filename = path.resolve(__dirname, "../data/test.json");
 const articleRouter = new Crudity<Article>({ filename }).router;
 
