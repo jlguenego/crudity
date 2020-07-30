@@ -11,6 +11,7 @@ npm i crudity
 ## Usage
 
 Typescript
+
 ```
 import express from "express";
 import path from "path";
@@ -33,9 +34,9 @@ app.listen(3000, () => console.log("Server started on port 3000"));
 The middleware `crudity(options: CrudityOptions)` has following options:
 
 - `filename`: path of the database json file. Mandatory.
-- `minify`: Minify the JSON before storing. `false` by default. 
+- `minify`: Minify the JSON before storing. `false` by default.
 - `debounceTimeDelay`: Do not write in the file less than this delay. `2000` by default.
-- `pageSize`: default page size for *retrieve all* requests. `20` by default.
+- `pageSize`: default page size for _retrieve all_ requests. `20` by default.
 
 ## Play
 
@@ -76,7 +77,7 @@ GET /ws/articles?page=3 HTTP/1.1
 Retrieve the second page, with 50 items per page, reverse order by name and filter by the first address city which must start by 'A' or 'a' (case insensitive).
 
 ```
-GET /ws/articles?page=2&pageSize=50&orderBy=name:desc&filter[addresses][0][city]=/a.*/i HTTP/1.1
+GET /ws/articles?page=2&pageSize=50&orderBy=-name&filter[addresses][0][city]=/a.*/i HTTP/1.1
 ```
 
 The query string uses the [`qs` node module format](https://github.com/ljharb/qs), integrated withing express.
@@ -84,8 +85,10 @@ Crudity query options are:
 
 - `page`: page index starting at 1. Default is `1`.
 - `pageSize`: number of items per page. Default is `20`.
-- `orderBy`: order by field name, desc or asc. Default is `asc`. To set desc, the field must be suffixed by `:desc`.
-- `filter`: filter on field name given a javascript regex. The filter key is an object with the same interface as the resource. The value are the regex wanted on the fields.
+- `orderBy`: order by field name.
+  - It is a string for one field only, or an array if many fields are to be ordered.
+  - Each field can be reversed by prefixing it with `-`. `+` is also a optional prefix for ascending.
+- `filter`: filter on field name given a javascript regex to be matched or simply a string to be equal to. The filter key must be an object with the same interface as the resource. The value are the regex or string wanted on the fields.
 
 Retrieve one
 
