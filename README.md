@@ -61,23 +61,31 @@ Content-Type: application/json
 
 ### Retrieve
 
-Retrieve all.
+Retrieve all. Pagination applies.
 
 ```
 GET /ws/articles HTTP/1.1
 ```
 
-Retrieve with default pagination.
+Retrieve the third page with default page size.
 
 ```
-GET /ws/articles?page(3) HTTP/1.1
+GET /ws/articles?page=3 HTTP/1.1
 ```
 
-Retrieve with 50 item pagination, reverse order by name and filter by the first address city which must start by 'A' or 'a'.
+Retrieve the second page, with 50 items per page, reverse order by name and filter by the first address city which must start by 'A' or 'a' (case insensitive).
 
 ```
-GET /ws/articles?page(2, 50)&orderDesc(name)&filter(addresses[0].city, /a.*/i) HTTP/1.1
+GET /ws/articles?page=2&pageSize=50&orderBy=name:desc&filter[addresses][0][city]=/a.*/i HTTP/1.1
 ```
+
+The query string uses the [`qs` node module format](https://github.com/ljharb/qs), integrated withing express.
+Crudity query options are:
+
+- `page`: page index starting at 1. Default is `1`.
+- `pageSize`: number of items per page. Default is `20`.
+- `orderBy`: order by field name, desc or asc. Default is `asc`. To set desc, the field must be suffixed by `:desc`.
+- `filter`: filter on field name given a javascript regex. The filter key is an object with the same interface as the resource. The value are the regex wanted on the fields.
 
 Retrieve one
 

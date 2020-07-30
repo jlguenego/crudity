@@ -44,6 +44,7 @@ export class Crudity<T extends Idable> {
     });
 
     app.get("/", (req, res) => {
+      console.log('req.query', req.query);
       const pageSize = isNaN(+req.query.pageSize)
         ? this.options.pageSize
         : +req.query.pageSize;
