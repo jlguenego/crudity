@@ -7,7 +7,7 @@ export class Server<T> {
   server: http.Server;
   app: express.Express;
   crudity: Crudity<T>;
-  constructor(private port, private filename: string) {
+  constructor(private port, private filename: string, private minify = false) {
     const app = express();
     const www = ".";
 
@@ -16,6 +16,7 @@ export class Server<T> {
     this.crudity = new Crudity<T>({
       filename: this.filename,
       debounceTimeDelay: 0,
+      minify,
     });
 
     app.use("/ws/articles", this.crudity.router);

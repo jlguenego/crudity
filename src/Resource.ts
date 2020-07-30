@@ -12,6 +12,7 @@ export class Resource<T extends { id?: string }> {
   constructor(options: CrudityOptions) {
     const opts: CrudityOptions = {
       debounceTimeDelay: 2000,
+      minify: false,
     };
     Object.assign(opts, options);
 
@@ -39,11 +40,15 @@ export class Resource<T extends { id?: string }> {
       return acc;
     }, {});
 
+    const stringify = (o) =>
+      opts.minify
+        ? JSON.stringify(o)
+        : JSON.stringify(o, undefined, 2);
+
     this.array$
       .pipe(debounceTime(opts.debounceTimeDelay))
       .subscribe((array) => {
-        const str = JSON.stringify(array, undefined, 2);
-        fs.promises.writeFile(opts.filename, str);
+        fs.promises.writeFile(opts.filename, stringify(array));
       });
   }
 
