@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { Resource } from "./src/Resource";
-import { CrudityOptions } from "./src/CrudityOpions";
+import { CrudityOptions } from "./src/CrudityOptions";
 
 export interface Idable {
   id?: string;

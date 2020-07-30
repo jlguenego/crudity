@@ -13,7 +13,7 @@ try {
   fs.unlinkSync(filename);
 } catch (e) {}
 
-const server = new Server<Article>(port, filename);
+const server = new Server<Article>({ port, filename });
 
 describe("CRUD", function () {
   before(async () => {

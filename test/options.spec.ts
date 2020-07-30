@@ -17,7 +17,7 @@ describe("Options", function () {
         fs.unlinkSync(filename);
       } catch (e) {}
       await timer(100).toPromise();
-      const server = new Server<Article>(port, filename, true);
+      const server = new Server<Article>({ port, filename, minify: true });
       await server.start();
       const article: Article = {
         name: "Tournevis",

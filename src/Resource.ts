@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
-import { CrudityOptions } from "./CrudityOpions";
+import { CrudityOptions } from "./CrudityOptions";
 import fs from "fs";
 
 export class Resource<T extends { id?: string }> {
