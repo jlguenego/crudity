@@ -3,6 +3,7 @@ import serveIndex from "serve-index";
 import fetch from "node-fetch";
 import path from "path";
 import http from "http";
+import { strict as assert } from "assert";
 
 import { Crudity } from "..";
 import { CrudityOptions } from "../src/CrudityOptions";
@@ -73,5 +74,14 @@ export class Server<T> {
     await fetch(`http://localhost:${this.options.port}/ws/articles`, {
       method: "DELETE",
     });
+  }
+
+  async add(t: T | T[]) {
+    const response = await fetch(`http://localhost:${this.options.port}/ws/articles`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(t),
+    });
+    assert.equal(response.status, 201);
   }
 }

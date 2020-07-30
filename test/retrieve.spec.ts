@@ -15,27 +15,19 @@ try {
 const pageSize = 20;
 const server = new Server<Article>({ port, filename, pageSize });
 
-async function add(nbr = 10) {
-  const article: Article = {
-    name: "Screwdriver",
-    price: 2.99,
-    qty: 100,
-  };
-  const articles = new Array(nbr).fill(article);
-  const response = await fetch(`http://localhost:${port}/ws/articles`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(articles),
-  });
-  assert.equal(response.status, 201);
-}
+const getArticles = (nbr): Article[] =>
+  new Array(100).fill(0).map((n, i) => ({
+    name: "Screwdriver " + i,
+    price: 2.08,
+    qty: i * 4,
+  }));
 
 describe("Retrieve", function () {
   before(async () => {
     try {
       await server.start();
       await server.reset();
-      await add(100);
+      await server.add(getArticles(100));
     } catch (e) {
       assert.fail(e);
     }

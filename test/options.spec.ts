@@ -35,7 +35,7 @@ describe("Options", function () {
       const str = fs.readFileSync(filename, { encoding: "utf8" });
       assert.equal(
         str,
-        `[{"name":"Tournevis","price":2.99,"qty":100,"id":"1"}]`
+        `[{"name":"Tournevis","price":2.99,"qty":100,"id":"0"}]`
       );
     } catch (e) {
       assert.fail(e);

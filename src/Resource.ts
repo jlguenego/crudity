@@ -2,6 +2,7 @@ import { BehaviorSubject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { CrudityOptions } from "./CrudityOptions";
 import fs from "fs";
+import { CrudityQueryString } from "./CrudityQueryString";
 
 export class Resource<T extends { id?: string }> {
   array$ = new BehaviorSubject<T[]>([]);
@@ -9,13 +10,7 @@ export class Resource<T extends { id?: string }> {
 
   private nextId = 1;
 
-  constructor(options: CrudityOptions) {
-    const opts: CrudityOptions = {
-      debounceTimeDelay: 2000,
-      minify: false,
-    };
-    Object.assign(opts, options);
-
+  constructor(opts: CrudityOptions) {
     function getValues(): T[] {
       if (!opts.filename) {
         throw new Error("CrudityOptions.filename is not set.");
@@ -33,7 +28,7 @@ export class Resource<T extends { id?: string }> {
     }
 
     const values: T[] = getValues();
-    this.nextId = Math.max(0, ...values.map((t) => +t.id)) + 1;
+    this.nextId = Math.max(-1, ...values.map((t) => +t.id)) + 1;
     this.array$.next(values);
     this.map = values.reduce((acc, n) => {
       acc[n.id] = n;
@@ -41,9 +36,7 @@ export class Resource<T extends { id?: string }> {
     }, {});
 
     const stringify = (o) =>
-      opts.minify
-        ? JSON.stringify(o)
-        : JSON.stringify(o, undefined, 2);
+      opts.minify ? JSON.stringify(o) : JSON.stringify(o, undefined, 2);
 
     this.array$
       .pipe(debounceTime(opts.debounceTimeDelay))
