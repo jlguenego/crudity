@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { CrudityFilter } from "./CrudityFilter";
+import { CrudityFilterObject } from "./CrudityFilter";
 
 export function getPageSlice(pageSize: number, page: number) {
   const start = (page - 1) * pageSize;
@@ -18,12 +18,7 @@ export function orderBy<T>(array: T[], orderBySpec: string): T[] {
   return _.orderBy(array, fields, ascArray);
 }
 
-export function filter<T>(array: T[], filterSpec: CrudityFilter): T[] {
-  if (typeof filterSpec === "string") {
-    throw new Error(
-      "filterSpec cannot be a string, but an object. Please read filter documentation."
-    );
-  }
+export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
   if (!filterSpec) {
     return array;
   }

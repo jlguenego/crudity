@@ -1,8 +1,8 @@
-import { CrudityFilter } from "./CrudityFilter";
+import { CrudityFilterObject } from "./CrudityFilter";
 
 export interface CrudityQueryString {
   page?: number;
   pageSize?: number;
-  filter?: CrudityFilter;
+  filter?: CrudityFilterObject;
   orderBy?: string;
 }

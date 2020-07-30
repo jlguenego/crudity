@@ -48,14 +48,20 @@ export class Crudity<T extends Idable> {
       console.log("req.query", req.query);
       const query = req.query as CrudityQueryString;
 
+      // check syntax
+      if (typeof query.filter === "string") {
+        return res
+          .status(400)
+          .end(
+            "filterSpec cannot be a string, but an object. Please read filter documentation."
+          );
+      }
+
       // filter
       const filteredArray = filter<T>(this.resource.array$.value, query.filter);
 
       // order by
-      const array = orderBy<T>(
-        filteredArray,
-        req.query.orderBy as string
-      );
+      const array = orderBy<T>(filteredArray, req.query.orderBy as string);
 
       // pagination
       const pageSize = isNaN(+req.query.pageSize)
