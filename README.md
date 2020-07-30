@@ -10,21 +10,20 @@ npm i crudity
 
 ## Usage
 
+Typescript
 ```
 import express from "express";
 import path from "path";
-import crudity from "crudity";
+import { Crudity } from "crudity";
 import { Article } from "../misc/Article";
 
 const app = express();
 const www = ".";
-const filename = path.resolve(__dirname, "../data/data.json");
+const filename = path.resolve(__dirname, "../data/test.json");
+const articleRouter = new Crudity<Article>({ filename }).router;
 
 app.use(express.json());
-app.use(
-  "/ws/articles",
-  crudity<Article>({ filename })
-);
+app.use("/ws/articles", articleRouter);
 
 app.listen(3000, () => console.log("Server started on port 3000"));
 ```
