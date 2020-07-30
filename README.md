@@ -35,6 +35,7 @@ The middleware `crudity(options: CrudityOptions)` has following options:
 - `filename`: path of the database json file. Mandatory.
 - `minify`: Minify the JSON before storing. `false` by default. 
 - `debounceTimeDelay`: Do not write in the file less than this delay. `2000` by default.
+- `pageSize`: default page size for *retrieve all* requests. `20` by default.
 
 ## Play
 
