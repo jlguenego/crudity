@@ -237,12 +237,15 @@ describe("Retrieve", function () {
   it("should retrieve with unselect on qty, and a none existing field", async function () {
     try {
       const response = await fetch(
-        `http://localhost:${port}/ws/articles?pageSize=4&unselect=qty,toto`
+        `http://localhost:${port}/ws/articles?pageSize=2&unselect=qty,toto,provider`
       );
       const actualArticles: Article[] = await response.json();
       assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 1);
-      const expectedArticles = [{ name: "Screwdriver 33", price: 0.1 }];
+      assert.equal(actualArticles.length, 2);
+      const expectedArticles = [
+        { name: "Screwdriver 0", price: 0, id: "0" },
+        { name: "Screwdriver 1", price: 0.75, id: "1" },
+      ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
       assert.fail(e);
