@@ -42,10 +42,7 @@ export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
     }
     deepKeys.push(Object.keys(value)[0]);
   }
-  console.log("deepKeys: ", deepKeys);
-
   const filterValue = getDeepValue(filterSpec, deepKeys);
-  console.log("filterValue: ", filterValue);
 
   let checkFn: (v: string) => boolean = (v) => filterValue === v;
   if (filterValue.match(REGEXP)) {
