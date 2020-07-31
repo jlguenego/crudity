@@ -3,4 +3,8 @@ export interface Article {
   name: string;
   price: number;
   qty: number;
+  provider?: {
+    name: string;
+    zipcode: string;
+  };
 }
