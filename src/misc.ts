@@ -76,6 +76,26 @@ export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
   });
 }
 
+export function unselect<T>(
+  array: Partial<T>[],
+  unselectSpec: string
+): Partial<T>[] {
+  const spec = unselectSpec ?? "";
+  if (spec === "") {
+    return array;
+  }
+  const keys: (keyof T)[] = spec.split(",") as (keyof T)[];
+  return array.map((t) => {
+    const newT: Partial<T> = { ...t };
+    for (const key of keys) {
+      if (key in t) {
+        delete newT[key];
+      }
+    }
+    return newT;
+  });
+}
+
 export function getDeepValue(t: any, keys: string[]): any {
   if (keys.length === 0 || t === undefined) {
     return t;

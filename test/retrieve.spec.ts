@@ -233,4 +233,19 @@ describe("Retrieve", function () {
       assert.fail(e);
     }
   });
+
+  it("should retrieve with unselect on qty, and a none existing field", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?pageSize=4&unselect=qty,toto`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 1);
+      const expectedArticles = [{ name: "Screwdriver 33", price: 0.1 }];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
 });

@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import { Resource } from "./src/Resource";
 import { CrudityOptions } from "./src/CrudityOptions";
-import { getPageSlice, orderBy, filter, select } from "./src/misc";
+import { getPageSlice, orderBy, filter, select, unselect } from "./src/misc";
 import { CrudityQueryString } from "./src/CrudityQueryString";
 
 export interface Idable {
@@ -71,8 +71,13 @@ export class Crudity<T extends Idable> {
       const pagedArray = array.slice(start, end);
 
       // select
-      const finalArray = select<T>(pagedArray, req.query.select as string);
-      return res.json(finalArray);
+      const selectArray = select<T>(pagedArray, req.query.select as string);
+
+      // select
+      const unselectArray = unselect<T>(selectArray, req.query.unselect as string);
+      return res.json(unselectArray);
+
+
     });
 
     app.get("/:id", (req, res) => {
