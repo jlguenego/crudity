@@ -1,8 +1,7 @@
-import { BehaviorSubject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { BehaviorSubject, from } from "rxjs";
+import { debounceTime, switchMap, distinct, skip } from "rxjs/operators";
 import { CrudityOptions } from "./CrudityOptions";
 import fs from "fs";
-import { CrudityQueryString } from "./CrudityQueryString";
 
 export class Resource<T extends { id?: string }> {
   array$ = new BehaviorSubject<T[]>([]);
@@ -39,9 +38,14 @@ export class Resource<T extends { id?: string }> {
       opts.minify ? JSON.stringify(o) : JSON.stringify(o, undefined, 2);
 
     this.array$
-      .pipe(debounceTime(opts.debounceTimeDelay))
+      .pipe(
+        skip(1), // first marble is skipped because it is read from the file.
+        distinct(),
+        debounceTime(opts.debounceTimeDelay),
+        switchMap((array) => from(fs.promises.writeFile(opts.filename, stringify(array))))
+      )
       .subscribe((array) => {
-        fs.promises.writeFile(opts.filename, stringify(array));
+        console.log('array written');
       });
   }
 
