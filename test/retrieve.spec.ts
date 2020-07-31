@@ -17,11 +17,25 @@ const pageSize = 20;
 const server = new Server<Article>({ port, filename, pageSize });
 
 const getArticles = (nbr): Article[] =>
-  new Array(100).fill(0).map((n, i) => ({
-    name: "Screwdriver " + i,
-    price: ((i * 100) % 17) / 20,
-    qty: i * 4,
-  }));
+  new Array(100)
+    .fill(0)
+    .map(
+      (n, i) =>
+        ({
+          name: "Screwdriver " + i,
+          price: ((i * 100) % 17) / 20,
+          qty: i * 4,
+        } as Article)
+    )
+    .map((n, i) => {
+      if (n.qty % 10 === 0) {
+        n.provider = {
+          name: "Grocery " + i,
+          zipcode: "F-" + ((i * 35278) % 10000),
+        };
+      }
+      return n;
+    });
 
 describe("Retrieve", function () {
   before(async () => {
@@ -66,7 +80,13 @@ describe("Retrieve", function () {
       const expectedArticles = [
         { name: "Screwdriver 8", price: 0.05, qty: 32, id: "8" },
         { name: "Screwdriver 9", price: 0.8, qty: 36, id: "9" },
-        { name: "Screwdriver 10", price: 0.7, qty: 40, id: "10" },
+        {
+          name: "Screwdriver 10",
+          price: 0.7,
+          qty: 40,
+          provider: { name: "Grocery 10", zipcode: "F-2780" },
+          id: "10",
+        },
         { name: "Screwdriver 11", price: 0.6, qty: 44, id: "11" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
@@ -86,7 +106,13 @@ describe("Retrieve", function () {
       const expectedArticles = [
         { name: "Screwdriver 26", price: 0.8, qty: 104, id: "26" },
         { name: "Screwdriver 43", price: 0.8, qty: 172, id: "43" },
-        { name: "Screwdriver 60", price: 0.8, qty: 240, id: "60" },
+        {
+          name: "Screwdriver 60",
+          price: 0.8,
+          qty: 240,
+          provider: { name: "Grocery 60", zipcode: "F-6680" },
+          id: "60",
+        },
         { name: "Screwdriver 77", price: 0.8, qty: 308, id: "77" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
