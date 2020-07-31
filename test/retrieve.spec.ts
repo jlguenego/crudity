@@ -171,6 +171,43 @@ describe("Retrieve", function () {
     }
   });
 
+  it("should retrieve with provider name filtered with regexp", async function () {
+    try {
+      const response = await fetch(
+        `http://localhost:${port}/ws/articles?filter[provider][name]=/ERY 5/i`
+      );
+      const actualArticles: Article[] = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(actualArticles.length, 3);
+      const expectedArticles = [
+        {
+          name: "Screwdriver 5",
+          price: 0.35,
+          qty: 20,
+          provider: { name: "Grocery 5", zipcode: "F-6390" },
+          id: "5",
+        },
+        {
+          name: "Screwdriver 50",
+          price: 0.1,
+          qty: 200,
+          provider: { name: "Grocery 50", zipcode: "F-3900" },
+          id: "50",
+        },
+        {
+          name: "Screwdriver 55",
+          price: 0.45,
+          qty: 220,
+          provider: { name: "Grocery 55", zipcode: "F-290" },
+          id: "55",
+        },
+      ];
+      assert(_.isEqual(actualArticles, expectedArticles));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
   it("should throw an error because bad filter syntax", async function () {
     try {
       const response = await fetch(

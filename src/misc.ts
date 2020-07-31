@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { chain } from "lodash";
 import { CrudityFilterObject } from "./CrudityFilter";
 
 export function getPageSlice(pageSize: number, page: number) {
@@ -30,33 +30,36 @@ export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
     return array;
   }
 
-  const key = keys[0];
-  const value = filterSpec[key];
+  const newFilterSpec = JSON.parse(JSON.stringify(filterSpec));
 
-  if (typeof value === "string") {
-    const newFilterSpec = { ...filterSpec };
-    delete newFilterSpec[key];
-    const isRegexp = value.match(REGEXP);
-    let checkFn: (t: T, key: string) => boolean = (t, k) => value === t[k];
-    if (isRegexp) {
-      const spec = value.replace(REGEXP, "$1");
-      const flags = value.replace(REGEXP, "$2");
-      const regexp = new RegExp(spec, flags);
-      checkFn = (t, k) => regexp.test(t[k]);
+  const deepKeys = [keys[0]];
+
+  while (true) {
+    const value = getDeepValue(filterSpec, deepKeys);
+    if (typeof value === "string") {
+      removeDeepValue(newFilterSpec, deepKeys);
+      break;
     }
-    return filter(
-      array.filter((t) => {
-        return checkFn(t, key);
-      }),
-      newFilterSpec
-    );
+    deepKeys.push(Object.keys(value)[0]);
   }
+  console.log("deepKeys: ", deepKeys);
 
-  if (value instanceof Array) {
-    throw new Error("array not handled now. to be done soon");
+  const filterValue = getDeepValue(filterSpec, deepKeys);
+  console.log("filterValue: ", filterValue);
+
+  let checkFn: (v: string) => boolean = (v) => filterValue === v;
+  if (filterValue.match(REGEXP)) {
+    const spec = filterValue.replace(REGEXP, "$1");
+    const flags = filterValue.replace(REGEXP, "$2");
+    const regexp = new RegExp(spec, flags);
+    checkFn = (v) => regexp.test(v);
   }
-
-  return array;
+  return filter(
+    array.filter((t) => {
+      return checkFn(getDeepValue(t, deepKeys));
+    }),
+    newFilterSpec
+  );
 }
 
 export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
@@ -74,4 +77,38 @@ export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
     }
     return newT;
   });
+}
+
+export function getDeepValue(t: any, keys: string[]): any {
+  if (keys.length === 0 || t === undefined) {
+    return t;
+  }
+  return getDeepValue(t[keys[0]], keys.slice(1));
+}
+
+export function removeDeepValue(t: any, keys: string[]): void {
+  if (keys.length === 0 || t === undefined) {
+    return;
+  }
+  const lastKey = keys[keys.length - 1];
+  const previousKeys = keys.slice(0, -1);
+  const child = getDeepValue(t, previousKeys);
+  removeKeys(child, lastKey);
+  if (child !== t && Object.keys(child).length === 0) {
+    removeDeepValue(t, previousKeys);
+  }
+}
+
+export function removeKeys(t: any, key: string) {
+  if (t instanceof Array) {
+    const index = +key;
+    if (isNaN(index)) {
+      throw new Error("key must be an index number: " + key);
+    }
+    t.splice(index, 1);
+    return t.filter((n, i) => i !== index);
+  }
+  if (t instanceof Object) {
+    delete t[key];
+  }
 }
