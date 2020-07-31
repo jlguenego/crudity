@@ -219,10 +219,10 @@ describe("Retrieve", function () {
     }
   });
 
-  it("should retrieve with select on name and price", async function () {
+  it("should retrieve with select on name and price, and a none existing field", async function () {
     try {
       const response = await fetch(
-        `http://localhost:${port}/ws/articles?filter[name]=/33/&select=name,price`
+        `http://localhost:${port}/ws/articles?filter[name]=/33/&select=name,price,toto`
       );
       const actualArticles: Article[] = await response.json();
       assert.equal(response.status, 200);

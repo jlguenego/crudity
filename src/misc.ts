@@ -90,6 +90,9 @@ export function removeDeepValue(t: any, keys: string[]): void {
   const lastKey = keys[keys.length - 1];
   const previousKeys = keys.slice(0, -1);
   const child = getDeepValue(t, previousKeys);
+  if (!child) {
+    return;
+  }
   removeKeys(child, lastKey);
   if (child !== t && Object.keys(child).length === 0) {
     removeDeepValue(t, previousKeys);
