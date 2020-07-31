@@ -1,4 +1,4 @@
-import _, { chain } from "lodash";
+import _ from "lodash";
 import { CrudityFilterObject } from "./CrudityFilter";
 
 export function getPageSlice(pageSize: number, page: number) {
