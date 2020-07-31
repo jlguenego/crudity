@@ -31,24 +31,32 @@ export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
   }
 
   const key = keys[0];
-  const newFilterSpec = { ...filterSpec };
-  delete newFilterSpec[key];
+  const value = filterSpec[key];
 
-  const value = filterSpec[key] as string;
-  const isRegexp = value.match(REGEXP);
-  let checkFn: (t: T, key: string) => boolean = (t, k) => value === t[k];
-  if (isRegexp) {
-    const spec = value.replace(REGEXP, "$1");
-    const flags = value.replace(REGEXP, "$2");
-    const regexp = new RegExp(spec, flags);
-    checkFn = (t, k) => regexp.test(t[k]);
+  if (typeof value === "string") {
+    const newFilterSpec = { ...filterSpec };
+    delete newFilterSpec[key];
+    const isRegexp = value.match(REGEXP);
+    let checkFn: (t: T, key: string) => boolean = (t, k) => value === t[k];
+    if (isRegexp) {
+      const spec = value.replace(REGEXP, "$1");
+      const flags = value.replace(REGEXP, "$2");
+      const regexp = new RegExp(spec, flags);
+      checkFn = (t, k) => regexp.test(t[k]);
+    }
+    return filter(
+      array.filter((t) => {
+        return checkFn(t, key);
+      }),
+      newFilterSpec
+    );
   }
-  return filter(
-    array.filter((t) => {
-      return checkFn(t, key);
-    }),
-    newFilterSpec
-  );
+
+  if (value instanceof Array) {
+    throw new Error("array not handled now. to be done soon");
+  }
+
+  return array;
 }
 
 export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
