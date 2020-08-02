@@ -17,6 +17,7 @@ export function validateMiddleware<T>(dtoClass: new () => T) {
             .status(400)
             .end(validationErrors.map((e) => e.constraints).join(","));
         }
+        req.body = output;
         next();
       } catch (e) {
         console.log("e: ", e);
