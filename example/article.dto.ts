@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer";
-import { IsDefined, IsInt, IsNumber } from "class-validator";
+import { IsDefined, IsInt, IsNumber, IsString } from "class-validator";
 
 export class Article {
   @Expose()
@@ -7,6 +7,7 @@ export class Article {
 
   @Expose()
   @IsDefined()
+  @IsString()
   name: string;
 
   @Expose()

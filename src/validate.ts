@@ -15,7 +15,7 @@ export function validateMiddleware<T>(dtoClass: new () => T) {
         if (validationErrors.length > 0) {
           return res
             .status(400)
-            .end(validationErrors.map((e) => e.constraints).join(","));
+            .json(validationErrors.map((e) => e.constraints));
         }
         req.body = output;
         next();
