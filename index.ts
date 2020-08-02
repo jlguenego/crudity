@@ -3,6 +3,7 @@ import { Resource } from "./src/Resource";
 import { CrudityOptions } from "./src/CrudityOptions";
 import { getPageSlice, orderBy, filter, select, unselect } from "./src/misc";
 import { CrudityQueryString } from "./src/CrudityQueryString";
+import { validate } from "./src/validate";
 
 export interface Idable {
   id?: string;
@@ -16,10 +17,10 @@ export interface Idable {
  * @template T
  */
 export class Crudity<T extends Idable> {
-  options: CrudityOptions;
+  options: CrudityOptions<T>;
   resource: Resource<T>;
   router: Router;
-  constructor(opts: CrudityOptions) {
+  constructor(opts: CrudityOptions<T>) {
     this.options = {
       debounceTimeDelay: 2000,
       minify: false,
@@ -30,7 +31,7 @@ export class Crudity<T extends Idable> {
 
     const app = express.Router();
 
-    app.post("/", (req, res) => {
+    app.post("/", validate<T>(opts.dtoClass), (req, res) => {
       if (req.body instanceof Array) {
         // bulk scenario
         const array: T[] = [];
@@ -74,10 +75,11 @@ export class Crudity<T extends Idable> {
       const selectArray = select<T>(pagedArray, req.query.select as string);
 
       // select
-      const unselectArray = unselect<T>(selectArray, req.query.unselect as string);
+      const unselectArray = unselect<T>(
+        selectArray,
+        req.query.unselect as string
+      );
       return res.json(unselectArray);
-
-
     });
 
     app.get("/:id", (req, res) => {

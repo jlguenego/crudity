@@ -9,7 +9,7 @@ export class Resource<T extends { id?: string }> {
 
   private nextId = 1;
 
-  constructor(opts: CrudityOptions) {
+  constructor(opts: CrudityOptions<T>) {
     function getValues(): T[] {
       if (!opts.filename) {
         throw new Error("CrudityOptions.filename is not set.");

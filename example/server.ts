@@ -5,7 +5,8 @@ import { Article } from "./article.dto";
 
 const app = express();
 const filename = path.resolve(__dirname, "../data/test.json");
-const articleRouter = new Crudity<Article>({ filename }).router;
+const articleRouter = new Crudity<Article>({ filename, dtoClass: Article })
+  .router;
 
 app.use(express.json());
 app.use("/ws/articles", articleRouter);
