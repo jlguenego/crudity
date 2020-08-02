@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer";
-import { IsDefined, IsInt, IsCurrency } from "class-validator";
+import { IsDefined, IsInt, IsNumber } from "class-validator";
 
 export class Article {
   @Expose()
@@ -11,7 +11,7 @@ export class Article {
 
   @Expose()
   @IsDefined()
-  @IsCurrency()
+  @IsNumber()
   price: number;
 
   @Expose()

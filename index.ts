@@ -3,7 +3,7 @@ import { Resource } from "./src/Resource";
 import { CrudityOptions } from "./src/CrudityOptions";
 import { getPageSlice, orderBy, filter, select, unselect } from "./src/misc";
 import { CrudityQueryString } from "./src/CrudityQueryString";
-import { validate } from "./src/validate";
+import { validateMiddleware } from "./src/validate";
 
 export interface Idable {
   id?: string;
@@ -31,7 +31,7 @@ export class Crudity<T extends Idable> {
 
     const app = express.Router();
 
-    app.post("/", validate<T>(opts.dtoClass), (req, res) => {
+    app.post("/", validateMiddleware<T>(opts.dtoClass), (req, res) => {
       if (req.body instanceof Array) {
         // bulk scenario
         const array: T[] = [];
