@@ -5,7 +5,7 @@ import fs from "fs";
 import _ from "lodash";
 
 import { Server } from "../misc/Server";
-import { Article } from "../misc/Article";
+import { Article } from "../example/article.dto";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
@@ -14,7 +14,12 @@ try {
 } catch (e) {}
 
 const pageSize = 20;
-const server = new Server<Article>({ port, filename, pageSize });
+const server = new Server<Article>({
+  port,
+  filename,
+  pageSize,
+  dtoClass: Article,
+});
 
 const getArticles = (nbr): Article[] =>
   new Array(100)

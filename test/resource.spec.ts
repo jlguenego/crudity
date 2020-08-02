@@ -1,8 +1,8 @@
 import { strict as assert } from "assert";
 import path from "path";
 
-import { Article } from "../misc/Article";
 import { Resource } from "../src/Resource";
+import { Article } from "../example/article.dto";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
@@ -15,7 +15,7 @@ describe("Resource", function () {
         price: 2.99,
         qty: 100,
       };
-      const resource = new Resource<Article>({ filename });
+      const resource = new Resource<Article>({ filename, dtoClass: Article });
       resource.rewrite(article);
       assert.fail("should not reach this");
     } catch (e) {

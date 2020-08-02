@@ -8,7 +8,7 @@ import { strict as assert } from "assert";
 import { Crudity } from "..";
 import { CrudityOptions } from "../src/CrudityOptions";
 
-interface ServerOptions extends CrudityOptions {
+interface ServerOptions<T> extends CrudityOptions<T> {
   port?: number;
 }
 
@@ -18,11 +18,12 @@ export class Server<T> {
     minify: false,
     filename: path.resolve(__dirname, "../data/test.json"),
     debounceTimeDelay: 0,
+    dtoClass: undefined
   };
   server: http.Server;
   app: express.Express;
   crudity: Crudity<T>;
-  constructor(options: ServerOptions) {
+  constructor(options: ServerOptions<T>) {
     Object.assign(this.options, options);
     const app = express();
     const www = ".";

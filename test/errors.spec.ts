@@ -3,8 +3,8 @@ import path from "path";
 import fs from "fs";
 
 import { Server } from "../misc/Server";
-import { Article } from "../misc/Article";
 import { timer } from "rxjs";
+import { Article } from "../example/article.dto";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
@@ -12,7 +12,7 @@ const filename = path.resolve(__dirname, "../data/test.json");
 describe("Error Management", function () {
   it("should says that filename is not set", async function () {
     try {
-      const server = new Server<Article>({ filename: undefined });
+      const server = new Server<Article>({ filename: undefined, dtoClass: Article });
       await server.start();
       assert.fail("server should not start");
     } catch (e) {
@@ -23,10 +23,10 @@ describe("Error Management", function () {
 
   it("should throw an error if server is started on same port", async function () {
     try {
-      const server1 = new Server<Article>({ port, filename });
+      const server1 = new Server<Article>({ port, filename, dtoClass: Article });
       await server1.start();
       try {
-        const server2 = new Server<Article>({ port, filename });
+        const server2 = new Server<Article>({ port, filename, dtoClass: Article });
         await server2.start();
         assert.fail("server2 should not start");
       } catch (e) {
@@ -42,7 +42,7 @@ describe("Error Management", function () {
 
   it("should continue to run even if a socket error is emitted", async function () {
     try {
-      const server = new Server<Article>({ port, filename });
+      const server = new Server<Article>({ port, filename, dtoClass: Article });
       await server.start();
       server.server.emit("error", { test: "fake error" });
       await timer(100).toPromise();
@@ -54,7 +54,7 @@ describe("Error Management", function () {
 
   it("should throw an error while closing", async function () {
     try {
-      const server = new Server<Article>({ port, filename });
+      const server = new Server<Article>({ port, filename, dtoClass: Article });
       await server.start();
       await server.stop();
       await server.stop();
@@ -78,7 +78,7 @@ describe("Error Management", function () {
       };
       const articles = [article];
       fs.writeFileSync(filename, JSON.stringify(articles));
-      const server = new Server({ port, filename });
+      const server = new Server({ port, filename, dtoClass: Article });
       await server.start();
       await server.stop();
     } catch (e) {

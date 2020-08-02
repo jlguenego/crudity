@@ -3,9 +3,9 @@ import fetch from "node-fetch";
 import path from "path";
 import fs from "fs";
 
-import { Article } from "../misc/Article";
 import { Server } from "../misc/Server";
 import { timer } from "rxjs";
+import { Article } from "../example/article.dto";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
@@ -17,7 +17,7 @@ describe("Options", function () {
         fs.unlinkSync(filename);
       } catch (e) {}
       await timer(100).toPromise();
-      const server = new Server<Article>({ port, filename, minify: true });
+      const server = new Server<Article>({ port, filename, minify: true, dtoClass: Article });
       await server.start();
       const article: Article = {
         name: "Tournevis",

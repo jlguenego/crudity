@@ -3,7 +3,7 @@ import { IsDefined, IsInt, IsNumber, IsString } from "class-validator";
 
 export class Article {
   @Expose()
-  id: string;
+  id?: string;
 
   @Expose()
   @IsDefined()
@@ -19,4 +19,7 @@ export class Article {
   @IsDefined()
   @IsInt()
   qty: number;
+
+  @Expose()
+  provider?: any;
 }

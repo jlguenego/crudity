@@ -47,7 +47,7 @@ export class Resource<T extends { id?: string }> {
         )
       )
       .subscribe((array) => {
-        console.log("array written");
+        // console.log("array written");
       });
   }
 

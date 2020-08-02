@@ -4,18 +4,27 @@ import { validate } from "class-validator";
 
 export function validateMiddleware<T>(dtoClass: new () => T) {
   return (req: Request, res: Response, next: NextFunction) => {
+    if (req.body instanceof Array) {
+      return next();
+    }
     (async () => {
       try {
-        const output: T = plainToClass<T, any>(dtoClass, req.body);
-        console.log("output: ", output);
-        const validationErrors = await validate(output, {
-            skipMissingProperties: true,
+        const output: T = plainToClass<T, any>(dtoClass, req.body, {
+          excludeExtraneousValues: true,
         });
-        console.log('validationErrors: ', validationErrors);
+        const validationErrors = await validate(output, {
+          skipMissingProperties: true,
+        });
         if (validationErrors.length > 0) {
           return res
             .status(400)
             .json(validationErrors.map((e) => e.constraints));
+        }
+        // delete empty keys
+        for (const key of Object.keys(output)) {
+          if (output[key] === undefined) {
+            delete output[key];
+          }
         }
         req.body = output;
         next();

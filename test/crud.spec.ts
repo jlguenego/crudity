@@ -5,7 +5,7 @@ import _ from "lodash";
 import fs from "fs";
 
 import { Server } from "../misc/Server";
-import { Article } from "../misc/Article";
+import { Article } from "../example/article.dto";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
@@ -13,12 +13,15 @@ try {
   fs.unlinkSync(filename);
 } catch (e) {}
 
-const server = new Server<Article>({ port, filename });
+const server = new Server<Article>({ port, filename, dtoClass: Article });
 
 describe("CRUD", function () {
   before(async () => {
     try {
       await server.start();
+      await fetch(`http://localhost:${port}/ws/articles`, {
+        method: "DELETE",
+      });
     } catch (e) {
       assert.fail(e);
     }
@@ -97,6 +100,8 @@ describe("CRUD", function () {
       const actualArticles = await response.json();
       assert.equal(response.status, 200);
       const expectedArticles = await server.getArray();
+      console.log("expectedArticles: ", expectedArticles);
+      console.log("actualArticles: ", actualArticles);
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
       assert.fail(e);
