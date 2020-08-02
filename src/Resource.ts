@@ -42,10 +42,12 @@ export class Resource<T extends { id?: string }> {
         skip(1), // first marble is skipped because it is read from the file.
         distinct(),
         debounceTime(opts.debounceTimeDelay),
-        switchMap((array) => from(fs.promises.writeFile(opts.filename, stringify(array))))
+        switchMap((array) =>
+          from(fs.promises.writeFile(opts.filename, stringify(array)))
+        )
       )
       .subscribe((array) => {
-        console.log('array written');
+        console.log("array written");
       });
   }
 
