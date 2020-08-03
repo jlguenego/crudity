@@ -13,32 +13,17 @@ try {
   fs.unlinkSync(filename);
 } catch (e) {}
 
-const server = new Server<Article>({
-  port,
-  filename,
-  dtoClass: Article,
-});
-
 describe("Retrieve", function () {
-  before(async () => {
-    try {
-      await server.start();
-      await server.reset();
-    } catch (e) {
-      assert.fail(e);
-    }
-  });
-
-  after(async () => {
-    try {
-      await server.stop();
-    } catch (e) {
-      assert.fail(e);
-    }
-  });
-
   it("should create article with error", async function () {
     try {
+      const server = new Server<Article>({
+        port,
+        filename,
+        dtoClass: Article,
+      });
+      await server.start();
+      await server.reset();
+
       const article = {};
       const response = await fetch(`http://localhost:${port}/ws/articles`, {
         method: "POST",
@@ -68,6 +53,31 @@ describe("Retrieve", function () {
         },
       ];
       assert(_.isEqual(expectedError, error));
+      await server.stop();
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should not validate", async function () {
+    try {
+      const server = new Server<Article>({
+        port,
+        filename,
+      });
+      await server.start();
+      await server.reset();
+
+      const article = {};
+      const response = await fetch(`http://localhost:${port}/ws/articles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(article),
+      });
+      assert.equal(response.status, 201);
+      const array = await server.getArray();
+      assert.equal(array.length, 1);
+      await server.stop();
     } catch (e) {
       assert.fail(e);
     }

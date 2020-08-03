@@ -25,13 +25,14 @@ export class Crudity<T extends Idable> {
       debounceTimeDelay: 2000,
       minify: false,
       pageSize: 20,
+      dtoClass: undefined,
       ...opts,
     };
     this.resource = new Resource<T>(this.options);
 
     const app = express.Router();
 
-    app.post("/", validateMiddleware<T>(opts.dtoClass), (req, res) => {
+    app.post("/", validateMiddleware<T>(opts), (req, res) => {
       if (req.body instanceof Array) {
         // bulk scenario
         const array: T[] = [];

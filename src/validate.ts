@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
+import { CrudityOptions } from "./CrudityOptions";
 
 export function removeEmptyKeys(o) {
   for (const key of Object.keys(o)) {
@@ -10,16 +11,19 @@ export function removeEmptyKeys(o) {
   }
 }
 
-export function validateMiddleware<T>(dtoClass: new () => T) {
+export function validateMiddleware<T>(options: CrudityOptions<T>) {
   return (req: Request, res: Response, next: NextFunction) => {
+    if (options.dtoClass === undefined) {
+      return next();
+    }
     (async () => {
       try {
         const output: T[] | T =
           req.body instanceof Array
-            ? plainToClass<T, Object[]>(dtoClass, req.body, {
+            ? plainToClass<T, Object[]>(options.dtoClass, req.body, {
                 excludeExtraneousValues: true,
               })
-            : plainToClass<T, any>(dtoClass, req.body, {
+            : plainToClass<T, any>(options.dtoClass, req.body, {
                 excludeExtraneousValues: true,
               });
 

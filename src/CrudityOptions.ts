@@ -3,5 +3,5 @@ export interface CrudityOptions<T> {
   minify?: boolean;
   debounceTimeDelay?: number;
   pageSize?: number;
-  dtoClass: new () => T;
+  dtoClass?: new () => T;
 }
