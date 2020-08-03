@@ -36,8 +36,8 @@ export function validateMiddleware<T>(dtoClass: new () => T) {
         req.body = output;
         return next();
       } catch (e) {
-        console.log("e: ", e);
-        res.status(500).end();
+        /* istanbul ignore next */
+        next(e);
       }
     })();
   };

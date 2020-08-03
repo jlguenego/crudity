@@ -1,0 +1,75 @@
+import fetch from "node-fetch";
+import { strict as assert } from "assert";
+import path from "path";
+import fs from "fs";
+import _ from "lodash";
+
+import { Server } from "../misc/Server";
+import { Article } from "../example/article.dto";
+
+const port = 3000;
+const filename = path.resolve(__dirname, "../data/test.json");
+try {
+  fs.unlinkSync(filename);
+} catch (e) {}
+
+const server = new Server<Article>({
+  port,
+  filename,
+  dtoClass: Article,
+});
+
+describe("Retrieve", function () {
+  before(async () => {
+    try {
+      await server.start();
+      await server.reset();
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  after(async () => {
+    try {
+      await server.stop();
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+
+  it("should create article with error", async function () {
+    try {
+      const article = {};
+      const response = await fetch(`http://localhost:${port}/ws/articles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(article),
+      });
+      assert.equal(response.status, 400);
+      const error = await response.json();
+      const expectedError = [
+        {
+          target: {},
+          property: "name",
+          children: [],
+          constraints: { isDefined: "name should not be null or undefined" },
+        },
+        {
+          target: {},
+          property: "price",
+          children: [],
+          constraints: { isDefined: "price should not be null or undefined" },
+        },
+        {
+          target: {},
+          property: "qty",
+          children: [],
+          constraints: { isDefined: "qty should not be null or undefined" },
+        },
+      ];
+      assert(_.isEqual(expectedError, error));
+    } catch (e) {
+      assert.fail(e);
+    }
+  });
+});
