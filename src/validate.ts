@@ -16,7 +16,7 @@ export function validateMiddleware<T>(dtoClass: new () => T) {
           if (validationErrors.length > 0) {
             return res
               .status(400)
-              .json(validationErrors.map((e) => e.constraints));
+              .json(validationErrors);
           }
           // delete empty keys
           output.forEach((o) => {
@@ -39,7 +39,7 @@ export function validateMiddleware<T>(dtoClass: new () => T) {
           if (validationErrors.length > 0) {
             return res
               .status(400)
-              .json(validationErrors.map((e) => e.constraints));
+              .json(validationErrors);
           }
           // delete empty keys
           for (const key of Object.keys(output)) {

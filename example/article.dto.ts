@@ -1,5 +1,7 @@
-import { Expose } from "class-transformer";
-import { IsDefined, IsInt, IsNumber, IsString } from "class-validator";
+import "reflect-metadata";
+import { Expose, Type } from "class-transformer";
+import { IsDefined, IsInt, IsNumber, IsString, ValidateNested } from "class-validator";
+import { Provider } from "./provider.dto";
 
 export class Article {
   @Expose()
@@ -20,6 +22,8 @@ export class Article {
   @IsInt()
   qty: number;
 
+  @ValidateNested()
   @Expose()
-  provider?: any;
+  @Type(() => Provider)
+  provider?: Provider;
 }
