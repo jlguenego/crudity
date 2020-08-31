@@ -2,8 +2,9 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "target": "ES2020",
     "module": "CommonJS",
+    "moduleResolution": "node",
     "sourceMap": true,
+    "noImplicitAny": true
   }
 }
