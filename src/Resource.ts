@@ -32,9 +32,9 @@ export class Resource<T extends { id?: string }> {
     this.map = values.reduce((acc, n) => {
       acc[n.id] = n;
       return acc;
-    }, {});
+    }, {} as { [key: string]: T });
 
-    const stringify = (o) =>
+    const stringify = (o: T[]) =>
       opts.minify ? JSON.stringify(o) : JSON.stringify(o, undefined, 2);
 
     this.array$

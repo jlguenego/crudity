@@ -3,7 +3,7 @@ import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { CrudityOptions } from "./CrudityOptions";
 
-export function removeEmptyKeys(o) {
+export function removeEmptyKeys(o: { [key: string]: any }) {
   for (const key of Object.keys(o)) {
     if (o[key] === undefined) {
       delete o[key];
