@@ -12,7 +12,7 @@ interface ServerOptions<T> extends CrudityOptions<T> {
 }
 
 export class Server<T> {
-  options = {
+  options: ServerOptions<T> = {
     port: 3000,
     minify: false,
     filename: path.resolve(__dirname, "../data/test.json"),

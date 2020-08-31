@@ -21,8 +21,8 @@ const server = new Server<Article>({
   dtoClass: Article,
 });
 
-const getArticles = (nbr): Article[] =>
-  new Array(100)
+const getArticles = (nbr: number): Article[] =>
+  new Array(nbr)
     .fill(0)
     .map(
       (n, i) =>

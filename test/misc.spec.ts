@@ -15,7 +15,7 @@ describe("MISC", function () {
     assert(_.isEqual(obj, { toto: 123, titi: ["qwer"] }));
     const o2 = {};
     removeDeepValue(o2, ["titi", "1", "tutu"]);
-    const o3 = undefined;
+    const o3: any = undefined;
     removeDeepValue(o3, ["titi", "1", "tutu"]);
     assert(_.isEqual(o3, undefined));
   });

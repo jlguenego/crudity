@@ -36,7 +36,7 @@ describe("Validation", function () {
         {
           target: {},
           property: "name",
-          children: [],
+          children: [] as any[],
           constraints: { isDefined: "name should not be null or undefined" },
         },
         {

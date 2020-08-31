@@ -36,20 +36,21 @@ describe("CRUD", function () {
   });
 
   it("should add four", async function () {
+    async function add() {
+      const article: Article = {
+        name: "Tournevis",
+        price: 2.99,
+        qty: 100,
+      };
+      const response = await fetch(`http://localhost:${port}/ws/articles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(article),
+      });
+      assert.equal(response.status, 201);
+    }
+
     try {
-      async function add() {
-        const article: Article = {
-          name: "Tournevis",
-          price: 2.99,
-          qty: 100,
-        };
-        const response = await fetch(`http://localhost:${port}/ws/articles`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(article),
-        });
-        assert.equal(response.status, 201);
-      }
       await add();
       await add();
       await add();
