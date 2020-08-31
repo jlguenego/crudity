@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/jlguenego/crudity/compare/v1.2.1...v1.2.2) (2020-08-31)
+
+
+### Bug Fixes
+
+* lodash ([df0d43a](https://github.com/jlguenego/crudity/commit/df0d43aeb4800db1d1ff0b8ee729cf5bfafc12a3))
+
 ### [1.2.1](https://github.com/jlguenego/crudity/compare/v1.2.0...v1.2.1) (2020-08-31)
 
 ## [1.2.0](https://github.com/jlguenego/crudity/compare/v1.1.0...v1.2.0) (2020-08-03)
