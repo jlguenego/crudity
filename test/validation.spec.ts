@@ -13,7 +13,7 @@ try {
   fs.unlinkSync(filename);
 } catch (e) {}
 
-describe("Retrieve", function () {
+describe("Validation", function () {
   it("should create article with error", async function () {
     try {
       const server = new Server<Article>({
