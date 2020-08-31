@@ -5,8 +5,7 @@ import path from "path";
 import http from "http";
 import { strict as assert } from "assert";
 
-import { Crudity } from "..";
-import { CrudityOptions } from "../src/CrudityOptions";
+import { Crudity, CrudityOptions } from "../src";
 
 interface ServerOptions<T> extends CrudityOptions<T> {
   port?: number;
@@ -18,7 +17,7 @@ export class Server<T> {
     minify: false,
     filename: path.resolve(__dirname, "../data/test.json"),
     debounceTimeDelay: 0,
-    dtoClass: undefined
+    dtoClass: undefined,
   };
   server: http.Server;
   app: express.Express;
@@ -78,11 +77,14 @@ export class Server<T> {
   }
 
   async add(t: T | T[]) {
-    const response = await fetch(`http://localhost:${this.options.port}/ws/articles`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(t),
-    });
+    const response = await fetch(
+      `http://localhost:${this.options.port}/ws/articles`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(t),
+      }
+    );
     assert.equal(response.status, 201);
   }
 }

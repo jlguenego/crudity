@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -p .",
     "start": "nodemon example/server.ts",
     "test": "nyc --reporter=html mocha",
     "release": "standard-version"

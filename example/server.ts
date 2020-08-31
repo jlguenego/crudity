@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { Crudity } from "..";
+import { Crudity } from "../src";
 import { Article } from "./article.dto";
 
 const app = express();

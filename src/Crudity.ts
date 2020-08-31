@@ -1,9 +1,9 @@
 import express, { Router } from "express";
-import { Resource } from "./src/Resource";
-import { CrudityOptions } from "./src/CrudityOptions";
-import { getPageSlice, orderBy, filter, select, unselect } from "./src/misc";
-import { CrudityQueryString } from "./src/CrudityQueryString";
-import { validateMiddleware } from "./src/validate";
+import { Resource } from "./Resource";
+import { CrudityOptions } from "./CrudityOptions";
+import { getPageSlice, orderBy, filter, select, unselect } from "./misc";
+import { CrudityQueryString } from "./CrudityQueryString";
+import { validateMiddleware } from "./validate";
 
 export interface Idable {
   id?: string;
