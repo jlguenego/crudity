@@ -1,10 +1,11 @@
 {
   "name": "crudity",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p src",
+    "build:w": "tsc -p src -w",
     "start": "nodemon example/server.ts",
     "test": "nyc --reporter=html mocha",
     "release": "standard-version"
