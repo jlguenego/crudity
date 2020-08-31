@@ -9,11 +9,14 @@ import { Article } from "../example/article.dto";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
-try {
-  fs.unlinkSync(filename);
-} catch (e) {}
 
 describe("Validation", function () {
+  before(function () {
+    try {
+      fs.unlinkSync(filename);
+    } catch (e) {}
+  });
+
   it("should create article with error", async function () {
     try {
       const server = new Server<Article>({
