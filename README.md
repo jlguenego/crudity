@@ -26,10 +26,12 @@ interface Article {
 
 const app = express();
 const filename = path.resolve(__dirname, "../data/test.json");
-const articleRouter = new Crudity<Article>({ filename }).router;
 
 app.use(express.json());
-app.use("/ws/articles", articleRouter);
+app.use(
+  "/ws/articles",
+  crudity<Article>({ filename })
+);
 
 app.listen(3000, () => console.log("Server started on port 3000"));
 ```
@@ -42,7 +44,7 @@ The middleware `crudity(options: CrudityOptions)` has following options:
 - `minify`: Minify the JSON before storing. `false` by default.
 - `debounceTimeDelay`: Do not write in the file less than this delay. `2000` by default.
 - `pageSize`: default page size for _retrieve all_ requests. `20` by default.
-- `dtoClass`: optional. If provided, validate the request body with the DTO class. 
+- `dtoClass`: optional. If provided, validate the request body with the DTO class.
 
 ## Play
 
