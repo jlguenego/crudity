@@ -5,7 +5,7 @@ import path from "path";
 import http from "http";
 import { strict as assert } from "assert";
 
-import { Crudity, CrudityOptions } from "../src";
+import { crudity, CrudityOptions, CrudityRouter } from "../src";
 
 interface ServerOptions<T> extends CrudityOptions<T> {
   port?: number;
@@ -14,24 +14,24 @@ interface ServerOptions<T> extends CrudityOptions<T> {
 export class Server<T> {
   options: ServerOptions<T> = {
     port: 3000,
-    minify: false,
-    filename: path.resolve(__dirname, "../data/test.json"),
-    debounceTimeDelay: 0,
-    dtoClass: undefined,
+    resource: {
+      type: "json",
+      filename: path.resolve(__dirname, "../data/test.json"),
+      minify: false,
+      debounceTimeDelay: 0,
+    },
   };
   server: http.Server;
   app: express.Express;
-  crudity: Crudity<T>;
+  articleRouter: CrudityRouter<T>;
   constructor(options: ServerOptions<T>) {
     Object.assign(this.options, options);
     const app = express();
     const www = ".";
 
     app.use(express.json());
-
-    this.crudity = new Crudity<T>(this.options);
-
-    app.use("/ws/articles", this.crudity.router);
+    this.articleRouter = crudity<T>(this.options);
+    app.use("/ws/articles", this.articleRouter);
 
     app.use(express.static(www));
     app.use(serveIndex(www, { icons: true }));
@@ -66,17 +66,17 @@ export class Server<T> {
     });
   }
 
-  async getArray(): Promise<T[]> {
-    return this.crudity.resource.array$.value;
+  getArray(): Promise<T[]> {
+    return Promise.resolve(this.articleRouter.resource.get({}, 10000) as T[]);
   }
 
-  async reset() {
+  async reset(): Promise<void> {
     await fetch(`http://localhost:${this.options.port}/ws/articles`, {
       method: "DELETE",
     });
   }
 
-  async add(t: T | T[]) {
+  async add(t: T | T[]): Promise<void> {
     const response = await fetch(
       `http://localhost:${this.options.port}/ws/articles`,
       {

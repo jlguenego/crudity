@@ -1,3 +1,10 @@
+import express from "express";
+import { Resource } from "./resource/Resource";
+
+export interface CrudityRouter<T> extends express.IRouter {
+  resource?: Resource<T>;
+}
+
 export interface Idable {
   id?: string;
 }

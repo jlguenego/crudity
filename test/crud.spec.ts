@@ -1,19 +1,13 @@
 import fetch from "node-fetch";
 import { strict as assert } from "assert";
-import path from "path";
 import _ from "lodash";
-import fs from "fs";
 
 import { Server } from "../misc/Server";
 import { Article } from "../example/article.dto";
 
 const port = 3000;
-const filename = path.resolve(__dirname, "../data/test.json");
-try {
-  fs.unlinkSync(filename);
-} catch (e) {}
 
-const server = new Server<Article>({ port, filename, dtoClass: Article });
+const server = new Server<Article>({ port, dtoClass: Article });
 
 describe("CRUD", function () {
   before(async () => {

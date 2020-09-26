@@ -5,13 +5,16 @@ import {
   CrudityOptions,
   CrudityJsonOptions,
   CrudityQueryString,
+  CrudityRouter,
 } from "./interface";
 import { JsonResource } from "./resource/JsonResource";
 import { validateMiddleware } from "./validate";
 import { Resource } from "./resource/Resource";
 import { checkQueryString } from "./querystring";
 
-export function crudity<T extends Idable>(opts: CrudityOptions<T>) {
+export function crudity<T extends Idable>(
+  opts: CrudityOptions<T>
+): CrudityRouter<T> {
   const options: CrudityOptions<T> = {
     resource: {
       type: "json",
@@ -25,8 +28,7 @@ export function crudity<T extends Idable>(opts: CrudityOptions<T>) {
   const resource: Resource<T> = new JsonResource<T>(
     options.resource as CrudityJsonOptions
   );
-
-  const app = express.Router();
+  const app: CrudityRouter<T> = express.Router();
 
   app.post("/", validateMiddleware<T>(opts), (req, res) => {
     if (req.body instanceof Array) {
@@ -99,6 +101,8 @@ export function crudity<T extends Idable>(opts: CrudityOptions<T>) {
     resource.remove([id]);
     return res.status(204).end();
   });
+
+  app.resource = resource;
 
   return app;
 }
