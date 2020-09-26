@@ -20,7 +20,7 @@ export function crudity<T extends Idable>(
       type: "json",
       debounceTimeDelay: 2000,
       minify: false,
-    },
+    } as CrudityJsonOptions,
     pageSize: 20,
     dtoClass: undefined,
     ...opts,
@@ -28,7 +28,7 @@ export function crudity<T extends Idable>(
   const resource: Resource<T> = new JsonResource<T>(
     options.resource as CrudityJsonOptions
   );
-  const app: CrudityRouter<T> = express.Router();
+  const app = express.Router();
 
   app.post("/", validateMiddleware<T>(opts), (req, res) => {
     if (req.body instanceof Array) {
@@ -102,7 +102,6 @@ export function crudity<T extends Idable>(
     return res.status(204).end();
   });
 
-  app.resource = resource;
-
-  return app;
+  (app as CrudityRouter<T>).resource = resource;
+  return app as CrudityRouter<T>;
 }

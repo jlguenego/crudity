@@ -14,7 +14,7 @@ try {
 } catch (e) {}
 
 const pageSize = 20;
-const server = new Server<Article>({
+const server = new Server({
   port,
   pageSize,
   dtoClass: Article,

@@ -5,10 +5,10 @@ export class Provider {
   @Expose()
   @IsDefined()
   @IsString()
-  name: string;
+  name!: string;
 
   @Expose()
   @IsDefined()
   @IsString()
-  zipcode: string;
+  zipcode!: string;
 }

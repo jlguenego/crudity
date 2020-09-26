@@ -3,20 +3,23 @@ import { BehaviorSubject, from } from "rxjs";
 import { debounceTime, switchMap, distinct, skip } from "rxjs/operators";
 import fs from "fs";
 
-import { CrudityJsonOptions, CrudityQueryString } from "../interface";
+import { CrudityJsonOptions, CrudityQueryString, Idable } from "../interface";
 import { Resource } from "./Resource";
 import { filter, getPageSlice, orderBy, select, unselect } from "../misc";
 
-export class JsonResource<T extends { id?: string }> extends Resource<T> {
+export class JsonResource<T extends Idable> extends Resource<T> {
   array$ = new BehaviorSubject<T[]>([]);
   map: { [id: string]: T } = {};
 
   private nextId = 1;
 
-  constructor(options: CrudityJsonOptions) {
+  constructor(options: Partial<CrudityJsonOptions>) {
     super();
-    const opts = {
+    const opts: CrudityJsonOptions = {
+      type: "json",
       filename: path.resolve(__dirname, "../../data/test.json"),
+      debounceTimeDelay: 2000,
+      minify: false,
       ...options,
     };
     function getValues(): T[] {
@@ -104,8 +107,11 @@ export class JsonResource<T extends { id?: string }> extends Resource<T> {
     const array = orderBy<T>(filteredArray, query.orderBy);
 
     // pagination
-    const pageSize = isNaN(+query.pageSize) ? defaultPageSize : +query.pageSize;
-    const page = isNaN(+query.page) ? 1 : +query.page;
+    const pageSize =
+      !query.pageSize || isNaN(+query.pageSize)
+        ? defaultPageSize
+        : +query.pageSize;
+    const page = !query.page || isNaN(+query.page) ? 1 : +query.page;
     const { start, end } = getPageSlice(pageSize, page);
     const pagedArray = array.slice(start, end);
 

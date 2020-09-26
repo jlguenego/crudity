@@ -16,14 +16,15 @@ export function validateMiddleware<T>(options: CrudityOptions<T>) {
     if (options.dtoClass === undefined) {
       return next();
     }
+    const dtoClass = options.dtoClass;
     (async () => {
       try {
         const output: T[] | T =
           req.body instanceof Array
-            ? plainToClass<T, Object[]>(options.dtoClass, req.body, {
+            ? plainToClass<T, Object[]>(dtoClass, req.body, {
                 excludeExtraneousValues: true,
               })
-            : plainToClass<T, any>(options.dtoClass, req.body, {
+            : plainToClass<T, any>(dtoClass, req.body, {
                 excludeExtraneousValues: true,
               });
 

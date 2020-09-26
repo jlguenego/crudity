@@ -8,7 +8,7 @@ export abstract class Resource<T> {
   abstract removeAll(): void;
   abstract get(
     query: CrudityQueryString,
-    defaultPageSize: number
+    defaultPageSize?: number
   ): Partial<T>[];
   abstract getOne(id: string): T;
 }

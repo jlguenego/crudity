@@ -5,22 +5,22 @@ import { Provider } from "./provider.dto";
 
 export class Article {
   @Expose()
-  id?: string;
+  id!: string;
 
   @Expose()
   @IsDefined()
   @IsString()
-  name: string;
+  name!: string;
 
   @Expose()
   @IsDefined()
   @IsNumber()
-  price: number;
+  price!: number;
 
   @Expose()
   @IsDefined()
   @IsInt()
-  qty: number;
+  qty!: number;
 
   @ValidateNested()
   @Expose()

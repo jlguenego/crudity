@@ -7,7 +7,7 @@ export function getPageSlice(pageSize: number, page: number) {
   return { start, end };
 }
 
-export function orderBy<T>(array: T[], orderBySpec: string): T[] {
+export function orderBy<T>(array: T[], orderBySpec?: string): T[] {
   if (!orderBySpec) {
     return array;
   }
@@ -20,7 +20,7 @@ export function orderBy<T>(array: T[], orderBySpec: string): T[] {
 
 const REGEXP = /^\/(.*)\/(i?)$/;
 
-export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
+export function filter<T>(array: T[], filterSpec?: CrudityFilterObject): T[] {
   if (!filterSpec) {
     return array;
   }
@@ -59,12 +59,11 @@ export function filter<T>(array: T[], filterSpec: CrudityFilterObject): T[] {
   );
 }
 
-export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
-  const spec = selectSpec ?? "*";
-  if (spec === "*") {
+export function select<T>(array: T[], selectSpec?: string): Partial<T>[] {
+  if (!selectSpec || selectSpec === "*") {
     return array;
   }
-  const keys: (keyof T)[] = spec.split(",") as (keyof T)[];
+  const keys: (keyof T)[] = selectSpec.split(",") as (keyof T)[];
   return array.map((t) => {
     const newT: Partial<T> = {};
     for (const key of keys) {
@@ -78,7 +77,7 @@ export function select<T>(array: T[], selectSpec: string): Partial<T>[] {
 
 export function unselect<T>(
   array: Partial<T>[],
-  unselectSpec: string
+  unselectSpec?: string
 ): Partial<T>[] {
   const spec = unselectSpec ?? "";
   if (spec === "") {

@@ -10,7 +10,7 @@ const port = 3000;
 describe("Validation", function () {
   it("should create article with error", async function () {
     try {
-      const server = new Server<Article>({
+      const server = new Server({
         port,
         dtoClass: Article,
       });
@@ -54,7 +54,7 @@ describe("Validation", function () {
 
   it("should not validate", async function () {
     try {
-      const server = new Server<Article>({
+      const server = new Server({
         port,
       });
       await server.start();

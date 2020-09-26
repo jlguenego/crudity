@@ -7,7 +7,7 @@ import { Article } from "../example/article.dto";
 
 const port = 3000;
 
-const server = new Server<Article>({ port, dtoClass: Article });
+const server = new Server({ port, dtoClass: Article });
 
 describe("CRUD", function () {
   before(async () => {
@@ -31,7 +31,7 @@ describe("CRUD", function () {
 
   it("should add four", async function () {
     async function add() {
-      const article: Article = {
+      const article: Partial<Article> = {
         name: "Tournevis",
         price: 2.99,
         qty: 100,
@@ -58,7 +58,7 @@ describe("CRUD", function () {
 
   it("should add three in bulk", async function () {
     try {
-      const newArticles: Article[] = [
+      const newArticles: Partial<Article>[] = [
         {
           name: "Saw",
           price: 2.99,
@@ -130,7 +130,7 @@ describe("CRUD", function () {
   it("should rewrite one", async function () {
     try {
       const articles = await server.getArray();
-      const article = { ...articles[0] };
+      const article: Partial<Article> = { ...articles[0] };
       const id = article.id;
       delete article.id;
       article.name = "Rewrited stuff";

@@ -6,13 +6,14 @@ import http from "http";
 import assert from "assert";
 
 import { crudity, CrudityOptions, CrudityRouter } from "../src";
+import { Article } from "../example/article.dto";
 
-interface ServerOptions<T> extends CrudityOptions<T> {
+interface ServerOptions extends CrudityOptions<Article> {
   port?: number;
 }
 
-export class Server<T> {
-  options: ServerOptions<T> = {
+export class Server {
+  options: ServerOptions = {
     port: 3000,
     resource: {
       type: "json",
@@ -21,16 +22,16 @@ export class Server<T> {
       debounceTimeDelay: 0,
     },
   };
-  server: http.Server;
+  server!: http.Server;
   app: express.Express;
-  articleRouter: CrudityRouter<T>;
-  constructor(options: ServerOptions<T>) {
+  articleRouter: CrudityRouter<Article>;
+  constructor(options: ServerOptions) {
     Object.assign(this.options, options);
     const app = express();
     const www = ".";
 
     app.use(express.json());
-    this.articleRouter = crudity<T>(this.options);
+    this.articleRouter = crudity<Article>(this.options);
     app.use("/ws/articles", this.articleRouter);
 
     app.use(express.static(www));
@@ -66,8 +67,10 @@ export class Server<T> {
     });
   }
 
-  getArray(): Promise<T[]> {
-    return Promise.resolve(this.articleRouter.resource.get({}, 10000) as T[]);
+  getArray(): Promise<Article[]> {
+    return Promise.resolve(
+      this.articleRouter?.resource?.get({}, 10000) as Article[]
+    );
   }
 
   async reset(): Promise<void> {
@@ -76,7 +79,7 @@ export class Server<T> {
     });
   }
 
-  async add(t: T | T[]): Promise<void> {
+  async add(t: Article | Article[]): Promise<void> {
     const response = await fetch(
       `http://localhost:${this.options.port}/ws/articles`,
       {

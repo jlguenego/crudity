@@ -2,18 +2,18 @@ import express from "express";
 import { Resource } from "./resource/Resource";
 
 export interface CrudityRouter<T> extends express.IRouter {
-  resource?: Resource<T>;
+  resource: Resource<T>;
 }
 
 export interface Idable {
-  id?: string;
+  id: string;
 }
 
 export interface CrudityJsonOptions {
   type: "json";
-  filename?: string;
-  minify?: boolean;
-  debounceTimeDelay?: number;
+  filename: string;
+  minify: boolean;
+  debounceTimeDelay: number;
 }
 
 export interface CrudityMongoDBOptions {
