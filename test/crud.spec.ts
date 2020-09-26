@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { strict as assert } from "assert";
+import assert from "assert";
 import _ from "lodash";
 
 import { Server } from "../misc/Server";
@@ -41,7 +41,7 @@ describe("CRUD", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(article),
       });
-      assert.equal(response.status, 201);
+      assert.strictEqual(response.status, 201);
     }
 
     try {
@@ -50,7 +50,7 @@ describe("CRUD", function () {
       await add();
       await add();
       const articles = await server.getArray();
-      assert.equal(articles.length, 4);
+      assert.strictEqual(articles.length, 4);
     } catch (e) {
       assert.fail(e);
     }
@@ -80,10 +80,10 @@ describe("CRUD", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newArticles),
       });
-      assert.equal(response.status, 201);
+      assert.strictEqual(response.status, 201);
 
       const articles = await server.getArray();
-      assert.equal(articles.length, 7);
+      assert.strictEqual(articles.length, 7);
     } catch (e) {
       assert.fail(e);
     }
@@ -93,7 +93,7 @@ describe("CRUD", function () {
     try {
       const response = await fetch(`http://localhost:${port}/ws/articles`);
       const actualArticles = await response.json();
-      assert.equal(response.status, 200);
+      assert.strictEqual(response.status, 200);
       const expectedArticles = await server.getArray();
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -108,9 +108,9 @@ describe("CRUD", function () {
       const response = await fetch(
         `http://localhost:${port}/ws/articles/${id}`
       );
-      assert.equal(response.status, 200);
+      assert.strictEqual(response.status, 200);
       const article = await response.json();
-      assert.equal(article.id, id);
+      assert.strictEqual(article.id, id);
     } catch (e) {
       assert.fail(e);
     }
@@ -121,7 +121,7 @@ describe("CRUD", function () {
       const response = await fetch(
         `http://localhost:${port}/ws/articles/not-exist`
       );
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     } catch (e) {
       assert.fail(e);
     }
@@ -142,7 +142,7 @@ describe("CRUD", function () {
           body: JSON.stringify(article),
         }
       );
-      assert.equal(response.status, 200);
+      assert.strictEqual(response.status, 200);
       article.id = id;
       const rewroteArticle = await response.json();
       assert(_.isEqual(rewroteArticle, article));
@@ -161,7 +161,7 @@ describe("CRUD", function () {
           body: JSON.stringify({}),
         }
       );
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     } catch (e) {
       assert.fail(e);
     }
@@ -180,7 +180,7 @@ describe("CRUD", function () {
           body: JSON.stringify(diff),
         }
       );
-      assert.equal(response.status, 200);
+      assert.strictEqual(response.status, 200);
       const patchedArticle = await response.json();
       assert(_.isEqual(patchedArticle, { ...articles[0], ...diff }));
     } catch (e) {
@@ -198,7 +198,7 @@ describe("CRUD", function () {
           body: JSON.stringify({}),
         }
       );
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     } catch (e) {
       assert.fail(e);
     }
@@ -212,7 +212,7 @@ describe("CRUD", function () {
         `http://localhost:${port}/ws/articles/${id}`,
         { method: "DELETE" }
       );
-      assert.equal(response.status, 204);
+      assert.strictEqual(response.status, 204);
       const articlesAfter = await server.getArray();
       articles.shift();
       assert(_.isEqual(articlesAfter, articles));
@@ -230,7 +230,7 @@ describe("CRUD", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify([id]),
       });
-      assert.equal(response.status, 204);
+      assert.strictEqual(response.status, 204);
       const articlesAfter = await server.getArray();
       articles.shift();
       assert(_.isEqual(articlesAfter, articles));
@@ -244,9 +244,9 @@ describe("CRUD", function () {
       const response = await fetch(`http://localhost:${port}/ws/articles`, {
         method: "DELETE",
       });
-      assert.equal(response.status, 204);
+      assert.strictEqual(response.status, 204);
       const articles = await server.getArray();
-      assert.equal(articles.length, 0);
+      assert.strictEqual(articles.length, 0);
     } catch (e) {
       assert.fail(e);
     }

@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { strict as assert } from "assert";
+import assert from "assert";
 import _ from "lodash";
 
 import { Server } from "../misc/Server";
@@ -23,7 +23,7 @@ describe("Validation", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(article),
       });
-      assert.equal(response.status, 400);
+      assert.strictEqual(response.status, 400);
       const error = await response.json();
       const expectedError = [
         {
@@ -66,9 +66,9 @@ describe("Validation", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(article),
       });
-      assert.equal(response.status, 201);
+      assert.strictEqual(response.status, 201);
       const array = await server.getArray();
-      assert.equal(array.length, 1);
+      assert.strictEqual(array.length, 1);
       await server.stop();
     } catch (e) {
       assert.fail(e);

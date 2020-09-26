@@ -1,12 +1,12 @@
 import { getDeepValue, removeDeepValue, removeKeys } from "../src/misc";
-import { strict as assert } from "assert";
+import assert from "assert";
 import _ from "lodash";
 
 describe("MISC", function () {
   it("should get deep value", async function () {
     const obj = { toto: 123, titi: ["qwer", { tutu: 345 }] };
     const result = getDeepValue(obj, ["titi", "1", "tutu"]);
-    assert.equal(result, 345);
+    assert.strictEqual(result, 345);
   });
 
   it("should remove deep value", async function () {
@@ -33,7 +33,7 @@ describe("MISC", function () {
       assert.fail("should not reach this");
     } catch (e) {
       assert(e instanceof Error);
-      assert.equal(e.message, "key must be an index number: aaa");
+      assert.strictEqual(e.message, "key must be an index number: aaa");
     }
   });
 

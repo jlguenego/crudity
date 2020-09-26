@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { strict as assert } from "assert";
+import assert from "assert";
 import path from "path";
 import fs from "fs";
 import _ from "lodash";
@@ -20,7 +20,7 @@ const server = new Server<Article>({
   dtoClass: Article,
 });
 
-const getArticles = (nbr: number): Article[] =>
+const generateArticles = (nbr: number): Article[] =>
   new Array(nbr)
     .fill(0)
     .map(
@@ -46,7 +46,7 @@ describe("Retrieve", function () {
     try {
       await server.start();
       await server.reset();
-      await server.add(getArticles(100));
+      await server.add(generateArticles(100));
     } catch (e) {
       assert.fail(e);
     }
@@ -66,8 +66,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?page=2`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, pageSize);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, pageSize);
     } catch (e) {
       assert.fail(e);
     }
@@ -79,8 +79,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?page=3&pageSize=4`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 4);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 4);
       const expectedArticles = [
         { name: "Screwdriver 8", price: 0.05, qty: 32, id: "8" },
         { name: "Screwdriver 9", price: 0.8, qty: 36, id: "9" },
@@ -105,8 +105,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?orderBy=-price,name&pageSize=4`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 4);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 4);
       const expectedArticles = [
         { name: "Screwdriver 26", price: 0.8, qty: 104, id: "26" },
         { name: "Screwdriver 43", price: 0.8, qty: 172, id: "43" },
@@ -130,8 +130,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?filter[name]=Screwdriver 22`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 1);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [
         { name: "Screwdriver 22", price: 0.35, qty: 88, id: "22" },
       ];
@@ -147,8 +147,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?filter[name]=/ 33/`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 1);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [
         { name: "Screwdriver 33", price: 0.1, qty: 132, id: "33" },
       ];
@@ -164,8 +164,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?filter[name]=/SCREW.*24/i`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 1);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [
         { name: "Screwdriver 24", price: 0.15, qty: 96, id: "24" },
       ];
@@ -181,8 +181,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?filter[provider][name]=/ERY 5/i`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 3);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 3);
       const expectedArticles = [
         {
           name: "Screwdriver 5",
@@ -217,7 +217,7 @@ describe("Retrieve", function () {
       const response = await fetch(
         `http://localhost:${port}/ws/articles?filter=toto`
       );
-      assert.equal(response.status, 400);
+      assert.strictEqual(response.status, 400);
     } catch (e) {
       assert.fail(e);
     }
@@ -229,8 +229,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?filter[name]=/33/&select=name,price,toto`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 1);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [{ name: "Screwdriver 33", price: 0.1 }];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -244,8 +244,8 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?pageSize=2&unselect=qty,toto,provider`
       );
       const actualArticles: Article[] = await response.json();
-      assert.equal(response.status, 200);
-      assert.equal(actualArticles.length, 2);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(actualArticles.length, 2);
       const expectedArticles = [
         { name: "Screwdriver 0", price: 0, id: "0" },
         { name: "Screwdriver 1", price: 0.75, id: "1" },

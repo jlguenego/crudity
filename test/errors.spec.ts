@@ -1,4 +1,4 @@
-import { strict as assert } from "assert";
+import assert from "assert";
 import path from "path";
 import fs from "fs";
 
@@ -26,7 +26,7 @@ describe("Error Management", function () {
         assert.fail("server2 should not start");
       } catch (e) {
         assert(e instanceof Error);
-        assert.equal(
+        assert.strictEqual(
           e.message,
           `listen EADDRINUSE: address already in use :::${port}`
         );
@@ -56,7 +56,7 @@ describe("Error Management", function () {
       assert.fail("you should not go here");
     } catch (error) {
       assert(error instanceof Error);
-      assert.equal(
+      assert.strictEqual(
         (error as NodeJS.ErrnoException).code,
         "ERR_SERVER_NOT_RUNNING"
       );

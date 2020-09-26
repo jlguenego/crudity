@@ -3,7 +3,7 @@ import serveIndex from "serve-index";
 import fetch from "node-fetch";
 import path from "path";
 import http from "http";
-import { strict as assert } from "assert";
+import assert from "assert";
 
 import { crudity, CrudityOptions, CrudityRouter } from "../src";
 
@@ -85,6 +85,6 @@ export class Server<T> {
         body: JSON.stringify(t),
       }
     );
-    assert.equal(response.status, 201);
+    assert.strictEqual(response.status, 201);
   }
 }
