@@ -16,7 +16,6 @@ try {
 const pageSize = 20;
 const server = new Server<Article>({
   port,
-  filename,
   pageSize,
   dtoClass: Article,
 });

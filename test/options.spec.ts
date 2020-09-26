@@ -1,4 +1,4 @@
-import { strict as assert } from "assert";
+import assert from "assert";
 import fetch from "node-fetch";
 import path from "path";
 import fs from "fs";
@@ -17,7 +17,11 @@ describe("Options", function () {
         fs.unlinkSync(filename);
       } catch (e) {}
       await timer(100).toPromise();
-      const server = new Server<Article>({ port, filename, minify: true, dtoClass: Article });
+      const server = new Server<Article>({
+        port,
+        resource: { type: "json", minify: true },
+        dtoClass: Article,
+      });
       await server.start();
       const article: Article = {
         name: "Tournevis",
@@ -29,11 +33,11 @@ describe("Options", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(article),
       });
-      assert.equal(response.status, 201);
+      assert.strictEqual(response.status, 201);
       await server.stop();
       await timer(100).toPromise();
       const str = fs.readFileSync(filename, { encoding: "utf8" });
-      assert.equal(
+      assert.strictEqual(
         str,
         `[{"name":"Tournevis","price":2.99,"qty":100,"id":"0"}]`
       );

@@ -1,11 +1,7 @@
-import { strict as assert } from "assert";
-import path from "path";
+import assert from "assert";
 
-import { Resource } from "../src/Resource";
 import { Article } from "../example/article.dto";
-
-const port = 3000;
-const filename = path.resolve(__dirname, "../data/test.json");
+import { JsonResource } from "../src/resource/JsonResource";
 
 describe("Resource", function () {
   it("should not rewrite because no id", async function () {
@@ -15,12 +11,12 @@ describe("Resource", function () {
         price: 2.99,
         qty: 100,
       };
-      const resource = new Resource<Article>({ filename, dtoClass: Article });
+      const resource = new JsonResource<Article>({ type: "json" });
       resource.rewrite(article);
       assert.fail("should not reach this");
     } catch (e) {
       assert(e instanceof Error);
-      assert.equal(e.message, "no id");
+      assert.strictEqual(e.message, "no id");
     }
   });
 });

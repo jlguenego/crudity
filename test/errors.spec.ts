@@ -9,16 +9,6 @@ import { Article } from "../example/article.dto";
 const port = 3000;
 
 describe("Error Management", function () {
-  it("should says that filename is not set", async function () {
-    try {
-      const server = new Server<Article>({ dtoClass: Article });
-      await server.start();
-      assert.fail("server should not start");
-    } catch (e) {
-      assert(e instanceof Error);
-      assert.equal(e.message, "CrudityOptions.filename is not set.");
-    }
-  });
 
   it("should throw an error if server is started on same port", async function () {
     try {

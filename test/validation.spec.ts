@@ -1,27 +1,17 @@
 import fetch from "node-fetch";
 import { strict as assert } from "assert";
-import path from "path";
-import fs from "fs";
 import _ from "lodash";
 
 import { Server } from "../misc/Server";
 import { Article } from "../example/article.dto";
 
 const port = 3000;
-const filename = path.resolve(__dirname, "../data/test.json");
 
 describe("Validation", function () {
-  before(function () {
-    try {
-      fs.unlinkSync(filename);
-    } catch (e) {}
-  });
-
   it("should create article with error", async function () {
     try {
       const server = new Server<Article>({
         port,
-        filename,
         dtoClass: Article,
       });
       await server.start();
@@ -66,7 +56,6 @@ describe("Validation", function () {
     try {
       const server = new Server<Article>({
         port,
-        filename,
       });
       await server.start();
       await server.reset();
