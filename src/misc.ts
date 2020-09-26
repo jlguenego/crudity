@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { CrudityFilterObject } from "./CrudityFilter";
+import { CrudityFilterObject } from "./interface";
 
 export function getPageSlice(pageSize: number, page: number) {
   const start = (page - 1) * pageSize;

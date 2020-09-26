@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
-import { CrudityOptions } from "./CrudityOptions";
+import { CrudityOptions } from "./interface";
 
 function removeEmptyKeys(o: { [key: string]: any }) {
   for (const key of Object.keys(o)) {

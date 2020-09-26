@@ -1,15 +1,24 @@
+import path from "path";
 import { BehaviorSubject, from } from "rxjs";
 import { debounceTime, switchMap, distinct, skip } from "rxjs/operators";
-import { CrudityOptions } from "./CrudityOptions";
 import fs from "fs";
 
-export class Resource<T extends { id?: string }> {
+import { CrudityJsonOptions, CrudityQueryString } from "../interface";
+import { Resource } from "./Resource";
+import { filter, getPageSlice, orderBy, select, unselect } from "../misc";
+
+export class JsonResource<T extends { id?: string }> extends Resource<T> {
   array$ = new BehaviorSubject<T[]>([]);
-  map: { [key: string]: T } = {};
+  map: { [id: string]: T } = {};
 
   private nextId = 1;
 
-  constructor(opts: CrudityOptions<T>) {
+  constructor(options: CrudityJsonOptions) {
+    super();
+    const opts = {
+      filename: path.resolve(__dirname, "../../data/test.json"),
+      ...options,
+    };
     function getValues(): T[] {
       if (!opts.filename) {
         throw new Error("CrudityOptions.filename is not set.");
@@ -69,21 +78,47 @@ export class Resource<T extends { id?: string }> {
     return t;
   }
 
-  patch(id: string, body: any) {
+  patch(id: string, body: any): T {
     this.map[id] = { ...this.map[id], ...body };
     this.array$.next(Object.values(this.map));
     return this.map[id];
   }
 
-  remove(ids: string[]) {
+  remove(ids: string[]): void {
     for (const id of ids) {
       delete this.map[id];
     }
     this.array$.next(Object.values(this.map));
   }
 
-  removeAll() {
+  removeAll(): void {
     this.map = {};
     this.array$.next([]);
+  }
+
+  get(query: CrudityQueryString, defaultPageSize = 20): Partial<T>[] {
+    // filter
+    const filteredArray = filter<T>(this.array$.value, query.filter);
+
+    // order by
+    const array = orderBy<T>(filteredArray, query.orderBy);
+
+    // pagination
+    const pageSize = isNaN(+query.pageSize) ? defaultPageSize : +query.pageSize;
+    const page = isNaN(+query.page) ? 1 : +query.page;
+    const { start, end } = getPageSlice(pageSize, page);
+    const pagedArray = array.slice(start, end);
+
+    // select
+    const selectArray = select<T>(pagedArray, query.select);
+
+    // unselect
+    const unselectArray = unselect<T>(selectArray, query.unselect);
+
+    return unselectArray;
+  }
+
+  getOne(id: string): T {
+    return this.map[id];
   }
 }
