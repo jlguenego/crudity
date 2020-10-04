@@ -1,4 +1,9 @@
 import { Resource } from "./resource/Resource";
+import { Validator } from "./validator/Validator";
+
+export interface TypeClass<T> {
+  new (): T;
+}
 
 export interface Idable {
   id: string;
@@ -24,7 +29,7 @@ export interface SequelizeOptions {
 export interface CrudityOptions<T> {
   resource: Resource<T>;
   pageSize: number;
-  dtoClass?: new () => T;
+  validator: Validator<T>;
 }
 
 export type CrudityFilter = string | CrudityFilterObject;

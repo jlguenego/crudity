@@ -4,6 +4,7 @@ import _ from "lodash";
 
 import { Server } from "../misc/Server";
 import { Article } from "../example/article.dto";
+import { DTOValidator } from "../src/validator/DTOValidator";
 
 const port = 3000;
 
@@ -12,7 +13,7 @@ describe("Validation", function () {
     try {
       const server = new Server({
         port,
-        dtoClass: Article,
+        validator: new DTOValidator<Article>(Article),
       });
       await server.start();
       await server.reset();

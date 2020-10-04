@@ -17,7 +17,6 @@ const pageSize = 20;
 const server = new Server({
   port,
   pageSize,
-  dtoClass: Article,
 });
 
 const generateArticles = (nbr: number): Article[] =>

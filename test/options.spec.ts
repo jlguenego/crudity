@@ -24,7 +24,6 @@ describe("Options", function () {
           minify: true,
           debounceTimeDelay: 0,
         }),
-        dtoClass: Article,
       });
       await server.start();
       const article: Partial<Article> = {

@@ -7,7 +7,7 @@ import { Article } from "../example/article.dto";
 
 const port = 3000;
 
-const server = new Server({ port, dtoClass: Article });
+const server = new Server({ port });
 
 describe("CRUD", function () {
   before(async () => {

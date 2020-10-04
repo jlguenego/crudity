@@ -1,7 +1,9 @@
-import { Request, Response, NextFunction } from "express";
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
-import { CrudityOptions } from "./interface";
+import { Request, Response, NextFunction } from "express";
+
+import { TypeClass } from "../interface";
+import { Validator } from "./Validator";
 
 function removeEmptyKeys(o: { [key: string]: any }) {
   for (const key of Object.keys(o)) {
@@ -11,20 +13,20 @@ function removeEmptyKeys(o: { [key: string]: any }) {
   }
 }
 
-export function validateMiddleware<T>(options: Partial<CrudityOptions<T>>) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (options.dtoClass === undefined) {
-      return next();
-    }
-    const dtoClass = options.dtoClass;
+export class DTOValidator<T> extends Validator<T> {
+  constructor(private type: TypeClass<T>) {
+    super();
+  }
+
+  post(req: Request, res: Response, next: NextFunction): void {
     (async () => {
       try {
         const output: T[] | T =
           req.body instanceof Array
-            ? plainToClass<T, Object[]>(dtoClass, req.body, {
+            ? plainToClass<T, Object[]>(this.type, req.body, {
                 excludeExtraneousValues: true,
               })
-            : plainToClass<T, any>(dtoClass, req.body, {
+            : plainToClass<T, any>(this.type, req.body, {
                 excludeExtraneousValues: true,
               });
 
@@ -45,5 +47,5 @@ export function validateMiddleware<T>(options: Partial<CrudityOptions<T>>) {
         next(e);
       }
     })();
-  };
+  }
 }

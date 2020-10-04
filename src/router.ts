@@ -2,7 +2,7 @@ import express from "express";
 
 import { Idable, CrudityOptions, CrudityQueryString } from "./interface";
 import { JsonResource } from "./resource/JsonResource";
-import { validateMiddleware } from "./validate";
+import { Validator } from "./validator/Validator";
 import { checkQueryString } from "./querystring";
 
 export function crudity<T extends Idable>(
@@ -11,15 +11,16 @@ export function crudity<T extends Idable>(
   const options: CrudityOptions<T> = {
     resource: new JsonResource<T>(),
     pageSize: 20,
-    dtoClass: undefined,
+    validator: new Validator<T>(),
     ...opts,
   };
   const resource = options.resource;
+  const validator = options.validator;
   const app = express.Router();
 
   app.use(express.json());
 
-  app.post("/", validateMiddleware<T>(opts), (req, res) => {
+  app.post("/", validator.post.bind(validator), (req, res) => {
     if (req.body instanceof Array) {
       // bulk scenario
       const array: T[] = [];
