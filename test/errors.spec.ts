@@ -5,6 +5,7 @@ import fs from "fs";
 import { Server } from "../misc/Server";
 import { timer } from "rxjs";
 import { Article } from "../example/article.dto";
+import { JsonResource } from "../src/resource/JsonResource";
 
 const port = 3000;
 
@@ -66,9 +67,10 @@ describe("Error Management", function () {
       };
       const articles = [article];
       const filename = path.resolve(__dirname, "../data/test.json");
+      const resource = new JsonResource<Article>({ filename });
 
       fs.writeFileSync(filename, JSON.stringify(articles));
-      const server = new Server({ port });
+      const server = new Server({ port, resource });
       await server.start();
       await server.stop();
     } catch (e) {

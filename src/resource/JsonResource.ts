@@ -7,6 +7,8 @@ import { CrudityJsonOptions, CrudityQueryString, Idable } from "../interface";
 import { Resource } from "./Resource";
 import { filter, getPageSlice, orderBy, select, unselect } from "../misc";
 
+const homedir = require('os').homedir();
+
 export class JsonResource<T extends Idable> extends Resource<T> {
   array$ = new BehaviorSubject<T[]>([]);
   map: { [id: string]: T } = {};
@@ -17,7 +19,7 @@ export class JsonResource<T extends Idable> extends Resource<T> {
     super();
     const opts: CrudityJsonOptions = {
       type: "json",
-      filename: path.resolve(__dirname, "../../data/test.json"),
+      filename: path.resolve(homedir, "crudity.json"),
       debounceTimeDelay: 2000,
       minify: false,
       ...options,

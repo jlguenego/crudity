@@ -25,12 +25,8 @@ interface Article {
 }
 
 const app = express();
-const filename = path.resolve(__dirname, "../data/test.json");
 
-app.use(
-  "/ws/articles",
-  crudity<Article>({ filename })
-);
+app.use("/ws/articles", crudity<Article>());
 
 app.listen(3000, () => console.log("Server started on port 3000"));
 ```

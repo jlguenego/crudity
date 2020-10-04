@@ -1,18 +1,11 @@
 import fetch from "node-fetch";
 import assert from "assert";
-import path from "path";
-import fs from "fs";
 import _ from "lodash";
 
 import { Server } from "../misc/Server";
 import { Article } from "../example/article.dto";
 
 const port = 3000;
-const filename = path.resolve(__dirname, "../data/test.json");
-try {
-  fs.unlinkSync(filename);
-} catch (e) {}
-
 const pageSize = 20;
 const server = new Server({
   port,

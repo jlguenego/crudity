@@ -11,7 +11,6 @@
     - PUT (put bulk and put one)
     - PATCH (patch bulk and patch one)
 - Review the test case
-  - when tests are finished, test.json must include 100 items.
   - tests should not rely on file but on data in RAM.
 - implement hateoas for GET all and GET one (next and previous, first and last)
 - queryString: transform page into since (like github API)

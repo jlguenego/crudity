@@ -21,6 +21,7 @@ describe("Options", function () {
       const server = new Server({
         port,
         resource: new JsonResource<Article>({
+          filename,
           minify: true,
           debounceTimeDelay: 0,
         }),
