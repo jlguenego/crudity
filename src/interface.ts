@@ -1,9 +1,4 @@
-import express from "express";
 import { Resource } from "./resource/Resource";
-
-export interface CrudityRouter<T> extends express.IRouter {
-  resource: Resource<T>;
-}
 
 export interface Idable {
   id: string;
@@ -27,8 +22,8 @@ export interface SequelizeOptions {
 }
 
 export interface CrudityOptions<T> {
-  resource?: CrudityJsonOptions | CrudityMongoDBOptions | SequelizeOptions;
-  pageSize?: number;
+  resource: Resource<T>;
+  pageSize: number;
   dtoClass?: new () => T;
 }
 

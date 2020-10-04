@@ -1,30 +1,27 @@
 import express from "express";
 import serveIndex from "serve-index";
 import fetch from "node-fetch";
-import path from "path";
 import http from "http";
 import assert from "assert";
 
-import { crudity, CrudityOptions, CrudityRouter } from "../src";
+import { crudity, CrudityOptions } from "../src";
 import { Article } from "../example/article.dto";
+import { JsonResource } from "../src/resource/JsonResource";
 
-interface ServerOptions extends CrudityOptions<Article> {
+interface ServerOptions extends Partial<CrudityOptions<Article>> {
   port?: number;
 }
 
 export class Server {
   options: ServerOptions = {
     port: 3000,
-    resource: {
-      type: "json",
-      filename: path.resolve(__dirname, "../data/test.json"),
-      minify: false,
+    resource: new JsonResource<Article>({
       debounceTimeDelay: 0,
-    },
+    }),
   };
   server!: http.Server;
   app: express.Express;
-  articleRouter: CrudityRouter<Article>;
+  articleRouter: express.Router;
   constructor(options: ServerOptions) {
     Object.assign(this.options, options);
     const app = express();
@@ -68,9 +65,7 @@ export class Server {
   }
 
   getArray(): Promise<Article[]> {
-    return Promise.resolve(
-      this.articleRouter?.resource?.get({}, 10000) as Article[]
-    );
+    return Promise.resolve(this.options.resource?.get({}, 10000) as Article[]);
   }
 
   async reset(): Promise<void> {

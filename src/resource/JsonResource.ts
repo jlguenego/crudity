@@ -13,7 +13,7 @@ export class JsonResource<T extends Idable> extends Resource<T> {
 
   private nextId = 1;
 
-  constructor(options: Partial<CrudityJsonOptions>) {
+  constructor(options?: Partial<CrudityJsonOptions>) {
     super();
     const opts: CrudityJsonOptions = {
       type: "json",

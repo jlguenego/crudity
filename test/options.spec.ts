@@ -6,7 +6,7 @@ import fs from "fs";
 import { Server } from "../misc/Server";
 import { timer } from "rxjs";
 import { Article } from "../example/article.dto";
-import { CrudityJsonOptions } from "../src";
+import { JsonResource } from "../src/resource/JsonResource";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");
@@ -20,11 +20,10 @@ describe("Options", function () {
       await timer(100).toPromise();
       const server = new Server({
         port,
-        resource: {
-          type: "json",
+        resource: new JsonResource<Article>({
           minify: true,
           debounceTimeDelay: 0,
-        } as CrudityJsonOptions,
+        }),
         dtoClass: Article,
       });
       await server.start();

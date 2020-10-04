@@ -1,33 +1,20 @@
 import express from "express";
 
-import {
-  Idable,
-  CrudityOptions,
-  CrudityJsonOptions,
-  CrudityQueryString,
-  CrudityRouter,
-} from "./interface";
+import { Idable, CrudityOptions, CrudityQueryString } from "./interface";
 import { JsonResource } from "./resource/JsonResource";
 import { validateMiddleware } from "./validate";
-import { Resource } from "./resource/Resource";
 import { checkQueryString } from "./querystring";
 
 export function crudity<T extends Idable>(
-  opts: CrudityOptions<T>
-): CrudityRouter<T> {
+  opts: Partial<CrudityOptions<T>>
+): express.Router {
   const options: CrudityOptions<T> = {
-    resource: {
-      type: "json",
-      debounceTimeDelay: 2000,
-      minify: false,
-    } as CrudityJsonOptions,
+    resource: new JsonResource<T>(),
     pageSize: 20,
     dtoClass: undefined,
     ...opts,
   };
-  const resource: Resource<T> = new JsonResource<T>(
-    options.resource as CrudityJsonOptions
-  );
+  const resource = options.resource;
   const app = express.Router();
 
   app.post("/", validateMiddleware<T>(opts), (req, res) => {
@@ -102,6 +89,5 @@ export function crudity<T extends Idable>(
     return res.status(204).end();
   });
 
-  (app as CrudityRouter<T>).resource = resource;
-  return app as CrudityRouter<T>;
+  return app;
 }

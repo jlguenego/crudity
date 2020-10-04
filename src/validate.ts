@@ -11,7 +11,7 @@ function removeEmptyKeys(o: { [key: string]: any }) {
   }
 }
 
-export function validateMiddleware<T>(options: CrudityOptions<T>) {
+export function validateMiddleware<T>(options: Partial<CrudityOptions<T>>) {
   return (req: Request, res: Response, next: NextFunction) => {
     if (options.dtoClass === undefined) {
       return next();

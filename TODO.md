@@ -1,6 +1,7 @@
 # TODO
 
-- Refactor crudity to be a router that is not a class.
+  - Have an option to add validation
+  - Have an option to add sanitizing
   - Purpose of the router is just to expose the CRUD of a class resource.
   - The router can takes options, resource class included.
   - The router can takes validation options. The router included validation stuff.
