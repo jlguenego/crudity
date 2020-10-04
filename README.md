@@ -54,7 +54,7 @@ The middleware `crudity(options: CrudityOptions)` has following options:
   It is a subclass of Resource.
   It is by default `new JsonResource()`.
 
-The `JsonResource` class take the following options:
+The `JsonResource` class takes the following options:
 
 - `filename: string` - path of the database json file. Mandatory.
 - `minify: boolean` - Minify the JSON before storing. `false` by default.
