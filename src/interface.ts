@@ -1,6 +1,13 @@
 import { Resource } from "./resource/Resource";
 import { Validator } from "./validator/Validator";
 
+/**
+ * Utilities for giving class name as input parameter inside a function.
+ *
+ * @export
+ * @interface TypeClass
+ * @template T
+ */
 export interface TypeClass<T> {
   new (): T;
 }
@@ -9,6 +16,12 @@ export interface Idable {
   id: string;
 }
 
+/**
+ * Options for JsonResource
+ *
+ * @export
+ * @interface CrudityJsonOptions
+ */
 export interface CrudityJsonOptions {
   type: "json";
   filename: string;
@@ -16,28 +29,35 @@ export interface CrudityJsonOptions {
   debounceTimeDelay: number;
 }
 
-export interface CrudityMongoDBOptions {
-  type: "mongodb";
-  url: string;
-}
-
-export interface SequelizeOptions {
-  type: "sequelize";
-  sequelize: string;
-}
-
+/**
+ * options for the crudity router.
+ *
+ * @export
+ * @interface CrudityOptions
+ * @template T
+ */
 export interface CrudityOptions<T> {
   resource: Resource<T>;
   pageSize: number;
   validator: Validator<T>;
 }
 
-export type CrudityFilter = string | CrudityFilterObject;
-
+/**
+ * In the query string, the filter parameter is a string or an object.
+ *
+ * @export
+ * @interface CrudityFilterObject
+ */
 export interface CrudityFilterObject {
-  [key: string]: CrudityFilterObject | string;
+  [key: string]: string | CrudityFilterObject;
 }
 
+/**
+ * The query string format.
+ *
+ * @export
+ * @interface CrudityQueryString
+ */
 export interface CrudityQueryString {
   page?: number;
   pageSize?: number;
