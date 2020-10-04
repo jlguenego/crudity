@@ -71,8 +71,6 @@ describe("Retrieve", function () {
         `http://localhost:${port}/ws/articles?page=3&pageSize=4`
       );
       const actualArticles: Article[] = await response.json();
-      console.log("actualArticles: ", actualArticles);
-
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 4);
       const expectedArticles = [
