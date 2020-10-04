@@ -49,14 +49,14 @@ The middleware `crudity(options: CrudityOptions)` has following options:
 
 - `pageSize: number` - default page size for _retrieve all_ requests. `20` by default.
 - `validator?: Validator` - optional. If provided, validate and sanatize the request body.
-  You need to subclass the [Validator class](./src/validator/Validator.ts).
-- `resource?: Resource` - optional. If provided the [Resource class](./src/resource/Resource.ts) to be used.
+  You need to subclass the [Validator class](./src/Validator.ts).
+- `resource?: Resource` - optional. If provided the [Resource class](./src/Resource.ts) to be used.
   It is a subclass of Resource.
   It is by default `new JsonResource()`.
 
 The `JsonResource` class takes the following options:
 
-- `filename: string` - path of the database json file. Mandatory.
+- `filename: string` - path of the database json file. By default it is `crudity.json` in the user directory.
 - `minify: boolean` - Minify the JSON before storing. `false` by default.
 - `debounceTimeDelay: number` - Do not write in the file less than this delay. `2000` by default.
 
