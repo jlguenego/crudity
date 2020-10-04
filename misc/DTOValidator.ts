@@ -3,7 +3,7 @@ import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 
 import { TypeClass } from "../src/interface";
-import { Validator } from "../src/validator/Validator";
+import { Validator } from "../src/Validator";
 
 function removeEmptyKeys(o: { [key: string]: any }) {
   for (const key of Object.keys(o)) {

@@ -6,7 +6,7 @@ import assert from "assert";
 
 import { crudity, CrudityOptions } from "../src";
 import { Article } from "../example/article.dto";
-import { JsonResource } from "../src/resource/JsonResource";
+import { JsonResource } from "../src/json/JsonResource";
 
 interface ServerOptions extends Partial<CrudityOptions<Article>> {
   port?: number;
