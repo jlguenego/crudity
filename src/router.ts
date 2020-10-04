@@ -6,7 +6,7 @@ import { Validator } from "./validator/Validator";
 import { checkQueryString } from "./querystring";
 
 export function crudity<T extends Idable>(
-  opts: Partial<CrudityOptions<T>>
+  opts?: Partial<CrudityOptions<T>>
 ): express.Router {
   const options: CrudityOptions<T> = {
     resource: new JsonResource<T>(),

@@ -1,6 +1,8 @@
 # Crudity
 
-Test server implementing a standard CRUD API with a database json file.
+Test server implementing a standard REST CRUD API.
+
+By default the server stores the resource in a JSON file.
 
 ## Install
 
@@ -10,11 +12,22 @@ npm i crudity
 
 ## Usage
 
-Typescript
+### Javascript
 
+```js
+const express = require("express");
+const { crudity } = require("crudity");
+
+const app = express();
+app.use("/ws/articles", crudity());
+
+app.listen(3000, () => console.log("JS Server started on port 3000"));
 ```
+
+### Typescript
+
+```ts
 import express from "express";
-import path from "path";
 import { Crudity } from "crudity";
 
 interface Article {
@@ -25,7 +38,6 @@ interface Article {
 }
 
 const app = express();
-
 app.use("/ws/articles", crudity<Article>());
 
 app.listen(3000, () => console.log("Server started on port 3000"));
