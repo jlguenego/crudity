@@ -1,7 +1,7 @@
 import assert from "assert";
 
 import { Article } from "../example/article.dto";
-import { JsonResource } from "../src/resource/JsonResource";
+import { JsonResource } from "../src/json/JsonResource";
 
 describe("Resource", function () {
   it("should not rewrite because no id", async function () {

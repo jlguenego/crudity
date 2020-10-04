@@ -6,7 +6,7 @@ import fs from "fs";
 import { Server } from "../misc/Server";
 import { timer } from "rxjs";
 import { Article } from "../example/article.dto";
-import { JsonResource } from "../src/resource/JsonResource";
+import { JsonResource } from "../src/json/JsonResource";
 
 const port = 3000;
 const filename = path.resolve(__dirname, "../data/test.json");

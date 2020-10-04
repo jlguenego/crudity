@@ -13,7 +13,7 @@ export class JsonResource<T extends Idable> extends Resource<T> {
   array$ = new BehaviorSubject<T[]>([]);
   map: { [id: string]: T } = {};
 
-  private nextId = 1;
+  nextId = 1;
 
   constructor(options?: Partial<CrudityJsonOptions>) {
     super();

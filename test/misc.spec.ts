@@ -1,4 +1,4 @@
-import { getDeepValue, removeDeepValue, removeKeys } from "../src/misc";
+import { getDeepValue, removeDeepValue, removeKeys } from "../src/json/misc";
 import assert from "assert";
 import _ from "lodash";
 

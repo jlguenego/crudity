@@ -13,11 +13,12 @@ interface ServerOptions extends Partial<CrudityOptions<Article>> {
 }
 
 export class Server {
+  resource = new JsonResource<Article>({
+    debounceTimeDelay: 0,
+  });
   options: ServerOptions = {
     port: 3000,
-    resource: new JsonResource<Article>({
-      debounceTimeDelay: 0,
-    }),
+    resource: this.resource,
   };
   server!: http.Server;
   app: express.Express;
@@ -71,6 +72,7 @@ export class Server {
     await fetch(`http://localhost:${this.options.port}/ws/articles`, {
       method: "DELETE",
     });
+    this.resource.nextId = 1;
   }
 
   async add(t: Article | Article[]): Promise<void> {
