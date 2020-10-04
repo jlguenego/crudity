@@ -27,7 +27,6 @@ interface Article {
 const app = express();
 const filename = path.resolve(__dirname, "../data/test.json");
 
-app.use(express.json());
 app.use(
   "/ws/articles",
   crudity<Article>({ filename })

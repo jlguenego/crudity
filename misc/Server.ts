@@ -27,7 +27,6 @@ export class Server {
     const app = express();
     const www = ".";
 
-    app.use(express.json());
     this.articleRouter = crudity<Article>(this.options);
     app.use("/ws/articles", this.articleRouter);
 

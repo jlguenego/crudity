@@ -17,6 +17,8 @@ export function crudity<T extends Idable>(
   const resource = options.resource;
   const app = express.Router();
 
+  app.use(express.json());
+
   app.post("/", validateMiddleware<T>(opts), (req, res) => {
     if (req.body instanceof Array) {
       // bulk scenario
