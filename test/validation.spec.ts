@@ -4,7 +4,7 @@ import _ from "lodash";
 
 import { Server } from "../misc/Server";
 import { Article } from "../example/article.dto";
-import { DTOValidator } from "../src/validator/DTOValidator";
+import { DTOValidator } from "../misc/DTOValidator";
 
 const port = 3000;
 

@@ -2,8 +2,8 @@ import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 
-import { TypeClass } from "../interface";
-import { Validator } from "./Validator";
+import { TypeClass } from "../src/interface";
+import { Validator } from "../src/validator/Validator";
 
 function removeEmptyKeys(o: { [key: string]: any }) {
   for (const key of Object.keys(o)) {

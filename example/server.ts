@@ -1,6 +1,6 @@
 import express from "express";
 import { crudity } from "../src";
-import { DTOValidator } from "../src/validator/DTOValidator";
+import { DTOValidator } from "../misc/DTOValidator";
 import { Article } from "./article.dto";
 
 const app = express();
