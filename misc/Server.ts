@@ -72,7 +72,7 @@ export class Server {
     await fetch(`http://localhost:${this.options.port}/ws/articles`, {
       method: "DELETE",
     });
-    this.resource.nextId = 1;
+    this.resource.nextId = 1e12;
   }
 
   async add(t: Article | Article[]): Promise<void> {

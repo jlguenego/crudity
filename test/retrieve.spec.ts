@@ -74,16 +74,16 @@ describe("Retrieve", function () {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 4);
       const expectedArticles = [
-        { name: "Screwdriver 8", price: 0.05, qty: 32, id: "9" },
-        { name: "Screwdriver 9", price: 0.8, qty: 36, id: "10" },
+        { name: "Screwdriver 8", price: 0.05, qty: 32, id: "1000000000008" },
+        { name: "Screwdriver 9", price: 0.8, qty: 36, id: "1000000000009" },
         {
           name: "Screwdriver 10",
           price: 0.7,
           qty: 40,
           provider: { name: "Grocery 10", zipcode: "F-2780" },
-          id: "11",
+          id: "1000000000010",
         },
-        { name: "Screwdriver 11", price: 0.6, qty: 44, id: "12" },
+        { name: "Screwdriver 11", price: 0.6, qty: 44, id: "1000000000011" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -100,16 +100,16 @@ describe("Retrieve", function () {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 4);
       const expectedArticles = [
-        { name: "Screwdriver 26", price: 0.8, qty: 104, id: "27" },
-        { name: "Screwdriver 43", price: 0.8, qty: 172, id: "44" },
+        { name: "Screwdriver 26", price: 0.8, qty: 104, id: "1000000000026" },
+        { name: "Screwdriver 43", price: 0.8, qty: 172, id: "1000000000043" },
         {
           name: "Screwdriver 60",
           price: 0.8,
           qty: 240,
           provider: { name: "Grocery 60", zipcode: "F-6680" },
-          id: "61",
+          id: "1000000000060",
         },
-        { name: "Screwdriver 77", price: 0.8, qty: 308, id: "78" },
+        { name: "Screwdriver 77", price: 0.8, qty: 308, id: "1000000000077" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -125,7 +125,7 @@ describe("Retrieve", function () {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [
-        { name: "Screwdriver 22", price: 0.35, qty: 88, id: "23" },
+        { name: "Screwdriver 22", price: 0.35, qty: 88, id: "1000000000022" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -142,7 +142,7 @@ describe("Retrieve", function () {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [
-        { name: "Screwdriver 33", price: 0.1, qty: 132, id: "34" },
+        { name: "Screwdriver 33", price: 0.1, qty: 132, id: "1000000000033" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -159,7 +159,7 @@ describe("Retrieve", function () {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 1);
       const expectedArticles = [
-        { name: "Screwdriver 24", price: 0.15, qty: 96, id: "25" },
+        { name: "Screwdriver 24", price: 0.15, qty: 96, id: "1000000000024" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {
@@ -181,21 +181,21 @@ describe("Retrieve", function () {
           price: 0.35,
           qty: 20,
           provider: { name: "Grocery 5", zipcode: "F-6390" },
-          id: "6",
+          id: "1000000000005",
         },
         {
           name: "Screwdriver 50",
           price: 0.1,
           qty: 200,
           provider: { name: "Grocery 50", zipcode: "F-3900" },
-          id: "51",
+          id: "1000000000050",
         },
         {
           name: "Screwdriver 55",
           price: 0.45,
           qty: 220,
           provider: { name: "Grocery 55", zipcode: "F-290" },
-          id: "56",
+          id: "1000000000055",
         },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
@@ -239,8 +239,8 @@ describe("Retrieve", function () {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(actualArticles.length, 2);
       const expectedArticles = [
-        { name: "Screwdriver 0", price: 0, id: "1" },
-        { name: "Screwdriver 1", price: 0.75, id: "2" },
+        { name: "Screwdriver 0", price: 0, id: "1000000000000" },
+        { name: "Screwdriver 1", price: 0.75, id: "1000000000001" },
       ];
       assert(_.isEqual(actualArticles, expectedArticles));
     } catch (e) {

@@ -7,13 +7,13 @@ import { CrudityJsonOptions, CrudityQueryString, Idable } from "../interface";
 import { Resource } from "../Resource";
 import { filter, getPageSlice, orderBy, select, unselect } from "./misc";
 
-const homedir = require('os').homedir();
+const homedir = require("os").homedir();
 
 export class JsonResource<T extends Idable> extends Resource<T> {
   array$ = new BehaviorSubject<T[]>([]);
   map: { [id: string]: T } = {};
 
-  nextId = 1;
+  nextId = 1e12;
 
   constructor(options?: Partial<CrudityJsonOptions>) {
     super();
