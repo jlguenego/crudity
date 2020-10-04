@@ -1,5 +1,5 @@
-import { Resource } from "./resource/Resource";
-import { Validator } from "./validator/Validator";
+import { Resource } from "./Resource";
+import { Validator } from "./Validator";
 
 /**
  * Utilities for giving class name as input parameter inside a function.

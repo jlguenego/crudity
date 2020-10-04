@@ -1,4 +1,4 @@
-import { CrudityQueryString } from "../interface";
+import { CrudityQueryString } from "./interface";
 
 export abstract class Resource<T> {
   abstract add(t: T): T;

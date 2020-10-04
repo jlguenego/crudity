@@ -1,8 +1,8 @@
 import express from "express";
 
 import { Idable, CrudityOptions, CrudityQueryString } from "./interface";
-import { JsonResource } from "./resource/JsonResource";
-import { Validator } from "./validator/Validator";
+import { JsonResource } from "./json/JsonResource";
+import { Validator } from "./Validator";
 import { checkQueryString } from "./querystring";
 
 export function crudity<T extends Idable>(

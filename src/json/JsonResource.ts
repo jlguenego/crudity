@@ -4,8 +4,8 @@ import { debounceTime, switchMap, distinct, skip } from "rxjs/operators";
 import fs from "fs";
 
 import { CrudityJsonOptions, CrudityQueryString, Idable } from "../interface";
-import { Resource } from "./Resource";
-import { filter, getPageSlice, orderBy, select, unselect } from "../misc";
+import { Resource } from "../Resource";
+import { filter, getPageSlice, orderBy, select, unselect } from "./misc";
 
 const homedir = require('os').homedir();
 
