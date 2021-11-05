@@ -1,7 +1,7 @@
 import serveIndex from 'serve-index';
 import {createServer, Server} from 'http';
 import express, {Express} from 'express';
-import {resolve} from 'path';
+import path from 'path';
 
 export interface WebServerOptions {
   port: number;
@@ -20,9 +20,8 @@ export class WebServer {
   app: Express;
   server: Server;
   constructor(options: Partial<WebServerOptions> = {}) {
-    const crudityOpts = require(resolve(process.cwd(), './.crudity'));
+    const crudityOpts = require(path.resolve(process.cwd(), './.crudity'));
     Object.assign(this.options, crudityOpts, options);
-    console.log('this.options: ', this.options);
     const app = express();
     app.use(express.static(this.options.publicDir));
     app.use(serveIndex(this.options.publicDir));
