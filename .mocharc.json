@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/mocharc.json",
+  "require": ["ts-node/register"],
+  "spec": "test/**/*.spec.ts",
+  "recursive": true,
+  "extension": ["ts"],
+  "enable-source-maps": true
+}
