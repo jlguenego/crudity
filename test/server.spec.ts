@@ -1,7 +1,7 @@
-import fs from 'fs';
-import {WebServer} from './../src/WebServer';
-import got from 'got';
 import assert from 'assert';
+import fs from 'fs';
+import got from 'got';
+import {WebServer} from '../src/WebServer';
 
 const port = +(process.env.TEST_PORT || 3333);
 
