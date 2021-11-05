@@ -1,0 +1,6 @@
+{
+  "port": 3000,
+  "publicDir": "./public",
+  "resources": ["articles", "users"],
+  "rootEndPoint": "/v1/api"
+}
