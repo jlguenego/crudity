@@ -1,14 +1,9 @@
-import serveIndex from 'serve-index';
-import {createServer, Server} from 'http';
 import express, {Express} from 'express';
+import {createServer, Server} from 'http';
 import path from 'path';
-
-export interface WebServerOptions {
-  port: number;
-  publicDir: string;
-  resources: string[];
-  rootEndPoint: string;
-}
+import serveIndex from 'serve-index';
+import {crudity} from './crudity.router';
+import {WebServerOptions} from './interfaces/WebServerOptions';
 
 export class WebServer {
   options: WebServerOptions = {
@@ -23,6 +18,7 @@ export class WebServer {
     const crudityOpts = require(path.resolve(process.cwd(), './.crudity'));
     Object.assign(this.options, crudityOpts, options);
     const app = express();
+    app.use(crudity(this.options));
     app.use(express.static(this.options.publicDir));
     app.use(serveIndex(this.options.publicDir));
     this.app = app;
