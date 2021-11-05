@@ -1,9 +1,0 @@
-/.nyc_output
-/coverage
-/data
-/node_modules
-.mocharc.js
-nodemon.json
-README.md
-TODO.md
-tsconfig.json
