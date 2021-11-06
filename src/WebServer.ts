@@ -9,8 +9,15 @@ export class WebServer {
   options: WebServerOptions = {
     port: 3000,
     publicDir: './public',
-    resources: [],
+    resources: ['articles', 'users'],
     rootEndPoint: '/api',
+    crudity: {
+      pageSize: 20,
+      storage: {
+        type: 'file',
+        dataDir: './data',
+      },
+    },
   };
   app: Express;
   server: Server;
@@ -18,7 +25,9 @@ export class WebServer {
     const crudityOpts = require(path.resolve(process.cwd(), './.crudity'));
     Object.assign(this.options, crudityOpts, options);
     const app = express();
-    app.use(crudity(this.options));
+    for (const resource of this.options.resources) {
+      app.use(this.options.rootEndPoint + '/' + resource, crudity());
+    }
     app.use(express.static(this.options.publicDir));
     app.use(serveIndex(this.options.publicDir));
     this.app = app;

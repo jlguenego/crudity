@@ -1,4 +1,6 @@
+import {StorageOptions} from './StorageOptions';
+
 export interface CrudityOptions {
-  resources: string[];
-  rootEndPoint: string;
+  pageSize: number;
+  storage: StorageOptions;
 }
