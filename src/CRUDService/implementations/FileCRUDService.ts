@@ -64,15 +64,17 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     throw new Error('not implemented.');
   }
 
-  remove(ids: string[]): Promise<void> {
-    throw new Error('not implemented.');
+  async remove(ids: string[]): Promise<void> {
+    this.array = this.array.filter(r => !ids.includes(r.id));
+    this.writeFile$.next();
   }
 
-  removeAll(): Promise<void> {
-    throw new Error('not implemented.');
+  async removeAll(): Promise<void> {
+    this.array = [];
+    this.writeFile$.next();
   }
 
-  rewrite(arg0: T): Promise<T> {
+  rewrite(item: T): Promise<T> {
     throw new Error('not implemented.');
   }
 
