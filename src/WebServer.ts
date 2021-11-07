@@ -9,29 +9,35 @@ export class WebServer {
   options: WebServerOptions = {
     port: 3000,
     publicDir: './public',
-    resources: ['articles', 'users'],
+    resources: {},
     rootEndPoint: '/api',
-    crudity: {
-      pageSize: 20,
-      storage: {
-        type: 'file',
-        dataDir: './data',
-      },
-    },
   };
   app: Express;
   server: Server;
   constructor(options: Partial<WebServerOptions> = {}) {
     const crudityOpts = require(path.resolve(process.cwd(), './.crudity'));
     Object.assign(this.options, crudityOpts, options);
+    console.log('this.options: ', this.options);
     const app = express();
-    for (const resource of this.options.resources) {
-      app.use(this.options.rootEndPoint + '/' + resource, crudity());
+    this.server = createServer(app);
+
+    app.use((req, res, next) => {
+      console.log('req.url', req.url);
+      next();
+    });
+
+    for (const resource of Object.keys(this.options.resources)) {
+      const rootEndPoint =
+        this.options.rootEndPoint === '/' ? '' : this.options.rootEndPoint;
+      console.log('rootEndPoint: ', rootEndPoint);
+      app.use(
+        rootEndPoint + '/' + resource,
+        crudity(this.server, resource, this.options.resources[resource])
+      );
     }
     app.use(express.static(this.options.publicDir));
     app.use(serveIndex(this.options.publicDir));
     this.app = app;
-    this.server = createServer(app);
   }
 
   start(): Promise<void> {

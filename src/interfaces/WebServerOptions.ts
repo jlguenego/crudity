@@ -2,7 +2,8 @@ import {CrudityOptions} from './CrudityOptions';
 export interface WebServerOptions {
   port: number;
   publicDir: string;
-  resources: string[];
+  resources: {
+    [name: string]: Partial<CrudityOptions>;
+  };
   rootEndPoint: string;
-  crudity: CrudityOptions;
 }

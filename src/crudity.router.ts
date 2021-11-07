@@ -1,12 +1,12 @@
-import express, {Router} from 'express';
-import path from 'path';
+import express, {Response, Router} from 'express';
+import {Server} from 'http';
 import {CRUDServiceFactory} from './CRUDService/CRUDServiceFactory';
 import {CrudityOptions} from './interfaces/CrudityOptions';
 import {CrudityQueryString} from './interfaces/CrudityQueryString';
 import {Idable} from './interfaces/Idable';
 import {checkQueryString} from './querystring';
 
-const options: CrudityOptions = {
+const defaultOptions: CrudityOptions = {
   pageSize: 15,
   storage: {
     type: 'file',
@@ -14,15 +14,51 @@ const options: CrudityOptions = {
   },
 };
 
+const manageError = (err: unknown, res: Response) => {
+  console.error('err: ', err);
+  res.status(500).end();
+};
+
 export const crudity = <T extends Idable>(
+  server: Server,
+  resourceName: string,
   opts: Partial<CrudityOptions> = {}
 ) => {
-  const crudityOpts = require(path.resolve(process.cwd(), './.crudity'));
-  Object.assign(options, crudityOpts, opts);
+  const options = {...defaultOptions, ...opts};
+  console.log('options: ', options);
 
-  const crudService = CRUDServiceFactory.get<T>(options.storage);
+  const crudService = CRUDServiceFactory.get<T>(resourceName, options.storage);
+  // const crudService = new FileCRUDService<T>(
+  //   resourceName,
+  //   options.storage as FileStorageOptions
+  // );
+
+  (async () => {
+    try {
+      await crudService.start();
+    } catch (err) {
+      console.log('err: ', err);
+      throw err;
+    }
+  })();
 
   const app = Router();
+
+  app.use((req, res, next) => {
+    // already started
+    if (crudService.isStarted) {
+      next();
+    }
+    // not yet started, wait...
+    crudService.once('started', () => {
+      next();
+    });
+  });
+
+  app.use((req, res, next) => {
+    console.log('crudity req.url', req.url);
+    next();
+  });
 
   app.use(express.json());
 
@@ -35,14 +71,14 @@ export const crudity = <T extends Idable>(
           for (const item of req.body as T[]) {
             array.push(await crudService.add(item));
           }
-          return res.status(201).json(array);
+          res.status(201).json(array);
+          return;
         }
         const t: T = req.body;
         const newT = crudService.add(t);
-        return res.status(201).json(newT);
+        res.status(201).json(newT);
       } catch (err) {
-        res.status(500).end();
-        return;
+        manageError(err, res);
       }
     })();
   });
@@ -56,10 +92,11 @@ export const crudity = <T extends Idable>(
         } catch (e) {
           return res.status(400).end('queryString not well formatted: ' + e);
         }
-        const array = crudService.get(query, options.pageSize);
+        const array = await crudService.get(query, options.pageSize);
+        console.log('array: ', array);
         return res.json(array);
       } catch (err) {
-        res.status(500).end();
+        manageError(err, res);
       }
     })();
   });
@@ -74,7 +111,7 @@ export const crudity = <T extends Idable>(
         }
         return res.json(t);
       } catch (err) {
-        res.status(500).end();
+        manageError(err, res);
       }
     })();
   });
@@ -91,7 +128,7 @@ export const crudity = <T extends Idable>(
         const newT = crudService.rewrite(req.body as T);
         return res.json(newT);
       } catch (err) {
-        res.status(500).end();
+        manageError(err, res);
       }
     })();
   });
@@ -107,7 +144,7 @@ export const crudity = <T extends Idable>(
         const newT = crudService.patch(id, req.body);
         return res.json(newT);
       } catch (err) {
-        res.status(500).end();
+        manageError(err, res);
       }
     })();
   });
@@ -123,7 +160,7 @@ export const crudity = <T extends Idable>(
         crudService.remove(ids);
         return res.status(204).end();
       } catch (err) {
-        res.status(500).end();
+        manageError(err, res);
       }
     })();
   });
@@ -135,7 +172,7 @@ export const crudity = <T extends Idable>(
         crudService.remove([id]);
         return res.status(204).end();
       } catch (err) {
-        res.status(500).end();
+        manageError(err, res);
       }
     })();
   });

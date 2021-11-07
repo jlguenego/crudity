@@ -11,7 +11,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     throw new Error('not implemented.');
   }
 
-  getOne(id: string): Promise<T> {
+  getOne(id: string): Promise<T | undefined> {
     throw new Error('not implemented.');
   }
 
@@ -30,4 +30,8 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   rewrite(arg0: T): Promise<T> {
     throw new Error('not implemented.');
   }
+
+  async start(): Promise<void> {}
+
+  async stop(): Promise<void> {}
 }
