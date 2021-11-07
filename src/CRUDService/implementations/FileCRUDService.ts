@@ -60,7 +60,6 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
 
   async start(): Promise<void> {
     // do your stuff before super.start()
-
     try {
       await fs.promises.mkdir(dirname(this.dbFilename), {recursive: true});
       await fs.promises.access(
@@ -74,9 +73,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     const str = await fs.promises.readFile(this.dbFilename, {
       encoding: 'utf-8',
     });
-    console.log('str: ', str);
     this.array = JSON.parse(str);
-    console.log('this.array: ', this.array);
     await super.start();
   }
 

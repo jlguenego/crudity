@@ -28,19 +28,31 @@ export const crudity = <T extends Idable>(
   console.log('options: ', options);
 
   const crudService = CRUDServiceFactory.get<T>(resourceName, options.storage);
-  // const crudService = new FileCRUDService<T>(
-  //   resourceName,
-  //   options.storage as FileStorageOptions
-  // );
 
   (async () => {
     try {
+      console.log(
+        `about to start crudity service for resource ${resourceName}(${options.storage.type})`
+      );
       await crudService.start();
+      console.log(
+        `crudity service for resource ${resourceName}(${options.storage.type}) started with success.`
+      );
     } catch (err) {
       console.log('err: ', err);
       throw err;
     }
   })();
+
+  server.on('close', async () => {
+    console.log(
+      `about to stop crudity service for resource ${resourceName}(${options.storage.type})`
+    );
+    await crudService.stop();
+    console.log(
+      `crudity service for resource ${resourceName}(${options.storage.type}) stopped with success.`
+    );
+  });
 
   const app = Router();
 
