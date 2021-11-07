@@ -1,25 +1,43 @@
 import fs from 'fs';
 import {dirname} from 'path';
-import {Subject} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import {BehaviorSubject, firstValueFrom, Subject} from 'rxjs';
+import {debounceTime, filter, tap} from 'rxjs/operators';
 import {FileStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
 
+enum Status {
+  NO_ORDER = 0,
+  ORDER_TO_DO = 1,
+  ORDER_WRITING = 2,
+}
+
 export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   array: T[] = [];
   dbFilename = `${this.options.dataDir}/${this.resourceName}.json`;
   writeFile$ = new Subject<void>();
+  writeFileStatus$ = new BehaviorSubject<Status>(Status.NO_ORDER);
 
   constructor(resourceName: string, public options: FileStorageOptions) {
     super(resourceName);
-    this.writeFile$.pipe(debounceTime(2000)).subscribe(async () => {
-      await fs.promises.writeFile(
-        this.dbFilename,
-        JSON.stringify(this.array, null, 2)
-      );
-    });
+    this.writeFile$
+      .pipe(
+        tap(() => {
+          this.writeFileStatus$.next(Status.ORDER_TO_DO);
+        }),
+        debounceTime(2000)
+      )
+      .subscribe(async () => {
+        this.writeFileStatus$.next(Status.ORDER_WRITING);
+        await fs.promises.writeFile(
+          this.dbFilename,
+          JSON.stringify(this.array, null, 2)
+        );
+        if (this.writeFileStatus$.value === Status.ORDER_WRITING) {
+          this.writeFileStatus$.next(Status.NO_ORDER);
+        }
+      });
   }
 
   generateId() {
@@ -78,7 +96,10 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async stop(): Promise<void> {
-    // do your stuff before super.stop()
+    // wait for status === NO_ORDER
+    await firstValueFrom(
+      this.writeFileStatus$.pipe(filter(status => status === Status.NO_ORDER))
+    );
     await super.stop();
   }
 }
