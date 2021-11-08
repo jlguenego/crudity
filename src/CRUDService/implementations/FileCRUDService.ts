@@ -60,8 +60,13 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     return this.array.find(r => r.id === id);
   }
 
-  patch(id: string, body: Partial<T>): Promise<T> {
-    throw new Error('not implemented.');
+  async patch(id: string, body: Partial<T>): Promise<T> {
+    const resource = this.array.find(r => r.id === id);
+    if (!resource) {
+      throw new Error('not found');
+    }
+    Object.assign(resource, body);
+    return resource;
   }
 
   async remove(ids: string[]): Promise<void> {

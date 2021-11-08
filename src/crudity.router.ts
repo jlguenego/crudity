@@ -102,11 +102,13 @@ export const crudity = <T extends Idable>(
         try {
           checkQueryString(query);
         } catch (e) {
-          return res.status(400).end('queryString not well formatted: ' + e);
+          res.status(400).end('queryString not well formatted: ' + e);
+          return;
         }
         const array = await crudService.get(query, options.pageSize);
         console.log('array: ', array);
-        return res.json(array);
+        res.json(array);
+        return;
       } catch (err) {
         manageError(err, res);
       }
@@ -119,9 +121,10 @@ export const crudity = <T extends Idable>(
         const id = req.params.id;
         const t = crudService.getOne(id);
         if (!t) {
-          return res.status(404).end();
+          res.status(404).end();
+          return;
         }
-        return res.json(t);
+        res.json(t);
       } catch (err) {
         manageError(err, res);
       }
@@ -134,11 +137,12 @@ export const crudity = <T extends Idable>(
         const id = req.params.id;
         const t = crudService.getOne(id);
         if (!t) {
-          return res.status(404).end();
+          res.status(404).end();
+          return;
         }
         req.body.id = id;
         const newT = crudService.rewrite(req.body as T);
-        return res.json(newT);
+        res.json(newT);
       } catch (err) {
         manageError(err, res);
       }
@@ -151,10 +155,11 @@ export const crudity = <T extends Idable>(
         const id = req.params.id;
         const t = crudService.getOne(id);
         if (!t) {
-          return res.status(404).end();
+          res.status(404).end();
+          return;
         }
         const newT = crudService.patch(id, req.body);
-        return res.json(newT);
+        res.json(newT);
       } catch (err) {
         manageError(err, res);
       }
@@ -166,11 +171,12 @@ export const crudity = <T extends Idable>(
       try {
         if (!(req.body instanceof Array)) {
           crudService.removeAll();
-          return res.status(204).end();
+          res.status(204).end();
+          return;
         }
         const ids: string[] = req.body;
         crudService.remove(ids);
-        return res.status(204).end();
+        res.status(204).end();
       } catch (err) {
         manageError(err, res);
       }
@@ -182,7 +188,8 @@ export const crudity = <T extends Idable>(
       try {
         const id = req.params.id;
         crudService.remove([id]);
-        return res.status(204).end();
+        res.status(204).end();
+        return;
       } catch (err) {
         manageError(err, res);
       }
