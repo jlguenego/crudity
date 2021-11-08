@@ -6,6 +6,7 @@ import {FileStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
+import {getPageSlice, orderBy, queryFilter, select, unselect} from './misc';
 
 enum Status {
   NO_ORDER = 0,
@@ -52,8 +53,32 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     return item;
   }
 
-  async get(query: CrudityQueryString, pageSize: number): Promise<T[]> {
-    return this.array;
+  async get(
+    query: CrudityQueryString,
+    defaultPageSize: number
+  ): Promise<Partial<T>[]> {
+    // filter
+    const filteredArray = queryFilter<T>(this.array, query.filter);
+
+    // order by
+    const array = orderBy<T>(filteredArray, query.orderBy);
+
+    // pagination
+    const pageSize =
+      !query.pageSize || isNaN(+query.pageSize)
+        ? defaultPageSize
+        : +query.pageSize;
+    const page = !query.page || isNaN(+query.page) ? 1 : +query.page;
+    const {start, end} = getPageSlice(pageSize, page);
+    const pagedArray = array.slice(start, end);
+
+    // select
+    const selectArray = select<T>(pagedArray, query.select);
+
+    // unselect
+    const unselectArray = unselect<T>(selectArray, query.unselect);
+
+    return unselectArray;
   }
 
   async getOne(id: string): Promise<T | undefined> {
@@ -66,6 +91,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
       throw new Error('not found');
     }
     Object.assign(resource, body);
+    this.writeFile$.next();
     return resource;
   }
 
@@ -79,8 +105,17 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     this.writeFile$.next();
   }
 
-  rewrite(item: T): Promise<T> {
-    throw new Error('not implemented.');
+  async rewrite(t: T): Promise<T> {
+    if (!t.id) {
+      throw new Error('not id provided');
+    }
+    const index = this.array.findIndex(r => r.id === t.id);
+    if (!index) {
+      throw new Error('not found');
+    }
+    this.array[index] = t;
+    this.writeFile$.next();
+    return t;
   }
 
   async start(): Promise<void> {

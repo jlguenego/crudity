@@ -7,7 +7,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     throw new Error('not implemented.');
   }
 
-  get(query: CrudityQueryString, pageSize: number): Promise<T[]> {
+  get(query: CrudityQueryString, pageSize: number): Promise<Partial<T>[]> {
     throw new Error('not implemented.');
   }
 

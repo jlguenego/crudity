@@ -19,7 +19,10 @@ export abstract class CRUDService<T extends Idable> extends EventEmitter {
   }
 
   abstract add(item: T): Promise<T>;
-  abstract get(query: CrudityQueryString, pageSize: number): Promise<T[]>;
+  abstract get(
+    query: CrudityQueryString,
+    pageSize: number
+  ): Promise<Partial<T>[]>;
   abstract getOne(id: string): Promise<T | undefined>;
   abstract patch(id: string, body: Partial<T>): Promise<T>;
   abstract remove(ids: string[]): Promise<void>;
