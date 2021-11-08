@@ -10,7 +10,7 @@ const defaultOptions: CrudityOptions = {
   pageSize: 15,
   storage: {
     type: 'file',
-    dataDir: './dataDir',
+    dataDir: './data',
   },
 };
 
