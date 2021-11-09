@@ -5,7 +5,13 @@
     "articles": {
       "pageSize": 10
     },
-    "users": {}
+    "users": {
+      "pageSize": 15,
+      "storage": {
+        "type": "mongodb",
+        "uri": "mongodb://localhost/crudity"
+      }
+    }
   },
   "rootEndPoint": "/"
 }
