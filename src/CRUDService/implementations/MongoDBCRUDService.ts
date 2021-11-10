@@ -1,8 +1,16 @@
+import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
+import {MongoClient} from 'mongodb';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
+  client = new MongoClient(this.options.uri, this.options.opts);
+
+  constructor(resourceName: string, public options: MongoDBStorageOptions) {
+    super(resourceName);
+  }
+
   add(item: T): Promise<T> {
     throw new Error('not implemented.');
   }

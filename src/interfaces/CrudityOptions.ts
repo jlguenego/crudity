@@ -1,3 +1,5 @@
+import {MongoClientOptions} from 'mongodb';
+
 export interface CrudityOptions {
   pageSize: number;
   storage: StorageOptions;
@@ -13,4 +15,5 @@ export interface FileStorageOptions {
 export interface MongoDBStorageOptions {
   type: 'mongodb';
   uri: string;
+  opts: MongoClientOptions;
 }
