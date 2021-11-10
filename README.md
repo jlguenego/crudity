@@ -205,6 +205,16 @@ Content-Type: application/json
 "links": ["next": "/ws/articles/1235", "previous": "/ws/articles/1233"]}
 ```
 
+## TODO
+
+- schema for json crudity file.
+- Mongo connection management
+- Mongo implementation
+- Link header
+- Doc for implementing a new service
+- Doc for integrating in express
+- Exemple with validation, authentication, sanitizing, etc.
+
 ## Thanks
 
 Thanks to some url that helped me.
