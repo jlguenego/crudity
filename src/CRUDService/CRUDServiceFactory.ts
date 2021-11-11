@@ -1,8 +1,8 @@
 import {StorageOptions} from '../interfaces/CrudityOptions';
 import {Idable} from '../interfaces/Idable';
 import {CRUDService} from './CRUDService';
-import {FileCRUDService} from './implementations/FileCRUDService';
-import {MongoDBCRUDService} from './implementations/MongoDBCRUDService';
+import {FileCRUDService} from './file/FileCRUDService';
+import {MongoDBCRUDService} from './file/MongoDBCRUDService';
 
 interface CRUDServiceInjector {
   [type: string]: new (
