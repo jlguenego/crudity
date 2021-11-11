@@ -60,8 +60,8 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     throw new Error('not implemented.');
   }
 
-  removeAll(): Promise<void> {
-    throw new Error('not implemented.');
+  async removeAll(): Promise<void> {
+    await this.client.db().collection(this.resourceName).deleteMany({});
   }
 
   rewrite(arg0: T): Promise<T> {
