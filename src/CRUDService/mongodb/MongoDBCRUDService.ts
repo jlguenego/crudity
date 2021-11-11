@@ -3,6 +3,7 @@ import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
 import {MongoClient} from 'mongodb';
+import {renameId, renameIdForArray} from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   client = new MongoClient(this.options.uri, this.options.opts);
@@ -12,12 +13,15 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async add(item: T): Promise<T> {
+    // Note that MongoDB API insertOne modifies the item argument by adding _id to it.
+    // That is why we clone it before.
+    const doc = {...item};
     const result = await this.client
       .db()
       .collection(this.resourceName)
-      .insertOne(item);
+      .insertOne(doc);
     console.log('result: ', result);
-    return item;
+    return renameId<T>(doc);
   }
 
   async get(
@@ -30,7 +34,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
       .find({})
       .toArray();
     console.log('result: ', result);
-    return result as T[];
+    return renameIdForArray<T>(result);
   }
 
   getOne(id: string): Promise<T | undefined> {
