@@ -50,8 +50,12 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     throw new Error('not implemented.');
   }
 
-  remove(ids: string[]): Promise<void> {
-    throw new Error('not implemented.');
+  async remove(ids: string[]): Promise<void> {
+    await this.collection.deleteMany({
+      _id: {
+        $in: ids.map(id => new ObjectId(id)),
+      },
+    });
   }
 
   async removeAll(): Promise<void> {
