@@ -11,12 +11,26 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     super(resourceName);
   }
 
-  add(item: T): Promise<T> {
-    throw new Error('not implemented.');
+  async add(item: T): Promise<T> {
+    const result = await this.client
+      .db()
+      .collection(this.resourceName)
+      .insertOne(item);
+    console.log('result: ', result);
+    return item;
   }
 
-  get(query: CrudityQueryString, pageSize: number): Promise<Partial<T>[]> {
-    throw new Error('not implemented.');
+  async get(
+    query: CrudityQueryString,
+    pageSize: number
+  ): Promise<Partial<T>[]> {
+    const result = await this.client
+      .db()
+      .collection(this.resourceName)
+      .find({})
+      .toArray();
+    console.log('result: ', result);
+    return result as T[];
   }
 
   getOne(id: string): Promise<T | undefined> {
@@ -39,7 +53,11 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     throw new Error('not implemented.');
   }
 
-  async start(): Promise<void> {}
+  async start(): Promise<void> {
+    await this.client.connect();
+  }
 
-  async stop(): Promise<void> {}
+  async stop(): Promise<void> {
+    await this.client.close();
+  }
 }

@@ -34,7 +34,7 @@ export const crudity = <T extends Idable>(
       console.log(
         `about to start crudity service for resource ${resourceName}(${options.storage.type})`
       );
-      await crudService.start();
+      await crudService.init();
       console.log(
         `crudity service for resource ${resourceName}(${options.storage.type}) started with success.`
       );
@@ -48,7 +48,7 @@ export const crudity = <T extends Idable>(
     console.log(
       `about to stop crudity service for resource ${resourceName}(${options.storage.type})`
     );
-    await crudService.stop();
+    await crudService.finalize();
     console.log(
       `crudity service for resource ${resourceName}(${options.storage.type}) stopped with success.`
     );
@@ -87,7 +87,7 @@ export const crudity = <T extends Idable>(
           return;
         }
         const t: T = req.body;
-        const newT = crudService.add(t);
+        const newT = await crudService.add(t);
         res.status(201).json(newT);
       } catch (err) {
         manageError(err, res);
@@ -96,6 +96,7 @@ export const crudity = <T extends Idable>(
   });
 
   app.get('/', (req, res) => {
+    console.log('app.get');
     (async () => {
       try {
         const query = req.query as unknown as CrudityQueryString;
@@ -105,6 +106,7 @@ export const crudity = <T extends Idable>(
           res.status(400).end('queryString not well formatted: ' + e);
           return;
         }
+        console.log('about to call get');
         const array = await crudService.get(query, options.pageSize);
         console.log('array: ', array);
         res.json(array);
@@ -194,6 +196,10 @@ export const crudity = <T extends Idable>(
         manageError(err, res);
       }
     })();
+  });
+
+  app.use((req, res) => {
+    res.status(405).end();
   });
 
   return app;

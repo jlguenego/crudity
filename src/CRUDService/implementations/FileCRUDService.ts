@@ -134,7 +134,6 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
       encoding: 'utf-8',
     });
     this.array = JSON.parse(str);
-    await super.start();
   }
 
   async stop(): Promise<void> {
@@ -142,6 +141,6 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     await firstValueFrom(
       this.writeFileStatus$.pipe(filter(status => status === Status.NO_ORDER))
     );
-    await super.stop();
+    console.log('file closed');
   }
 }

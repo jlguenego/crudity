@@ -8,12 +8,14 @@ export abstract class CRUDService<T extends Idable> extends EventEmitter {
   }
   isStarted = false;
 
-  async start(): Promise<void> {
+  async init(): Promise<void> {
+    await this.start();
     this.isStarted = true;
     this.emit('started');
   }
 
-  async stop(): Promise<void> {
+  async finalize(): Promise<void> {
+    await this.stop();
     this.isStarted = false;
     this.emit('stopped');
   }
@@ -28,4 +30,6 @@ export abstract class CRUDService<T extends Idable> extends EventEmitter {
   abstract remove(ids: string[]): Promise<void>;
   abstract removeAll(): Promise<void>;
   abstract rewrite(arg0: T): Promise<T>;
+  abstract start(): Promise<void>;
+  abstract stop(): Promise<void>;
 }

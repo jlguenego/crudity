@@ -26,15 +26,31 @@ export class WebServer {
       next();
     });
 
+    const rootEndPoint =
+      this.options.rootEndPoint === '/' ? '' : this.options.rootEndPoint;
+
     for (const resource of Object.keys(this.options.resources)) {
-      const rootEndPoint =
-        this.options.rootEndPoint === '/' ? '' : this.options.rootEndPoint;
       console.log('rootEndPoint: ', rootEndPoint);
       app.use(
         rootEndPoint + '/' + resource,
         crudity(this.server, resource, this.options.resources[resource])
       );
     }
+    app.get(this.options.rootEndPoint, (req, res) => {
+      const resources: {[resourceName: string]: string} = {};
+      for (const resource of Object.keys(this.options.resources)) {
+        const url =
+          req.protocol +
+          '://' +
+          req.get('host') +
+          rootEndPoint +
+          '/' +
+          resource;
+        resources[resource] = url;
+      }
+      res.json(resources);
+    });
+
     app.use(express.static(this.options.publicDir));
     app.use(serveIndex(this.options.publicDir));
     this.app = app;
