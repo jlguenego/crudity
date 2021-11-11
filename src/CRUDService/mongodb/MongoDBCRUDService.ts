@@ -2,7 +2,7 @@ import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
-import {MongoClient} from 'mongodb';
+import {MongoClient, ObjectId} from 'mongodb';
 import {renameId, renameIdForArray} from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
@@ -37,8 +37,19 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     return renameIdForArray<T>(result);
   }
 
-  getOne(id: string): Promise<T | undefined> {
-    throw new Error('not implemented.');
+  async getOne(id: string): Promise<T | undefined> {
+    const objectId = new ObjectId(id);
+    const result = await this.client
+      .db()
+      .collection(this.resourceName)
+      .findOne({_id: objectId});
+    console.log('result: ', result);
+    if (!result) {
+      throw new Error('not found');
+    }
+    const result2 = renameId<T>(result);
+    console.log('result2: ', result2);
+    return result2;
   }
 
   patch(id: string, body: Partial<T>): Promise<T> {

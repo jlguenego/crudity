@@ -121,7 +121,7 @@ export const crudity = <T extends Idable>(
     (async () => {
       try {
         const id = req.params.id;
-        const t = crudService.getOne(id);
+        const t = await crudService.getOne(id);
         if (!t) {
           res.status(404).end();
           return;
