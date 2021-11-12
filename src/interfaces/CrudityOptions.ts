@@ -3,6 +3,7 @@ import {MongoClientOptions} from 'mongodb';
 export interface CrudityOptions {
   pageSize: number;
   storage: StorageOptions;
+  delay: number;
 }
 
 export type StorageOptions = FileStorageOptions | MongoDBStorageOptions;

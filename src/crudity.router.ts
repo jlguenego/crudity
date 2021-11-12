@@ -12,6 +12,7 @@ const defaultOptions: CrudityOptions = {
     type: 'file',
     dataDir: './data',
   },
+  delay: 0,
 };
 
 const manageError = (err: unknown, res: Response) => {
@@ -69,7 +70,9 @@ export const crudity = <T extends Idable>(
 
   app.use((req, res, next) => {
     console.log('crudity req.url', req.url);
-    next();
+    setTimeout(() => {
+      next();
+    }, options.delay);
   });
 
   app.use(express.json());

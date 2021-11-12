@@ -3,7 +3,8 @@
   "publicDir": "./public",
   "resources": {
     "articles": {
-      "pageSize": 10
+      "pageSize": 10,
+      "delay": 4000
     },
     "users": {
       "pageSize": 15,
