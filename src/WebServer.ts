@@ -23,9 +23,21 @@ export class WebServer {
   app: Express;
   server: Server;
   constructor(options: Partial<WebServerOptions> = {}) {
-    const crudityOpts = require(path.resolve(process.cwd(), './crudity'));
+    const crudityConfigFile = path.resolve(process.cwd(), './crudity');
+    let crudityOpts = {};
+    try {
+      crudityOpts = require(crudityConfigFile);
+    } catch (err) {
+      console.log(`No crudity conf detected (should be ${crudityConfigFile}).`);
+    }
     Object.assign(this.options, crudityOpts, options);
-    console.log('this.options: ', this.options);
+    console.log(
+      `Using the following options: \n${JSON.stringify(
+        this.options,
+        undefined,
+        2
+      )}`
+    );
     const app = express();
     this.server = createServer(app);
 
