@@ -1,5 +1,6 @@
 import express, {Express} from 'express';
 import {createServer, Server} from 'http';
+import morgan from 'morgan';
 import path from 'path';
 import serveIndex from 'serve-index';
 import {crudity} from './crudity.router';
@@ -21,10 +22,7 @@ export class WebServer {
     const app = express();
     this.server = createServer(app);
 
-    app.use((req, res, next) => {
-      console.log('req.url', req.url);
-      next();
-    });
+    app.use(morgan('tiny'));
 
     const rootEndPoint =
       this.options.rootEndPoint === '/' ? '' : this.options.rootEndPoint;
