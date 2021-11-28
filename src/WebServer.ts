@@ -78,13 +78,12 @@ export class WebServer {
 
   start(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
+      this.server.once('error', reject);
       this.server.listen(this.options.port, () => {
         console.log(`Server started on port ${this.options.port}`);
         this.server.off('error', reject);
         resolve();
       });
-
-      this.server.once('error', reject);
     });
   }
 
