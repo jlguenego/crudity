@@ -1,6 +1,7 @@
 {
   "port": 3500,
   "publicDir": "./public",
+  "cors": true,
   "resources": {
     "articles": {
       "pageSize": 10,

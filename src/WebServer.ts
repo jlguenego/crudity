@@ -5,12 +5,19 @@ import path from 'path';
 import serveIndex from 'serve-index';
 import {crudity} from './crudity.router';
 import {WebServerOptions} from './interfaces/WebServerOptions';
+import cors from 'cors';
 
 export class WebServer {
   options: WebServerOptions = {
     port: 3000,
+    cors: true,
     publicDir: './public',
-    resources: {},
+    resources: {
+      articles: {
+        pageSize: 10,
+        delay: 500,
+      },
+    },
     rootEndPoint: '/api',
   };
   app: Express;
@@ -22,6 +29,9 @@ export class WebServer {
     const app = express();
     this.server = createServer(app);
 
+    if (this.options.cors) {
+      app.use(cors());
+    }
     app.use(morgan('tiny'));
 
     const rootEndPoint =
