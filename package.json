@@ -1,6 +1,6 @@
 {
   "name": "crudity",
-  "version": "2.0.0-alpha",
+  "version": "2.0.1",
   "description": "A production ready CRUD backend server and node http middleware, working with files/mongodb/etc.",
   "bin": "./build/src/bin/crudity.js",
   "main": "build/src/index.js",
@@ -31,7 +31,8 @@
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "posttest": "npm run lint",
+    "release": "standard-version"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
@@ -46,6 +47,7 @@
     "mocha": "^9.1.3",
     "nodemon": "^2.0.14",
     "nyc": "^15.1.0",
+    "standard-version": "^9.3.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
   },
