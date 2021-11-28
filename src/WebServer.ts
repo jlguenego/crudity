@@ -16,7 +16,7 @@ export class WebServer {
   app: Express;
   server: Server;
   constructor(options: Partial<WebServerOptions> = {}) {
-    const crudityOpts = require(path.resolve(process.cwd(), './.crudity'));
+    const crudityOpts = require(path.resolve(process.cwd(), './crudity'));
     Object.assign(this.options, crudityOpts, options);
     console.log('this.options: ', this.options);
     const app = express();
