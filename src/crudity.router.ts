@@ -26,7 +26,7 @@ export const crudity = <T extends Idable>(
   opts: Partial<CrudityOptions> = {}
 ) => {
   const options = {...defaultOptions, ...opts};
-  console.log('crudity options: ', options);
+  console.log(`crudity options for resource "${resourceName}": `, options);
 
   const crudService = CRUDServiceFactory.get<T>(resourceName, options.storage);
 
