@@ -311,6 +311,7 @@
         "FileStorageOptions": {
             "properties": {
                 "dataDir": {
+                    "description": "Directory where to store the file. The filename will be <resourcename>.json.",
                     "type": "string"
                 },
                 "type": {
@@ -1083,7 +1084,8 @@
         "MongoDBStorageOptions": {
             "properties": {
                 "opts": {
-                    "$ref": "#/definitions/MongoClientOptions"
+                    "$ref": "#/definitions/MongoClientOptions",
+                    "description": "MongoClientOptions. See the MongoClient NodeJS drivers options."
                 },
                 "type": {
                     "enum": [
@@ -1092,6 +1094,7 @@
                     "type": "string"
                 },
                 "uri": {
+                    "description": "MongoDB URI connection string.",
                     "type": "string"
                 }
             },
@@ -1559,9 +1562,13 @@
         "Partial<CrudityOptions>": {
             "properties": {
                 "delay": {
+                    "default": 0,
+                    "description": "milliseconds of time before sending back an HTTP response (for testing purpose).",
                     "type": "number"
                 },
                 "pageSize": {
+                    "default": 15,
+                    "description": "Size for pagination.",
                     "type": "number"
                 },
                 "storage": {
@@ -1572,7 +1579,9 @@
                         {
                             "$ref": "#/definitions/MongoDBStorageOptions"
                         }
-                    ]
+                    ],
+                    "default": "{\ntype: 'file',\ndataDir: './data',\n}",
+                    "description": "Storage options object (file storage or mongodb storage)"
                 }
             },
             "type": "object"
