@@ -16,5 +16,5 @@ export interface FileStorageOptions {
 export interface MongoDBStorageOptions {
   type: 'mongodb';
   uri: string;
-  opts: MongoClientOptions;
+  opts?: MongoClientOptions;
 }
