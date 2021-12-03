@@ -1574,10 +1574,38 @@
                 "storage": {
                     "anyOf": [
                         {
-                            "$ref": "#/definitions/FileStorageOptions"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/FileStorageOptions"
+                                },
+                                {
+                                    "properties": {
+                                        "type": {
+                                            "default": "'file'",
+                                            "description": "Storage type (ex: file, mongodb, etc.).",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            ]
                         },
                         {
-                            "$ref": "#/definitions/MongoDBStorageOptions"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/MongoDBStorageOptions"
+                                },
+                                {
+                                    "properties": {
+                                        "type": {
+                                            "default": "'file'",
+                                            "description": "Storage type (ex: file, mongodb, etc.).",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            ]
                         }
                     ],
                     "default": "{\ntype: 'file',\ndataDir: './data',\n}",

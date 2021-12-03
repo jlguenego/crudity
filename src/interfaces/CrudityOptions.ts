@@ -24,7 +24,14 @@ export interface CrudityOptions {
   delay: number;
 }
 
-export type StorageOptions = FileStorageOptions | MongoDBStorageOptions;
+export type StorageOptions = (FileStorageOptions | MongoDBStorageOptions) & {
+  /**
+   * Storage type (ex: file, mongodb, etc.).
+   *
+   * @default 'file'
+   */
+  type: string;
+};
 
 export interface FileStorageOptions {
   type: 'file';
