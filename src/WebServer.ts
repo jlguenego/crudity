@@ -6,6 +6,7 @@ import serveIndex from 'serve-index';
 import {crudity} from './crudity.router';
 import {WebServerOptions} from './interfaces/WebServerOptions';
 import cors from 'cors';
+import {CrudityConsole} from './CrudityConsole';
 
 export class WebServer {
   options: WebServerOptions = {
@@ -19,9 +20,12 @@ export class WebServer {
       },
     },
     rootEndPoint: '/api',
+    enableLogs: true,
   };
   app: Express;
   server: Server;
+  console: CrudityConsole;
+
   constructor(options: Partial<WebServerOptions> = {}) {
     const crudityConfigFile = path.resolve(process.cwd(), './crudity');
     let crudityOpts = {};
@@ -33,7 +37,8 @@ export class WebServer {
       );
     }
     Object.assign(this.options, crudityOpts, options);
-    console.log(
+    this.console = new CrudityConsole(this.options.enableLogs);
+    this.console.log(
       `Using the following options: \n${JSON.stringify(
         this.options,
         undefined,
@@ -46,13 +51,14 @@ export class WebServer {
     if (this.options.cors) {
       app.use(cors());
     }
-    app.use(morgan('tiny'));
+    if (this.options.enableLogs) {
+      app.use(morgan('tiny'));
+    }
 
     const rootEndPoint =
       this.options.rootEndPoint === '/' ? '' : this.options.rootEndPoint;
 
     for (const resource of Object.keys(this.options.resources)) {
-      console.log('rootEndPoint: ', rootEndPoint);
       app.use(
         rootEndPoint + '/' + resource,
         crudity(this.server, resource, this.options.resources[resource])
@@ -79,10 +85,11 @@ export class WebServer {
   }
 
   start(): Promise<void> {
+    this.console.log('starting crudity...');
     return new Promise<void>((resolve, reject) => {
       this.server.once('error', reject);
       this.server.listen(this.options.port, () => {
-        console.log(`Server started on port ${this.options.port}`);
+        this.console.log(`Server started on port ${this.options.port}`);
         this.server.off('error', reject);
         resolve();
       });

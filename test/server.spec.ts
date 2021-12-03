@@ -18,6 +18,7 @@ describe('Server', () => {
         },
       },
     },
+    enableLogs: false,
   });
   before(async () => {
     await webServer.start();
@@ -52,12 +53,10 @@ describe('Server', () => {
         },
       })
       .json<Article[]>();
-    console.log('newArticles: ', newArticles);
     assert.deepStrictEqual(newArticles.length, 2);
     const articles = await got
       .get(`http://localhost:${port}/api/articles`)
       .json<Article[]>();
-    console.log('articles: ', articles);
     assert.deepStrictEqual(articles.length, 2);
   });
 });

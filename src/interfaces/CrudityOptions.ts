@@ -18,6 +18,13 @@ export interface CrudityOptions {
    * @default 0
    */
   delay: number;
+
+  /**
+   * Enable crudity logging.
+   *
+   * @default true
+   */
+  enableLogs: boolean;
 }
 
 export type StorageOptions = (FileStorageOptions | MongoDBStorageOptions) & {

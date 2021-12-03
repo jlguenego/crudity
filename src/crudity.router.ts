@@ -1,5 +1,6 @@
 import express, {Response, Router} from 'express';
 import {Server} from 'http';
+import {CrudityConsole} from './CrudityConsole';
 import {CRUDServiceFactory} from './CRUDService/CRUDServiceFactory';
 import {CrudityOptions} from './interfaces/CrudityOptions';
 import {CrudityQueryString} from './interfaces/CrudityQueryString';
@@ -13,6 +14,7 @@ const defaultOptions: CrudityOptions = {
     dataDir: './data',
   },
   delay: 0,
+  enableLogs: false,
 };
 
 const manageError = (err: unknown, res: Response) => {
@@ -26,6 +28,7 @@ export const crudity = <T extends Idable>(
   opts: Partial<CrudityOptions> = {}
 ) => {
   const options = {...defaultOptions, ...opts};
+  const console = new CrudityConsole(options.enableLogs);
   console.log(`crudity options for resource "${resourceName}": `, options);
 
   const crudService = CRUDServiceFactory.get<T>(resourceName, options.storage);

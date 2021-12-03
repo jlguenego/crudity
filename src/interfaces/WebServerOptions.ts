@@ -33,4 +33,11 @@ export interface WebServerOptions {
    * @default '/api'
    */
   rootEndPoint: string;
+
+  /**
+   * Enable crudity logging.
+   *
+   * @default true
+   */
+  enableLogs: boolean;
 }
