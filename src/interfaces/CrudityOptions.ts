@@ -10,10 +10,6 @@ export interface CrudityOptions {
   /**
    * Storage options object (file storage or mongodb storage)
    *
-   * @default {
-   *   type: 'file',
-   *   dataDir: './data',
-   * }
    */
   storage: StorageOptions;
   /**

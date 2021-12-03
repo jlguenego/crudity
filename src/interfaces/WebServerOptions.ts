@@ -23,12 +23,6 @@ export interface WebServerOptions {
   /**
    * Object that specifies all the resource names and their config.
    *
-   * @default {
-      articles: {
-        pageSize: 10,
-        delay: 500,
-      },
-    }
    */
   resources: {
     [name: string]: Partial<CrudityOptions>;
