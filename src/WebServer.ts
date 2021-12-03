@@ -28,7 +28,9 @@ export class WebServer {
     try {
       crudityOpts = require(crudityConfigFile);
     } catch (err) {
-      console.log(`No crudity conf detected (should be ${crudityConfigFile}).`);
+      console.log(
+        `No crudity conf detected. It should be "${crudityConfigFile}.json".`
+      );
     }
     Object.assign(this.options, crudityOpts, options);
     console.log(
