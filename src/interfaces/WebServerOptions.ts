@@ -21,6 +21,8 @@ export interface WebServerOptions {
   publicDir: string;
 
   /**
+   * Object that specifies all the resource names and their config.
+   *
    * @default {
       articles: {
         pageSize: 10,

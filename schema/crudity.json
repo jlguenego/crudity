@@ -1762,6 +1762,7 @@
                 "$ref": "#/definitions/Partial<CrudityOptions>"
             },
             "default": "{\narticles: {\npageSize: 10,\ndelay: 500,\n},\n}",
+            "description": "Object that specifies all the resource names and their config.",
             "type": "object"
         },
         "rootEndPoint": {
