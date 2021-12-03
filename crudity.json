@@ -1,4 +1,5 @@
 {
+  "$schema": "./schema/crudity.json",
   "port": 3500,
   "publicDir": "./public",
   "cors": true,

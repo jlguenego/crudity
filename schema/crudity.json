@@ -1,1766 +1,1708 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
-        "Auth": {
-            "properties": {
-                "password": {
-                    "description": "The password for auth",
-                    "type": "string"
-                },
-                "username": {
-                    "description": "The username for auth",
-                    "type": "string"
-                }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Auth": {
+      "properties": {
+        "password": {
+          "description": "The password for auth",
+          "type": "string"
+        },
+        "username": {
+          "description": "The username for auth",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "AuthMechanism": {
+      "enum": [
+        "DEFAULT",
+        "GSSAPI",
+        "MONGODB-AWS",
+        "MONGODB-CR",
+        "MONGODB-X509",
+        "PLAIN",
+        "SCRAM-SHA-1",
+        "SCRAM-SHA-256"
+      ],
+      "type": "string"
+    },
+    "AuthMechanismProperties": {
+      "properties": {
+        "AWS_SESSION_TOKEN": {
+          "type": "string"
+        },
+        "CANONICALIZE_HOST_NAME": {
+          "type": "boolean"
+        },
+        "SERVICE_NAME": {
+          "type": "string"
+        },
+        "SERVICE_REALM": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "AutoEncrypter": {
+      "type": "object"
+    },
+    "AutoEncryptionOptions": {
+      "properties": {
+        "bypassAutoEncryption": {
+          "description": "Allows the user to bypass auto encryption, maintaining implicit decryption",
+          "type": "boolean"
+        },
+        "extraOptions": {
+          "properties": {
+            "mongocryptdBypassSpawn": {
+              "description": "If true, autoEncryption will not attempt to spawn a mongocryptd before connecting",
+              "type": "boolean"
             },
-            "type": "object"
-        },
-        "AuthMechanism": {
-            "enum": [
-                "DEFAULT",
-                "GSSAPI",
-                "MONGODB-AWS",
-                "MONGODB-CR",
-                "MONGODB-X509",
-                "PLAIN",
-                "SCRAM-SHA-1",
-                "SCRAM-SHA-256"
-            ],
-            "type": "string"
-        },
-        "AuthMechanismProperties": {
-            "properties": {
-                "AWS_SESSION_TOKEN": {
-                    "type": "string"
-                },
-                "CANONICALIZE_HOST_NAME": {
-                    "type": "boolean"
-                },
-                "SERVICE_NAME": {
-                    "type": "string"
-                },
-                "SERVICE_REALM": {
-                    "type": "string"
-                }
+            "mongocryptdSpawnArgs": {
+              "description": "Command line arguments to use when auto-spawning a mongocryptd",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
             },
-            "type": "object"
-        },
-        "AutoEncrypter": {
-            "type": "object"
-        },
-        "AutoEncryptionOptions": {
-            "properties": {
-                "bypassAutoEncryption": {
-                    "description": "Allows the user to bypass auto encryption, maintaining implicit decryption",
-                    "type": "boolean"
-                },
-                "extraOptions": {
-                    "properties": {
-                        "mongocryptdBypassSpawn": {
-                            "description": "If true, autoEncryption will not attempt to spawn a mongocryptd before connecting",
-                            "type": "boolean"
-                        },
-                        "mongocryptdSpawnArgs": {
-                            "description": "Command line arguments to use when auto-spawning a mongocryptd",
-                            "items": {
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        "mongocryptdSpawnPath": {
-                            "description": "The path to the mongocryptd executable on the system",
-                            "type": "string"
-                        },
-                        "mongocryptdURI": {
-                            "description": "A local process the driver communicates with to determine how to encrypt values in a command.\nDefaults to \"mongodb://%2Fvar%2Fmongocryptd.sock\" if domain sockets are available or \"mongodb://localhost:27020\" otherwise",
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
-                "keyVaultClient": {
-                    "$ref": "#/definitions/MongoClient",
-                    "description": "A `MongoClient` used to fetch keys from a key vault"
-                },
-                "keyVaultNamespace": {
-                    "description": "The namespace where keys are stored in the key vault",
-                    "type": "string"
-                },
-                "kmsProviders": {
-                    "description": "Configuration options that are used by specific KMS providers during key generation, encryption, and decryption.",
-                    "properties": {
-                        "aws": {
-                            "description": "Configuration options for using 'aws' as your KMS provider",
-                            "properties": {
-                                "accessKeyId": {
-                                    "description": "The access key used for the AWS KMS provider",
-                                    "type": "string"
-                                },
-                                "secretAccessKey": {
-                                    "description": "The secret access key used for the AWS KMS provider",
-                                    "type": "string"
-                                },
-                                "sessionToken": {
-                                    "description": "An optional AWS session token that will be used as the\nX-Amz-Security-Token header for AWS requests.",
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        "azure": {
-                            "description": "Configuration options for using 'azure' as your KMS provider",
-                            "properties": {
-                                "clientId": {
-                                    "description": "The client ID to authenticate a registered application",
-                                    "type": "string"
-                                },
-                                "clientSecret": {
-                                    "description": "The client secret to authenticate a registered application",
-                                    "type": "string"
-                                },
-                                "identityPlatformEndpoint": {
-                                    "description": "If present, a host with optional port. E.g. \"example.com\" or \"example.com:443\".\nThis is optional, and only needed if customer is using a non-commercial Azure instance\n(e.g. a government or China account, which use different URLs).\nDefaults to \"login.microsoftonline.com\"",
-                                    "type": "string"
-                                },
-                                "tenantId": {
-                                    "description": "The tenant ID identifies the organization for the account",
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        "gcp": {
-                            "description": "Configuration options for using 'gcp' as your KMS provider",
-                            "properties": {
-                                "email": {
-                                    "description": "The service account email to authenticate",
-                                    "type": "string"
-                                },
-                                "endpoint": {
-                                    "description": "If present, a host with optional port. E.g. \"example.com\" or \"example.com:443\".\nDefaults to \"oauth2.googleapis.com\"",
-                                    "type": "string"
-                                },
-                                "privateKey": {
-                                    "anyOf": [
-                                        {
-                                            "additionalProperties": false,
-                                            "patternProperties": {
-                                                "^[0-9]+$": {
-                                                    "type": "number"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        {
-                                            "type": "string"
-                                        }
-                                    ],
-                                    "description": "A PKCS#8 encrypted key. This can either be a base64 string or a binary representation"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        "local": {
-                            "description": "Configuration options for using 'local' as your KMS provider",
-                            "properties": {
-                                "key": {
-                                    "anyOf": [
-                                        {
-                                            "additionalProperties": false,
-                                            "patternProperties": {
-                                                "^[0-9]+$": {
-                                                    "type": "number"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        {
-                                            "type": "string"
-                                        }
-                                    ],
-                                    "description": "The master key used to encrypt/decrypt data keys.\nA 96-byte long Buffer or base64 encoded string."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    },
-                    "type": "object"
-                },
-                "options": {
-                    "properties": {
-                        "logger": {
-                            "description": "An optional hook to catch logging messages from the underlying encryption engine",
-                            "type": "object"
-                        }
-                    },
-                    "type": "object"
-                },
-                "schemaMap": {
-                    "$ref": "#/definitions/Document",
-                    "description": "A map of namespaces to a local JSON schema for encryption\n\n**NOTE**: Supplying options.schemaMap provides more security than relying on JSON Schemas obtained from the server.\nIt protects against a malicious server advertising a false JSON Schema, which could trick the client into sending decrypted data that should be encrypted.\nSchemas supplied in the schemaMap only apply to configuring automatic encryption for client side encryption.\nOther validation rules in the JSON schema will not be enforced by the driver and will result in an error."
-                }
+            "mongocryptdSpawnPath": {
+              "description": "The path to the mongocryptd executable on the system",
+              "type": "string"
             },
-            "type": "object"
+            "mongocryptdURI": {
+              "description": "A local process the driver communicates with to determine how to encrypt values in a command.\nDefaults to \"mongodb://%2Fvar%2Fmongocryptd.sock\" if domain sockets are available or \"mongodb://localhost:27020\" otherwise",
+              "type": "string"
+            }
+          },
+          "type": "object"
         },
-        "BSONSerializeOptions": {
-            "description": "BSON Serialization options.",
-            "properties": {
-                "bsonRegExp": {
-                    "description": "return BSON regular expressions as BSONRegExp instances.",
-                    "type": "boolean"
+        "keyVaultClient": {
+          "$ref": "#/definitions/MongoClient",
+          "description": "A `MongoClient` used to fetch keys from a key vault"
+        },
+        "keyVaultNamespace": {
+          "description": "The namespace where keys are stored in the key vault",
+          "type": "string"
+        },
+        "kmsProviders": {
+          "description": "Configuration options that are used by specific KMS providers during key generation, encryption, and decryption.",
+          "properties": {
+            "aws": {
+              "description": "Configuration options for using 'aws' as your KMS provider",
+              "properties": {
+                "accessKeyId": {
+                  "description": "The access key used for the AWS KMS provider",
+                  "type": "string"
                 },
-                "checkKeys": {
-                    "description": "the serializer will check if keys are valid.",
-                    "type": "boolean"
+                "secretAccessKey": {
+                  "description": "The secret access key used for the AWS KMS provider",
+                  "type": "string"
                 },
-                "fieldsAsRaw": {
-                    "$ref": "#/definitions/Document",
-                    "description": "allow to specify if there what fields we wish to return as unserialized raw buffer."
-                },
-                "ignoreUndefined": {
-                    "description": "serialize will not emit undefined fields **(default:true)**",
-                    "type": "boolean"
-                },
-                "promoteBuffers": {
-                    "description": "when deserializing a Binary will return it as a node.js Buffer instance.",
-                    "type": "boolean"
-                },
-                "promoteLongs": {
-                    "description": "when deserializing a Long will fit it into a Number if it's smaller than 53 bits",
-                    "type": "boolean"
-                },
-                "promoteValues": {
-                    "description": "when deserializing will promote BSON values to their Node.js closest equivalent types.",
-                    "type": "boolean"
-                },
-                "raw": {
-                    "description": "Return BSON filled buffers from operations",
-                    "type": "boolean"
-                },
-                "serializeFunctions": {
-                    "description": "serialize the javascript functions **(default:false)**.",
-                    "type": "boolean"
+                "sessionToken": {
+                  "description": "An optional AWS session token that will be used as the\nX-Amz-Security-Token header for AWS requests.",
+                  "type": "string"
                 }
+              },
+              "type": "object"
             },
-            "type": "object"
-        },
-        "ClientMetadata": {
-            "properties": {
-                "application": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
+            "azure": {
+              "description": "Configuration options for using 'azure' as your KMS provider",
+              "properties": {
+                "clientId": {
+                  "description": "The client ID to authenticate a registered application",
+                  "type": "string"
                 },
-                "driver": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "version": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
+                "clientSecret": {
+                  "description": "The client secret to authenticate a registered application",
+                  "type": "string"
                 },
-                "os": {
-                    "properties": {
-                        "architecture": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "$ref": "#/definitions/global.NodeJS.Platform"
-                        },
-                        "type": {
-                            "type": "string"
-                        },
-                        "version": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
+                "identityPlatformEndpoint": {
+                  "description": "If present, a host with optional port. E.g. \"example.com\" or \"example.com:443\".\nThis is optional, and only needed if customer is using a non-commercial Azure instance\n(e.g. a government or China account, which use different URLs).\nDefaults to \"login.microsoftonline.com\"",
+                  "type": "string"
                 },
-                "platform": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
+                "tenantId": {
+                  "description": "The tenant ID identifies the organization for the account",
+                  "type": "string"
                 }
+              },
+              "type": "object"
             },
-            "type": "object"
-        },
-        "Document": {
-            "additionalProperties": {},
-            "type": "object"
-        },
-        "DriverInfo": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "platform": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "FileStorageOptions": {
-            "properties": {
-                "dataDir": {
-                    "type": "string"
-                },
-                "type": {
-                    "enum": [
-                        "file"
-                    ],
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "HedgeOptions": {
-            "properties": {
-                "enabled": {
-                    "description": "Explicitly enable or disable hedged reads.",
-                    "type": "boolean"
-                }
-            },
-            "type": "object"
-        },
-        "HostAddress": {
-            "properties": {
-                "host": {
-                    "type": "string"
-                },
-                "isIPv6": {
-                    "type": "boolean"
-                },
-                "port": {
-                    "type": "number"
-                },
-                "socketPath": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "KeyObject": {
-            "properties": {
-                "passphrase": {
-                    "description": "Optional passphrase.",
-                    "type": "string"
-                },
-                "pem": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Private keys in PEM format."
-                }
-            },
-            "type": "object"
-        },
-        "Logger": {
-            "properties": {
-                "className": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "LoggerLevel": {
-            "enum": [
-                "debug",
-                "error",
-                "info",
-                "warn"
-            ],
-            "type": "string"
-        },
-        "MongoClient": {
-            "description": "The **MongoClient** class is a class that allows for making Connections to MongoDB.",
-            "properties": {
-                "autoEncrypter": {
-                    "$ref": "#/definitions/AutoEncrypter"
-                },
-                "bsonOptions": {
-                    "$ref": "#/definitions/BSONSerializeOptions"
-                },
-                "logger": {
-                    "$ref": "#/definitions/Logger"
-                },
-                "options": {
-                    "$ref": "#/definitions/MongoOptions"
-                },
-                "readConcern": {
-                    "$ref": "#/definitions/ReadConcern"
-                },
-                "readPreference": {
-                    "$ref": "#/definitions/ReadPreference"
-                },
-                "serverApi": {
-                    "$ref": "#/definitions/ServerApi"
-                },
-                "writeConcern": {
-                    "$ref": "#/definitions/WriteConcern"
-                }
-            },
-            "type": "object"
-        },
-        "MongoClientOptions": {
-            "description": "Describes all possible URI query options for the mongo client",
-            "properties": {
-                "ALPNProtocols": {
-                    "anyOf": [
-                        {
-                            "items": {
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "additionalProperties": false,
-                                "patternProperties": {
-                                    "^[0-9]+$": {
-                                        "type": "number"
-                                    }
-                                },
-                                "type": "object"
-                            },
-                            "type": "array"
-                        }
-                    ],
-                    "description": "An array of strings or a Buffer naming possible ALPN protocols.\n(Protocols should be ordered by their priority.)"
-                },
-                "appName": {
-                    "description": "The name of the application that created this MongoClient instance. MongoDB 3.4 and newer will print this value in the server log upon establishing each connection. It is also recorded in the slow query log and profile collections",
-                    "type": "string"
-                },
-                "auth": {
-                    "$ref": "#/definitions/Auth",
-                    "description": "The auth settings for when connection to server."
-                },
-                "authMechanism": {
-                    "$ref": "#/definitions/AuthMechanism",
-                    "description": "Specify the authentication mechanism that MongoDB will use to authenticate the connection."
-                },
-                "authMechanismProperties": {
-                    "$ref": "#/definitions/AuthMechanismProperties",
-                    "description": "Specify properties for the specified authMechanism as a comma-separated list of colon-separated key-value pairs."
-                },
-                "authSource": {
-                    "description": "Specify the database name associated with the user’s credentials.",
-                    "type": "string"
-                },
-                "autoEncryption": {
-                    "$ref": "#/definitions/AutoEncryptionOptions",
-                    "description": "Optionally enable client side auto encryption"
-                },
-                "bsonRegExp": {
-                    "description": "return BSON regular expressions as BSONRegExp instances.",
-                    "type": "boolean"
-                },
-                "ca": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Optionally override the trusted CA certificates. Default is to trust\nthe well-known CAs curated by Mozilla. Mozilla's CAs are completely\nreplaced when CAs are explicitly specified using this option."
-                },
-                "cert": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Cert chains in PEM format. One cert chain should be provided per\nprivate key. Each cert chain should consist of the PEM formatted\ncertificate for a provided private key, followed by the PEM\nformatted intermediate certificates (if any), in order, and not\nincluding the root CA (the root CA must be pre-known to the peer,\nsee ca). When providing multiple cert chains, they do not have to\nbe in the same order as their private keys in key. If the\nintermediate certificates are not provided, the peer will not be\nable to validate the certificate, and the handshake will fail."
-                },
-                "checkKeys": {
-                    "description": "the serializer will check if keys are valid.",
-                    "type": "boolean"
-                },
-                "checkServerIdentity": {
-                    "description": "Verifies the certificate `cert` is issued to `hostname`.\n\nReturns [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) object, populating it with `reason`, `host`, and `cert` on\nfailure. On success, returns [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type).\n\nThis function can be overwritten by providing alternative function as part of\nthe `options.checkServerIdentity` option passed to `tls.connect()`. The\noverwriting function can call `tls.checkServerIdentity()` of course, to augment\nthe checks done with additional verification.\n\nThis function is only called if the certificate passed all other checks, such as\nbeing issued by trusted CA (`options.ca`).",
-                    "type": "object"
-                },
-                "ciphers": {
-                    "description": "Cipher suite specification, replacing the default. For more\ninformation, see modifying the default cipher suite. Permitted\nciphers can be obtained via tls.getCiphers(). Cipher names must be\nuppercased in order for OpenSSL to accept them.",
-                    "type": "string"
-                },
-                "compressors": {
-                    "anyOf": [
-                        {
-                            "items": {
-                                "enum": [
-                                    "none",
-                                    "snappy",
-                                    "zlib"
-                                ],
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "An array or comma-delimited string of compressors to enable network compression for communication between this client and a mongod/mongos instance."
-                },
-                "connectTimeoutMS": {
-                    "description": "The time in milliseconds to attempt a connection before timing out.",
-                    "type": "number"
-                },
-                "crl": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "PEM formatted CRLs (Certificate Revocation Lists)."
-                },
-                "directConnection": {
-                    "description": "Allow a driver to force a Single topology type with a connection string containing one host",
-                    "type": "boolean"
-                },
-                "driverInfo": {
-                    "$ref": "#/definitions/DriverInfo",
-                    "description": "Allows a wrapping driver to amend the client metadata generated by the driver to include information about the wrapping driver"
-                },
-                "ecdhCurve": {
-                    "description": "A string describing a named curve or a colon separated list of curve\nNIDs or names, for example P-521:P-384:P-256, to use for ECDH key\nagreement. Set to auto to select the curve automatically. Use\ncrypto.getCurves() to obtain a list of available curve names. On\nrecent releases, openssl ecparam -list_curves will also display the\nname and description of each available elliptic curve. Default:\ntls.DEFAULT_ECDH_CURVE.",
-                    "type": "string"
-                },
-                "family": {
-                    "type": "number"
-                },
-                "fieldsAsRaw": {
-                    "$ref": "#/definitions/Document",
-                    "description": "allow to specify if there what fields we wish to return as unserialized raw buffer."
-                },
-                "forceServerObjectId": {
-                    "description": "Force server to assign `_id` values instead of driver",
-                    "type": "boolean"
-                },
-                "heartbeatFrequencyMS": {
-                    "description": "heartbeatFrequencyMS controls when the driver checks the state of the MongoDB deployment. Specify the interval (in milliseconds) between checks, counted from the end of the previous check until the beginning of the next one.",
-                    "type": "number"
-                },
-                "hints": {
-                    "type": "number"
-                },
-                "ignoreUndefined": {
-                    "description": "serialize will not emit undefined fields **(default:true)**",
-                    "type": "boolean"
-                },
-                "journal": {
-                    "description": "The journal write concern",
-                    "type": "boolean"
-                },
-                "keepAlive": {
-                    "description": "TCP Connection keep alive enabled",
-                    "type": "boolean"
-                },
-                "keepAliveInitialDelay": {
-                    "description": "The number of milliseconds to wait before initiating keepAlive on the TCP socket",
-                    "type": "number"
-                },
-                "key": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/KeyObject"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Private keys in PEM format. PEM allows the option of private keys\nbeing encrypted. Encrypted keys will be decrypted with\noptions.passphrase. Multiple keys using different algorithms can be\nprovided either as an array of unencrypted key strings or buffers,\nor an array of objects in the form {pem: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted keys will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
-                },
-                "loadBalanced": {
-                    "description": "Instruct the driver it is connecting to a load balancer fronting a mongos like service",
-                    "type": "boolean"
-                },
-                "localAddress": {
-                    "type": "string"
-                },
-                "localPort": {
-                    "type": "number"
-                },
-                "localThresholdMS": {
-                    "description": "The size (in milliseconds) of the latency window for selecting among multiple suitable MongoDB instances.",
-                    "type": "number"
-                },
-                "logger": {
-                    "$ref": "#/definitions/Logger",
-                    "description": "Custom logger object"
-                },
-                "loggerLevel": {
-                    "$ref": "#/definitions/LoggerLevel",
-                    "description": "The logging level"
-                },
-                "lookup": {
-                    "type": "object"
-                },
-                "maxIdleTimeMS": {
-                    "description": "The maximum number of milliseconds that a connection can remain idle in the pool before being removed and closed.",
-                    "type": "number"
-                },
-                "maxPoolSize": {
-                    "description": "The maximum number of connections in the connection pool.",
-                    "type": "number"
-                },
-                "maxStalenessSeconds": {
-                    "description": "Specifies, in seconds, how stale a secondary can be before the client stops using it for read operations.",
-                    "type": "number"
-                },
-                "minDHSize": {
-                    "type": "number"
-                },
-                "minHeartbeatFrequencyMS": {
-                    "description": "Sets the minimum heartbeat frequency. In the event that the driver has to frequently re-check a server's availability, it will wait at least this long since the previous check to avoid wasted effort.",
-                    "type": "number"
-                },
-                "minPoolSize": {
-                    "description": "The minimum number of connections in the connection pool.",
-                    "type": "number"
-                },
-                "monitorCommands": {
-                    "description": "Enable command monitoring for this client",
-                    "type": "boolean"
-                },
-                "noDelay": {
-                    "description": "TCP Connection no delay",
-                    "type": "boolean"
-                },
-                "passphrase": {
-                    "description": "Shared passphrase used for a single private key and/or a PFX.",
-                    "type": "string"
-                },
-                "pfx": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/PxfObject"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "PFX or PKCS12 encoded private key and certificate chain. pfx is an\nalternative to providing key and cert individually. PFX is usually\nencrypted, if it is, passphrase will be used to decrypt it. Multiple\nPFX can be provided either as an array of unencrypted PFX buffers,\nor an array of objects in the form {buf: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted PFX will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
-                },
-                "pkFactory": {
-                    "$ref": "#/definitions/PkFactory",
-                    "description": "A primary key factory function for generation of custom `_id` keys"
-                },
-                "promiseLibrary": {
-                    "description": "A Promise library class the application wishes to use such as Bluebird, must be ES6 compatible"
-                },
-                "promoteBuffers": {
-                    "description": "when deserializing a Binary will return it as a node.js Buffer instance.",
-                    "type": "boolean"
-                },
-                "promoteLongs": {
-                    "description": "when deserializing a Long will fit it into a Number if it's smaller than 53 bits",
-                    "type": "boolean"
-                },
-                "promoteValues": {
-                    "description": "when deserializing will promote BSON values to their Node.js closest equivalent types.",
-                    "type": "boolean"
-                },
-                "raw": {
-                    "description": "Return document results as raw BSON buffers",
-                    "type": "boolean"
-                },
-                "readConcern": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/ReadConcern"
-                        },
-                        {
-                            "properties": {
-                                "level": {
-                                    "$ref": "#/definitions/ReadConcernLevel"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "enum": [
-                                "available",
-                                "linearizable",
-                                "local",
-                                "majority",
-                                "snapshot"
-                            ],
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Specify a read concern for the collection (only MongoDB 3.2 or higher supported)"
-                },
-                "readConcernLevel": {
-                    "$ref": "#/definitions/ReadConcernLevel",
-                    "description": "The level of isolation"
-                },
-                "readPreference": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/ReadPreference"
-                        },
-                        {
-                            "enum": [
-                                "nearest",
-                                "primary",
-                                "primaryPreferred",
-                                "secondary",
-                                "secondaryPreferred"
-                            ],
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Specifies the read preferences for this connection"
-                },
-                "readPreferenceTags": {
-                    "description": "Specifies the tags document as a comma-separated list of colon-separated key-value pairs.",
-                    "items": {
-                        "additionalProperties": {
-                            "type": "string"
-                        },
-                        "type": "object"
-                    },
-                    "type": "array"
-                },
-                "rejectUnauthorized": {
-                    "default": true,
-                    "description": "If true the server will reject any connection which is not\nauthorized with the list of supplied CAs. This option only has an\neffect if requestCert is true.",
-                    "type": "boolean"
-                },
-                "replicaSet": {
-                    "description": "Specifies the name of the replica set, if the mongod is a member of a replica set.",
-                    "type": "string"
-                },
-                "retryReads": {
-                    "description": "Enables retryable reads.",
-                    "type": "boolean"
-                },
-                "retryWrites": {
-                    "description": "Enable retryable writes.",
-                    "type": "boolean"
-                },
-                "secureContext": {
-                    "$ref": "#/definitions/SecureContext",
-                    "description": "An optional TLS context object from tls.createSecureContext()"
-                },
-                "secureProtocol": {
-                    "description": "Legacy mechanism to select the TLS protocol version to use, it does\nnot support independent control of the minimum and maximum version,\nand does not support limiting the protocol to TLSv1.3. Use\nminVersion and maxVersion instead. The possible values are listed as\nSSL_METHODS, use the function names as strings. For example, use\n'TLSv1_1_method' to force TLS version 1.1, or 'TLS_method' to allow\nany TLS protocol version up to TLSv1.3. It is not recommended to use\nTLS versions less than 1.2, but it may be required for\ninteroperability. Default: none, see minVersion.",
-                    "type": "string"
-                },
-                "serializeFunctions": {
-                    "description": "serialize the javascript functions **(default:false)**.",
-                    "type": "boolean"
-                },
-                "serverApi": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/ServerApi"
-                        },
-                        {
-                            "enum": [
-                                "1"
-                            ],
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Server API version"
-                },
-                "serverSelectionTimeoutMS": {
-                    "description": "Specifies how long (in milliseconds) to block for server selection before throwing an exception.",
-                    "type": "number"
-                },
-                "servername": {
-                    "type": "string"
-                },
-                "session": {
-                    "additionalProperties": false,
-                    "description": "An optional Buffer instance containing a TLS session.",
-                    "patternProperties": {
+            "gcp": {
+              "description": "Configuration options for using 'gcp' as your KMS provider",
+              "properties": {
+                "email": {
+                  "description": "The service account email to authenticate",
+                  "type": "string"
+                },
+                "endpoint": {
+                  "description": "If present, a host with optional port. E.g. \"example.com\" or \"example.com:443\".\nDefaults to \"oauth2.googleapis.com\"",
+                  "type": "string"
+                },
+                "privateKey": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "patternProperties": {
                         "^[0-9]+$": {
-                            "type": "number"
+                          "type": "number"
                         }
+                      },
+                      "type": "object"
                     },
-                    "type": "object"
-                },
-                "socketTimeoutMS": {
-                    "description": "The time in milliseconds to attempt a send or receive on a socket before the attempt times out.",
-                    "type": "number"
-                },
-                "ssl": {
-                    "description": "A boolean to enable or disables TLS/SSL for the connection. (The ssl option is equivalent to the tls option.)",
-                    "type": "boolean"
-                },
-                "sslCA": {
-                    "description": "SSL Certificate file path.",
-                    "type": "string"
-                },
-                "sslCRL": {
-                    "description": "SSL Certificate revocation list file path.",
-                    "type": "string"
-                },
-                "sslCert": {
-                    "description": "SSL Certificate file path.",
-                    "type": "string"
-                },
-                "sslKey": {
-                    "description": "SSL Key file file path.",
-                    "type": "string"
-                },
-                "sslPass": {
-                    "description": "SSL Certificate pass phrase.",
-                    "type": "string"
-                },
-                "sslValidate": {
-                    "description": "Validate mongod server certificate against Certificate Authority",
-                    "type": "boolean"
-                },
-                "tls": {
-                    "description": "Enables or disables TLS/SSL for the connection.",
-                    "type": "boolean"
-                },
-                "tlsAllowInvalidCertificates": {
-                    "description": "Bypasses validation of the certificates presented by the mongod/mongos instance",
-                    "type": "boolean"
-                },
-                "tlsAllowInvalidHostnames": {
-                    "description": "Disables hostname validation of the certificate presented by the mongod/mongos instance.",
-                    "type": "boolean"
-                },
-                "tlsCAFile": {
-                    "description": "Specifies the location of a local .pem file that contains the root certificate chain from the Certificate Authority. This file is used to validate the certificate presented by the mongod/mongos instance.",
-                    "type": "string"
-                },
-                "tlsCertificateFile": {
-                    "description": "Specifies the location of a local TLS Certificate",
-                    "type": "string"
-                },
-                "tlsCertificateKeyFile": {
-                    "description": "Specifies the location of a local .pem file that contains either the client's TLS/SSL certificate and key or only the client's TLS/SSL key when tlsCertificateFile is used to provide the certificate.",
-                    "type": "string"
-                },
-                "tlsCertificateKeyFilePassword": {
-                    "description": "Specifies the password to de-crypt the tlsCertificateKeyFile.",
-                    "type": "string"
-                },
-                "tlsInsecure": {
-                    "description": "Disables various certificate validations.",
-                    "type": "boolean"
-                },
-                "w": {
-                    "anyOf": [
-                        {
-                            "enum": [
-                                "majority"
-                            ],
-                            "type": "string"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ],
-                    "description": "The write concern w value"
-                },
-                "waitQueueTimeoutMS": {
-                    "description": "The maximum time in milliseconds that a thread can wait for a connection to become available.",
-                    "type": "number"
-                },
-                "wtimeoutMS": {
-                    "description": "The write concern timeout",
-                    "type": "number"
-                },
-                "zlibCompressionLevel": {
-                    "description": "An integer that specifies the compression level if using zlib for network compression.",
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9
-                    ],
-                    "type": "number"
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "A PKCS#8 encrypted key. This can either be a base64 string or a binary representation"
                 }
+              },
+              "type": "object"
             },
-            "type": "object"
-        },
-        "MongoCredentials": {
-            "description": "A representation of the credentials used by MongoDB",
-            "properties": {
-                "mechanism": {
-                    "$ref": "#/definitions/AuthMechanism",
-                    "description": "The method used to authenticate"
-                },
-                "mechanismProperties": {
-                    "$ref": "#/definitions/AuthMechanismProperties",
-                    "description": "Special properties used by some types of auth mechanisms"
-                },
-                "password": {
-                    "description": "The password used for authentication",
-                    "type": "string"
-                },
-                "source": {
-                    "description": "The database that the user should authenticate against",
-                    "type": "string"
-                },
-                "username": {
-                    "description": "The username used for authentication",
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "MongoDBStorageOptions": {
-            "properties": {
-                "opts": {
-                    "$ref": "#/definitions/MongoClientOptions"
-                },
-                "type": {
-                    "enum": [
-                        "mongodb"
-                    ],
-                    "type": "string"
-                },
-                "uri": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "MongoOptions": {
-            "description": "Mongo Client Options",
-            "properties": {
-                "ALPNProtocols": {
-                    "anyOf": [
-                        {
-                            "items": {
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "additionalProperties": false,
-                                "patternProperties": {
-                                    "^[0-9]+$": {
-                                        "type": "number"
-                                    }
-                                },
-                                "type": "object"
-                            },
-                            "type": "array"
-                        }
-                    ],
-                    "description": "An array of strings or a Buffer naming possible ALPN protocols.\n(Protocols should be ordered by their priority.)"
-                },
-                "autoEncrypter": {
-                    "$ref": "#/definitions/AutoEncrypter"
-                },
-                "autoEncryption": {
-                    "$ref": "#/definitions/AutoEncryptionOptions",
-                    "description": "Optionally enable client side auto encryption"
-                },
-                "ca": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Optionally override the trusted CA certificates. Default is to trust\nthe well-known CAs curated by Mozilla. Mozilla's CAs are completely\nreplaced when CAs are explicitly specified using this option."
-                },
-                "cert": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Cert chains in PEM format. One cert chain should be provided per\nprivate key. Each cert chain should consist of the PEM formatted\ncertificate for a provided private key, followed by the PEM\nformatted intermediate certificates (if any), in order, and not\nincluding the root CA (the root CA must be pre-known to the peer,\nsee ca). When providing multiple cert chains, they do not have to\nbe in the same order as their private keys in key. If the\nintermediate certificates are not provided, the peer will not be\nable to validate the certificate, and the handshake will fail."
-                },
-                "checkServerIdentity": {
-                    "description": "Verifies the certificate `cert` is issued to `hostname`.\n\nReturns [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) object, populating it with `reason`, `host`, and `cert` on\nfailure. On success, returns [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type).\n\nThis function can be overwritten by providing alternative function as part of\nthe `options.checkServerIdentity` option passed to `tls.connect()`. The\noverwriting function can call `tls.checkServerIdentity()` of course, to augment\nthe checks done with additional verification.\n\nThis function is only called if the certificate passed all other checks, such as\nbeing issued by trusted CA (`options.ca`).",
-                    "type": "object"
-                },
-                "ciphers": {
-                    "description": "Cipher suite specification, replacing the default. For more\ninformation, see modifying the default cipher suite. Permitted\nciphers can be obtained via tls.getCiphers(). Cipher names must be\nuppercased in order for OpenSSL to accept them.",
-                    "type": "string"
-                },
-                "compressors": {
-                    "items": {
-                        "enum": [
-                            "none",
-                            "snappy",
-                            "zlib"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "connectTimeoutMS": {
-                    "description": "The time in milliseconds to attempt a connection before timing out.",
-                    "type": "number"
-                },
-                "credentials": {
-                    "$ref": "#/definitions/MongoCredentials"
-                },
-                "crl": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "PEM formatted CRLs (Certificate Revocation Lists)."
-                },
-                "dbName": {
-                    "type": "string"
-                },
-                "directConnection": {
-                    "description": "Allow a driver to force a Single topology type with a connection string containing one host",
-                    "type": "boolean"
-                },
-                "driverInfo": {
-                    "$ref": "#/definitions/DriverInfo",
-                    "description": "Allows a wrapping driver to amend the client metadata generated by the driver to include information about the wrapping driver"
-                },
-                "ecdhCurve": {
-                    "description": "A string describing a named curve or a colon separated list of curve\nNIDs or names, for example P-521:P-384:P-256, to use for ECDH key\nagreement. Set to auto to select the curve automatically. Use\ncrypto.getCurves() to obtain a list of available curve names. On\nrecent releases, openssl ecparam -list_curves will also display the\nname and description of each available elliptic curve. Default:\ntls.DEFAULT_ECDH_CURVE.",
-                    "type": "string"
-                },
-                "family": {
-                    "type": "number"
-                },
-                "forceServerObjectId": {
-                    "description": "Force server to assign `_id` values instead of driver",
-                    "type": "boolean"
-                },
-                "heartbeatFrequencyMS": {
-                    "description": "heartbeatFrequencyMS controls when the driver checks the state of the MongoDB deployment. Specify the interval (in milliseconds) between checks, counted from the end of the previous check until the beginning of the next one.",
-                    "type": "number"
-                },
-                "hints": {
-                    "type": "number"
-                },
-                "hosts": {
-                    "items": {
-                        "$ref": "#/definitions/HostAddress"
-                    },
-                    "type": "array"
-                },
-                "keepAlive": {
-                    "description": "TCP Connection keep alive enabled",
-                    "type": "boolean"
-                },
-                "keepAliveInitialDelay": {
-                    "description": "The number of milliseconds to wait before initiating keepAlive on the TCP socket",
-                    "type": "number"
-                },
+            "local": {
+              "description": "Configuration options for using 'local' as your KMS provider",
+              "properties": {
                 "key": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/KeyObject"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "Private keys in PEM format. PEM allows the option of private keys\nbeing encrypted. Encrypted keys will be decrypted with\noptions.passphrase. Multiple keys using different algorithms can be\nprovided either as an array of unencrypted key strings or buffers,\nor an array of objects in the form {pem: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted keys will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
-                },
-                "loadBalanced": {
-                    "type": "boolean"
-                },
-                "localAddress": {
-                    "type": "string"
-                },
-                "localPort": {
-                    "type": "number"
-                },
-                "localThresholdMS": {
-                    "description": "The size (in milliseconds) of the latency window for selecting among multiple suitable MongoDB instances.",
-                    "type": "number"
-                },
-                "logger": {
-                    "$ref": "#/definitions/Logger",
-                    "description": "Custom logger object"
-                },
-                "lookup": {
-                    "type": "object"
-                },
-                "maxIdleTimeMS": {
-                    "description": "The maximum number of milliseconds that a connection can remain idle in the pool before being removed and closed.",
-                    "type": "number"
-                },
-                "maxPoolSize": {
-                    "description": "The maximum number of connections in the connection pool.",
-                    "type": "number"
-                },
-                "metadata": {
-                    "$ref": "#/definitions/ClientMetadata"
-                },
-                "minDHSize": {
-                    "type": "number"
-                },
-                "minHeartbeatFrequencyMS": {
-                    "description": "Sets the minimum heartbeat frequency. In the event that the driver has to frequently re-check a server's availability, it will wait at least this long since the previous check to avoid wasted effort.",
-                    "type": "number"
-                },
-                "minPoolSize": {
-                    "description": "The minimum number of connections in the connection pool.",
-                    "type": "number"
-                },
-                "monitorCommands": {
-                    "description": "Enable command monitoring for this client",
-                    "type": "boolean"
-                },
-                "noDelay": {
-                    "description": "TCP Connection no delay",
-                    "type": "boolean"
-                },
-                "passphrase": {
-                    "description": "Shared passphrase used for a single private key and/or a PFX.",
-                    "type": "string"
-                },
-                "pfx": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "additionalProperties": false,
-                                        "patternProperties": {
-                                            "^[0-9]+$": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/PxfObject"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "PFX or PKCS12 encoded private key and certificate chain. pfx is an\nalternative to providing key and cert individually. PFX is usually\nencrypted, if it is, passphrase will be used to decrypt it. Multiple\nPFX can be provided either as an array of unencrypted PFX buffers,\nor an array of objects in the form {buf: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted PFX will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
-                },
-                "pkFactory": {
-                    "$ref": "#/definitions/PkFactory",
-                    "description": "A primary key factory function for generation of custom `_id` keys"
-                },
-                "promiseLibrary": {
-                    "description": "A Promise library class the application wishes to use such as Bluebird, must be ES6 compatible"
-                },
-                "raw": {
-                    "description": "Return document results as raw BSON buffers",
-                    "type": "boolean"
-                },
-                "readConcern": {
-                    "$ref": "#/definitions/ReadConcern"
-                },
-                "readPreference": {
-                    "$ref": "#/definitions/ReadPreference"
-                },
-                "rejectUnauthorized": {
-                    "default": true,
-                    "description": "If true the server will reject any connection which is not\nauthorized with the list of supplied CAs. This option only has an\neffect if requestCert is true.",
-                    "type": "boolean"
-                },
-                "replicaSet": {
-                    "description": "Specifies the name of the replica set, if the mongod is a member of a replica set.",
-                    "type": "string"
-                },
-                "retryReads": {
-                    "description": "Enables retryable reads.",
-                    "type": "boolean"
-                },
-                "retryWrites": {
-                    "description": "Enable retryable writes.",
-                    "type": "boolean"
-                },
-                "secureContext": {
-                    "$ref": "#/definitions/SecureContext",
-                    "description": "An optional TLS context object from tls.createSecureContext()"
-                },
-                "secureProtocol": {
-                    "description": "Legacy mechanism to select the TLS protocol version to use, it does\nnot support independent control of the minimum and maximum version,\nand does not support limiting the protocol to TLSv1.3. Use\nminVersion and maxVersion instead. The possible values are listed as\nSSL_METHODS, use the function names as strings. For example, use\n'TLSv1_1_method' to force TLS version 1.1, or 'TLS_method' to allow\nany TLS protocol version up to TLSv1.3. It is not recommended to use\nTLS versions less than 1.2, but it may be required for\ninteroperability. Default: none, see minVersion.",
-                    "type": "string"
-                },
-                "serverApi": {
-                    "$ref": "#/definitions/ServerApi"
-                },
-                "serverSelectionTimeoutMS": {
-                    "description": "Specifies how long (in milliseconds) to block for server selection before throwing an exception.",
-                    "type": "number"
-                },
-                "servername": {
-                    "type": "string"
-                },
-                "session": {
-                    "additionalProperties": false,
-                    "description": "An optional Buffer instance containing a TLS session.",
-                    "patternProperties": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "patternProperties": {
                         "^[0-9]+$": {
-                            "type": "number"
+                          "type": "number"
                         }
+                      },
+                      "type": "object"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "The master key used to encrypt/decrypt data keys.\nA 96-byte long Buffer or base64 encoded string."
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "options": {
+          "properties": {
+            "logger": {
+              "description": "An optional hook to catch logging messages from the underlying encryption engine",
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "schemaMap": {
+          "$ref": "#/definitions/Document",
+          "description": "A map of namespaces to a local JSON schema for encryption\n\n**NOTE**: Supplying options.schemaMap provides more security than relying on JSON Schemas obtained from the server.\nIt protects against a malicious server advertising a false JSON Schema, which could trick the client into sending decrypted data that should be encrypted.\nSchemas supplied in the schemaMap only apply to configuring automatic encryption for client side encryption.\nOther validation rules in the JSON schema will not be enforced by the driver and will result in an error."
+        }
+      },
+      "type": "object"
+    },
+    "BSONSerializeOptions": {
+      "description": "BSON Serialization options.",
+      "properties": {
+        "bsonRegExp": {
+          "description": "return BSON regular expressions as BSONRegExp instances.",
+          "type": "boolean"
+        },
+        "checkKeys": {
+          "description": "the serializer will check if keys are valid.",
+          "type": "boolean"
+        },
+        "fieldsAsRaw": {
+          "$ref": "#/definitions/Document",
+          "description": "allow to specify if there what fields we wish to return as unserialized raw buffer."
+        },
+        "ignoreUndefined": {
+          "description": "serialize will not emit undefined fields **(default:true)**",
+          "type": "boolean"
+        },
+        "promoteBuffers": {
+          "description": "when deserializing a Binary will return it as a node.js Buffer instance.",
+          "type": "boolean"
+        },
+        "promoteLongs": {
+          "description": "when deserializing a Long will fit it into a Number if it's smaller than 53 bits",
+          "type": "boolean"
+        },
+        "promoteValues": {
+          "description": "when deserializing will promote BSON values to their Node.js closest equivalent types.",
+          "type": "boolean"
+        },
+        "raw": {
+          "description": "Return BSON filled buffers from operations",
+          "type": "boolean"
+        },
+        "serializeFunctions": {
+          "description": "serialize the javascript functions **(default:false)**.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "ClientMetadata": {
+      "properties": {
+        "application": {
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "driver": {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "os": {
+          "properties": {
+            "architecture": {
+              "type": "string"
+            },
+            "name": {
+              "$ref": "#/definitions/global.NodeJS.Platform"
+            },
+            "type": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Document": {
+      "additionalProperties": {},
+      "type": "object"
+    },
+    "DriverInfo": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "FileStorageOptions": {
+      "properties": {
+        "dataDir": {
+          "type": "string"
+        },
+        "type": {
+          "enum": ["file"],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "HedgeOptions": {
+      "properties": {
+        "enabled": {
+          "description": "Explicitly enable or disable hedged reads.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "HostAddress": {
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "isIPv6": {
+          "type": "boolean"
+        },
+        "port": {
+          "type": "number"
+        },
+        "socketPath": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "KeyObject": {
+      "properties": {
+        "passphrase": {
+          "description": "Optional passphrase.",
+          "type": "string"
+        },
+        "pem": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Private keys in PEM format."
+        }
+      },
+      "type": "object"
+    },
+    "Logger": {
+      "properties": {
+        "className": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "LoggerLevel": {
+      "enum": ["debug", "error", "info", "warn"],
+      "type": "string"
+    },
+    "MongoClient": {
+      "description": "The **MongoClient** class is a class that allows for making Connections to MongoDB.",
+      "properties": {
+        "autoEncrypter": {
+          "$ref": "#/definitions/AutoEncrypter"
+        },
+        "bsonOptions": {
+          "$ref": "#/definitions/BSONSerializeOptions"
+        },
+        "logger": {
+          "$ref": "#/definitions/Logger"
+        },
+        "options": {
+          "$ref": "#/definitions/MongoOptions"
+        },
+        "readConcern": {
+          "$ref": "#/definitions/ReadConcern"
+        },
+        "readPreference": {
+          "$ref": "#/definitions/ReadPreference"
+        },
+        "serverApi": {
+          "$ref": "#/definitions/ServerApi"
+        },
+        "writeConcern": {
+          "$ref": "#/definitions/WriteConcern"
+        }
+      },
+      "type": "object"
+    },
+    "MongoClientOptions": {
+      "description": "Describes all possible URI query options for the mongo client",
+      "properties": {
+        "ALPNProtocols": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^[0-9]+$": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "An array of strings or a Buffer naming possible ALPN protocols.\n(Protocols should be ordered by their priority.)"
+        },
+        "appName": {
+          "description": "The name of the application that created this MongoClient instance. MongoDB 3.4 and newer will print this value in the server log upon establishing each connection. It is also recorded in the slow query log and profile collections",
+          "type": "string"
+        },
+        "auth": {
+          "$ref": "#/definitions/Auth",
+          "description": "The auth settings for when connection to server."
+        },
+        "authMechanism": {
+          "$ref": "#/definitions/AuthMechanism",
+          "description": "Specify the authentication mechanism that MongoDB will use to authenticate the connection."
+        },
+        "authMechanismProperties": {
+          "$ref": "#/definitions/AuthMechanismProperties",
+          "description": "Specify properties for the specified authMechanism as a comma-separated list of colon-separated key-value pairs."
+        },
+        "authSource": {
+          "description": "Specify the database name associated with the user’s credentials.",
+          "type": "string"
+        },
+        "autoEncryption": {
+          "$ref": "#/definitions/AutoEncryptionOptions",
+          "description": "Optionally enable client side auto encryption"
+        },
+        "bsonRegExp": {
+          "description": "return BSON regular expressions as BSONRegExp instances.",
+          "type": "boolean"
+        },
+        "ca": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
                     },
                     "type": "object"
-                },
-                "socketTimeoutMS": {
-                    "description": "The time in milliseconds to attempt a send or receive on a socket before the attempt times out.",
-                    "type": "number"
-                },
-                "srvHost": {
+                  },
+                  {
                     "type": "string"
-                },
-                "tls": {
-                    "description": "# NOTE ABOUT TLS Options\n\nIf set TLS enabled, equivalent to setting the ssl option.\n\n### Additional options:\n\n|    nodejs option     | MongoDB equivalent                                       | type                                   |\n|:---------------------|--------------------------------------------------------- |:---------------------------------------|\n| `ca`                 | `sslCA`, `tlsCAFile`                                     | `string \\| Buffer \\| Buffer[]`         |\n| `crl`                | `sslCRL`                                                 | `string \\| Buffer \\| Buffer[]`         |\n| `cert`               | `sslCert`, `tlsCertificateFile`, `tlsCertificateKeyFile` | `string \\| Buffer \\| Buffer[]`         |\n| `key`                | `sslKey`, `tlsCertificateKeyFile`                        | `string \\| Buffer \\| KeyObject[]`      |\n| `passphrase`         | `sslPass`, `tlsCertificateKeyFilePassword`               | `string`                               |\n| `rejectUnauthorized` | `sslValidate`                                            | `boolean`                              |",
-                    "type": "boolean"
-                },
-                "tlsAllowInvalidCertificates": {
-                    "description": "Bypasses validation of the certificates presented by the mongod/mongos instance",
-                    "type": "boolean"
-                },
-                "tlsAllowInvalidHostnames": {
-                    "description": "Disables hostname validation of the certificate presented by the mongod/mongos instance.",
-                    "type": "boolean"
-                },
-                "tlsInsecure": {
-                    "description": "Disables various certificate validations.",
-                    "type": "boolean"
-                },
-                "waitQueueTimeoutMS": {
-                    "description": "The maximum time in milliseconds that a thread can wait for a connection to become available.",
-                    "type": "number"
-                },
-                "writeConcern": {
-                    "$ref": "#/definitions/WriteConcern"
-                },
-                "zlibCompressionLevel": {
-                    "description": "An integer that specifies the compression level if using zlib for network compression.",
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9
-                    ],
-                    "type": "number"
-                }
+                  }
+                ]
+              },
+              "type": "array"
             },
-            "type": "object"
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Optionally override the trusted CA certificates. Default is to trust\nthe well-known CAs curated by Mozilla. Mozilla's CAs are completely\nreplaced when CAs are explicitly specified using this option."
         },
-        "Partial<CrudityOptions>": {
-            "properties": {
-                "delay": {
-                    "type": "number"
-                },
-                "pageSize": {
-                    "type": "number"
-                },
-                "storage": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/FileStorageOptions"
-                        },
-                        {
-                            "$ref": "#/definitions/MongoDBStorageOptions"
-                        }
-                    ]
+        "cert": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
                 }
+              },
+              "type": "object"
             },
-            "type": "object"
-        },
-        "PkFactory": {
-            "type": "object"
-        },
-        "PxfObject": {
-            "properties": {
-                "buf": {
-                    "anyOf": [
-                        {
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "description": "PFX or PKCS12 encoded private key and certificate chain."
-                },
-                "passphrase": {
-                    "description": "Optional passphrase.",
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
                     "type": "string"
-                }
+                  }
+                ]
+              },
+              "type": "array"
             },
-            "type": "object"
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Cert chains in PEM format. One cert chain should be provided per\nprivate key. Each cert chain should consist of the PEM formatted\ncertificate for a provided private key, followed by the PEM\nformatted intermediate certificates (if any), in order, and not\nincluding the root CA (the root CA must be pre-known to the peer,\nsee ca). When providing multiple cert chains, they do not have to\nbe in the same order as their private keys in key. If the\nintermediate certificates are not provided, the peer will not be\nable to validate the certificate, and the handshake will fail."
         },
-        "ReadConcern": {
-            "description": "The MongoDB ReadConcern, which allows for control of the consistency and isolation properties\nof the data read from replica sets and replica set shards.",
-            "properties": {
+        "checkKeys": {
+          "description": "the serializer will check if keys are valid.",
+          "type": "boolean"
+        },
+        "checkServerIdentity": {
+          "description": "Verifies the certificate `cert` is issued to `hostname`.\n\nReturns [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) object, populating it with `reason`, `host`, and `cert` on\nfailure. On success, returns [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type).\n\nThis function can be overwritten by providing alternative function as part of\nthe `options.checkServerIdentity` option passed to `tls.connect()`. The\noverwriting function can call `tls.checkServerIdentity()` of course, to augment\nthe checks done with additional verification.\n\nThis function is only called if the certificate passed all other checks, such as\nbeing issued by trusted CA (`options.ca`).",
+          "type": "object"
+        },
+        "ciphers": {
+          "description": "Cipher suite specification, replacing the default. For more\ninformation, see modifying the default cipher suite. Permitted\nciphers can be obtained via tls.getCiphers(). Cipher names must be\nuppercased in order for OpenSSL to accept them.",
+          "type": "string"
+        },
+        "compressors": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": ["none", "snappy", "zlib"],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "An array or comma-delimited string of compressors to enable network compression for communication between this client and a mongod/mongos instance."
+        },
+        "connectTimeoutMS": {
+          "description": "The time in milliseconds to attempt a connection before timing out.",
+          "type": "number"
+        },
+        "crl": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PEM formatted CRLs (Certificate Revocation Lists)."
+        },
+        "directConnection": {
+          "description": "Allow a driver to force a Single topology type with a connection string containing one host",
+          "type": "boolean"
+        },
+        "driverInfo": {
+          "$ref": "#/definitions/DriverInfo",
+          "description": "Allows a wrapping driver to amend the client metadata generated by the driver to include information about the wrapping driver"
+        },
+        "ecdhCurve": {
+          "description": "A string describing a named curve or a colon separated list of curve\nNIDs or names, for example P-521:P-384:P-256, to use for ECDH key\nagreement. Set to auto to select the curve automatically. Use\ncrypto.getCurves() to obtain a list of available curve names. On\nrecent releases, openssl ecparam -list_curves will also display the\nname and description of each available elliptic curve. Default:\ntls.DEFAULT_ECDH_CURVE.",
+          "type": "string"
+        },
+        "family": {
+          "type": "number"
+        },
+        "fieldsAsRaw": {
+          "$ref": "#/definitions/Document",
+          "description": "allow to specify if there what fields we wish to return as unserialized raw buffer."
+        },
+        "forceServerObjectId": {
+          "description": "Force server to assign `_id` values instead of driver",
+          "type": "boolean"
+        },
+        "heartbeatFrequencyMS": {
+          "description": "heartbeatFrequencyMS controls when the driver checks the state of the MongoDB deployment. Specify the interval (in milliseconds) between checks, counted from the end of the previous check until the beginning of the next one.",
+          "type": "number"
+        },
+        "hints": {
+          "type": "number"
+        },
+        "ignoreUndefined": {
+          "description": "serialize will not emit undefined fields **(default:true)**",
+          "type": "boolean"
+        },
+        "journal": {
+          "description": "The journal write concern",
+          "type": "boolean"
+        },
+        "keepAlive": {
+          "description": "TCP Connection keep alive enabled",
+          "type": "boolean"
+        },
+        "keepAliveInitialDelay": {
+          "description": "The number of milliseconds to wait before initiating keepAlive on the TCP socket",
+          "type": "number"
+        },
+        "key": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "$ref": "#/definitions/KeyObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Private keys in PEM format. PEM allows the option of private keys\nbeing encrypted. Encrypted keys will be decrypted with\noptions.passphrase. Multiple keys using different algorithms can be\nprovided either as an array of unencrypted key strings or buffers,\nor an array of objects in the form {pem: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted keys will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
+        },
+        "loadBalanced": {
+          "description": "Instruct the driver it is connecting to a load balancer fronting a mongos like service",
+          "type": "boolean"
+        },
+        "localAddress": {
+          "type": "string"
+        },
+        "localPort": {
+          "type": "number"
+        },
+        "localThresholdMS": {
+          "description": "The size (in milliseconds) of the latency window for selecting among multiple suitable MongoDB instances.",
+          "type": "number"
+        },
+        "logger": {
+          "$ref": "#/definitions/Logger",
+          "description": "Custom logger object"
+        },
+        "loggerLevel": {
+          "$ref": "#/definitions/LoggerLevel",
+          "description": "The logging level"
+        },
+        "lookup": {
+          "type": "object"
+        },
+        "maxIdleTimeMS": {
+          "description": "The maximum number of milliseconds that a connection can remain idle in the pool before being removed and closed.",
+          "type": "number"
+        },
+        "maxPoolSize": {
+          "description": "The maximum number of connections in the connection pool.",
+          "type": "number"
+        },
+        "maxStalenessSeconds": {
+          "description": "Specifies, in seconds, how stale a secondary can be before the client stops using it for read operations.",
+          "type": "number"
+        },
+        "minDHSize": {
+          "type": "number"
+        },
+        "minHeartbeatFrequencyMS": {
+          "description": "Sets the minimum heartbeat frequency. In the event that the driver has to frequently re-check a server's availability, it will wait at least this long since the previous check to avoid wasted effort.",
+          "type": "number"
+        },
+        "minPoolSize": {
+          "description": "The minimum number of connections in the connection pool.",
+          "type": "number"
+        },
+        "monitorCommands": {
+          "description": "Enable command monitoring for this client",
+          "type": "boolean"
+        },
+        "noDelay": {
+          "description": "TCP Connection no delay",
+          "type": "boolean"
+        },
+        "passphrase": {
+          "description": "Shared passphrase used for a single private key and/or a PFX.",
+          "type": "string"
+        },
+        "pfx": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "$ref": "#/definitions/PxfObject"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PFX or PKCS12 encoded private key and certificate chain. pfx is an\nalternative to providing key and cert individually. PFX is usually\nencrypted, if it is, passphrase will be used to decrypt it. Multiple\nPFX can be provided either as an array of unencrypted PFX buffers,\nor an array of objects in the form {buf: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted PFX will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
+        },
+        "pkFactory": {
+          "$ref": "#/definitions/PkFactory",
+          "description": "A primary key factory function for generation of custom `_id` keys"
+        },
+        "promiseLibrary": {
+          "description": "A Promise library class the application wishes to use such as Bluebird, must be ES6 compatible"
+        },
+        "promoteBuffers": {
+          "description": "when deserializing a Binary will return it as a node.js Buffer instance.",
+          "type": "boolean"
+        },
+        "promoteLongs": {
+          "description": "when deserializing a Long will fit it into a Number if it's smaller than 53 bits",
+          "type": "boolean"
+        },
+        "promoteValues": {
+          "description": "when deserializing will promote BSON values to their Node.js closest equivalent types.",
+          "type": "boolean"
+        },
+        "raw": {
+          "description": "Return document results as raw BSON buffers",
+          "type": "boolean"
+        },
+        "readConcern": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ReadConcern"
+            },
+            {
+              "properties": {
                 "level": {
-                    "type": "string"
+                  "$ref": "#/definitions/ReadConcernLevel"
                 }
+              },
+              "type": "object"
             },
-            "type": "object"
-        },
-        "ReadConcernLevel": {
-            "enum": [
+            {
+              "enum": [
                 "available",
                 "linearizable",
                 "local",
                 "majority",
                 "snapshot"
-            ],
-            "type": "string"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "Specify a read concern for the collection (only MongoDB 3.2 or higher supported)"
         },
-        "ReadPreference": {
-            "description": "The **ReadPreference** class is a class that represents a MongoDB ReadPreference and is\nused to construct connections.",
-            "properties": {
-                "hedge": {
-                    "$ref": "#/definitions/HedgeOptions"
-                },
-                "maxStalenessSeconds": {
-                    "type": "number"
-                },
-                "minWireVersion": {
-                    "type": "number"
-                },
-                "mode": {
-                    "$ref": "#/definitions/ReadPreferenceMode"
-                },
-                "preference": {
-                    "$ref": "#/definitions/ReadPreferenceMode"
-                },
-                "tags": {
-                    "items": {
-                        "additionalProperties": {
-                            "type": "string"
-                        },
-                        "type": "object"
-                    },
-                    "type": "array"
-                }
+        "readConcernLevel": {
+          "$ref": "#/definitions/ReadConcernLevel",
+          "description": "The level of isolation"
+        },
+        "readPreference": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ReadPreference"
             },
-            "type": "object"
-        },
-        "ReadPreferenceMode": {
-            "enum": [
+            {
+              "enum": [
                 "nearest",
                 "primary",
                 "primaryPreferred",
                 "secondary",
                 "secondaryPreferred"
-            ],
-            "type": "string"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "Specifies the read preferences for this connection"
         },
-        "SecureContext": {
-            "properties": {
-                "context": {}
-            },
-            "type": "object"
-        },
-        "ServerApi": {
-            "properties": {
-                "deprecationErrors": {
-                    "type": "boolean"
-                },
-                "strict": {
-                    "type": "boolean"
-                },
-                "version": {
-                    "enum": [
-                        "1"
-                    ],
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "WriteConcern": {
-            "description": "A MongoDB WriteConcern, which describes the level of acknowledgement\nrequested from MongoDB for write operations.",
-            "properties": {
-                "fsync": {
-                    "description": "equivalent to the j option",
-                    "enum": [
-                        1,
-                        false,
-                        true
-                    ]
-                },
-                "j": {
-                    "description": "request acknowledgment that the write operation has been written to the on-disk journal",
-                    "type": "boolean"
-                },
-                "w": {
-                    "anyOf": [
-                        {
-                            "enum": [
-                                "majority"
-                            ],
-                            "type": "string"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ],
-                    "description": "request acknowledgment that the write operation has propagated to a specified number of mongod instances or to mongod instances with specified tags."
-                },
-                "wtimeout": {
-                    "description": "specify a time limit to prevent write operations from blocking indefinitely",
-                    "type": "number"
-                }
-            },
-            "type": "object"
-        },
-        "global.NodeJS.Platform": {
-            "enum": [
-                "aix",
-                "android",
-                "cygwin",
-                "darwin",
-                "freebsd",
-                "haiku",
-                "linux",
-                "netbsd",
-                "openbsd",
-                "sunos",
-                "win32"
-            ],
-            "type": "string"
-        }
-    },
-    "properties": {
-        "cors": {
-            "type": "boolean"
-        },
-        "port": {
-            "type": "number"
-        },
-        "publicDir": {
-            "type": "string"
-        },
-        "resources": {
+        "readPreferenceTags": {
+          "description": "Specifies the tags document as a comma-separated list of colon-separated key-value pairs.",
+          "items": {
             "additionalProperties": {
-                "$ref": "#/definitions/Partial<CrudityOptions>"
+              "type": "string"
             },
             "type": "object"
+          },
+          "type": "array"
         },
-        "rootEndPoint": {
-            "type": "string"
+        "rejectUnauthorized": {
+          "default": true,
+          "description": "If true the server will reject any connection which is not\nauthorized with the list of supplied CAs. This option only has an\neffect if requestCert is true.",
+          "type": "boolean"
+        },
+        "replicaSet": {
+          "description": "Specifies the name of the replica set, if the mongod is a member of a replica set.",
+          "type": "string"
+        },
+        "retryReads": {
+          "description": "Enables retryable reads.",
+          "type": "boolean"
+        },
+        "retryWrites": {
+          "description": "Enable retryable writes.",
+          "type": "boolean"
+        },
+        "secureContext": {
+          "$ref": "#/definitions/SecureContext",
+          "description": "An optional TLS context object from tls.createSecureContext()"
+        },
+        "secureProtocol": {
+          "description": "Legacy mechanism to select the TLS protocol version to use, it does\nnot support independent control of the minimum and maximum version,\nand does not support limiting the protocol to TLSv1.3. Use\nminVersion and maxVersion instead. The possible values are listed as\nSSL_METHODS, use the function names as strings. For example, use\n'TLSv1_1_method' to force TLS version 1.1, or 'TLS_method' to allow\nany TLS protocol version up to TLSv1.3. It is not recommended to use\nTLS versions less than 1.2, but it may be required for\ninteroperability. Default: none, see minVersion.",
+          "type": "string"
+        },
+        "serializeFunctions": {
+          "description": "serialize the javascript functions **(default:false)**.",
+          "type": "boolean"
+        },
+        "serverApi": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ServerApi"
+            },
+            {
+              "enum": ["1"],
+              "type": "string"
+            }
+          ],
+          "description": "Server API version"
+        },
+        "serverSelectionTimeoutMS": {
+          "description": "Specifies how long (in milliseconds) to block for server selection before throwing an exception.",
+          "type": "number"
+        },
+        "servername": {
+          "type": "string"
+        },
+        "session": {
+          "additionalProperties": false,
+          "description": "An optional Buffer instance containing a TLS session.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "socketTimeoutMS": {
+          "description": "The time in milliseconds to attempt a send or receive on a socket before the attempt times out.",
+          "type": "number"
+        },
+        "ssl": {
+          "description": "A boolean to enable or disables TLS/SSL for the connection. (The ssl option is equivalent to the tls option.)",
+          "type": "boolean"
+        },
+        "sslCA": {
+          "description": "SSL Certificate file path.",
+          "type": "string"
+        },
+        "sslCRL": {
+          "description": "SSL Certificate revocation list file path.",
+          "type": "string"
+        },
+        "sslCert": {
+          "description": "SSL Certificate file path.",
+          "type": "string"
+        },
+        "sslKey": {
+          "description": "SSL Key file file path.",
+          "type": "string"
+        },
+        "sslPass": {
+          "description": "SSL Certificate pass phrase.",
+          "type": "string"
+        },
+        "sslValidate": {
+          "description": "Validate mongod server certificate against Certificate Authority",
+          "type": "boolean"
+        },
+        "tls": {
+          "description": "Enables or disables TLS/SSL for the connection.",
+          "type": "boolean"
+        },
+        "tlsAllowInvalidCertificates": {
+          "description": "Bypasses validation of the certificates presented by the mongod/mongos instance",
+          "type": "boolean"
+        },
+        "tlsAllowInvalidHostnames": {
+          "description": "Disables hostname validation of the certificate presented by the mongod/mongos instance.",
+          "type": "boolean"
+        },
+        "tlsCAFile": {
+          "description": "Specifies the location of a local .pem file that contains the root certificate chain from the Certificate Authority. This file is used to validate the certificate presented by the mongod/mongos instance.",
+          "type": "string"
+        },
+        "tlsCertificateFile": {
+          "description": "Specifies the location of a local TLS Certificate",
+          "type": "string"
+        },
+        "tlsCertificateKeyFile": {
+          "description": "Specifies the location of a local .pem file that contains either the client's TLS/SSL certificate and key or only the client's TLS/SSL key when tlsCertificateFile is used to provide the certificate.",
+          "type": "string"
+        },
+        "tlsCertificateKeyFilePassword": {
+          "description": "Specifies the password to de-crypt the tlsCertificateKeyFile.",
+          "type": "string"
+        },
+        "tlsInsecure": {
+          "description": "Disables various certificate validations.",
+          "type": "boolean"
+        },
+        "w": {
+          "anyOf": [
+            {
+              "enum": ["majority"],
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "description": "The write concern w value"
+        },
+        "waitQueueTimeoutMS": {
+          "description": "The maximum time in milliseconds that a thread can wait for a connection to become available.",
+          "type": "number"
+        },
+        "wtimeoutMS": {
+          "description": "The write concern timeout",
+          "type": "number"
+        },
+        "zlibCompressionLevel": {
+          "description": "An integer that specifies the compression level if using zlib for network compression.",
+          "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "type": "number"
         }
+      },
+      "type": "object"
     },
-    "type": "object"
+    "MongoCredentials": {
+      "description": "A representation of the credentials used by MongoDB",
+      "properties": {
+        "mechanism": {
+          "$ref": "#/definitions/AuthMechanism",
+          "description": "The method used to authenticate"
+        },
+        "mechanismProperties": {
+          "$ref": "#/definitions/AuthMechanismProperties",
+          "description": "Special properties used by some types of auth mechanisms"
+        },
+        "password": {
+          "description": "The password used for authentication",
+          "type": "string"
+        },
+        "source": {
+          "description": "The database that the user should authenticate against",
+          "type": "string"
+        },
+        "username": {
+          "description": "The username used for authentication",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "MongoDBStorageOptions": {
+      "properties": {
+        "opts": {
+          "$ref": "#/definitions/MongoClientOptions"
+        },
+        "type": {
+          "enum": ["mongodb"],
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "MongoOptions": {
+      "description": "Mongo Client Options",
+      "properties": {
+        "ALPNProtocols": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^[0-9]+$": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "An array of strings or a Buffer naming possible ALPN protocols.\n(Protocols should be ordered by their priority.)"
+        },
+        "autoEncrypter": {
+          "$ref": "#/definitions/AutoEncrypter"
+        },
+        "autoEncryption": {
+          "$ref": "#/definitions/AutoEncryptionOptions",
+          "description": "Optionally enable client side auto encryption"
+        },
+        "ca": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Optionally override the trusted CA certificates. Default is to trust\nthe well-known CAs curated by Mozilla. Mozilla's CAs are completely\nreplaced when CAs are explicitly specified using this option."
+        },
+        "cert": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Cert chains in PEM format. One cert chain should be provided per\nprivate key. Each cert chain should consist of the PEM formatted\ncertificate for a provided private key, followed by the PEM\nformatted intermediate certificates (if any), in order, and not\nincluding the root CA (the root CA must be pre-known to the peer,\nsee ca). When providing multiple cert chains, they do not have to\nbe in the same order as their private keys in key. If the\nintermediate certificates are not provided, the peer will not be\nable to validate the certificate, and the handshake will fail."
+        },
+        "checkServerIdentity": {
+          "description": "Verifies the certificate `cert` is issued to `hostname`.\n\nReturns [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) object, populating it with `reason`, `host`, and `cert` on\nfailure. On success, returns [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type).\n\nThis function can be overwritten by providing alternative function as part of\nthe `options.checkServerIdentity` option passed to `tls.connect()`. The\noverwriting function can call `tls.checkServerIdentity()` of course, to augment\nthe checks done with additional verification.\n\nThis function is only called if the certificate passed all other checks, such as\nbeing issued by trusted CA (`options.ca`).",
+          "type": "object"
+        },
+        "ciphers": {
+          "description": "Cipher suite specification, replacing the default. For more\ninformation, see modifying the default cipher suite. Permitted\nciphers can be obtained via tls.getCiphers(). Cipher names must be\nuppercased in order for OpenSSL to accept them.",
+          "type": "string"
+        },
+        "compressors": {
+          "items": {
+            "enum": ["none", "snappy", "zlib"],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "connectTimeoutMS": {
+          "description": "The time in milliseconds to attempt a connection before timing out.",
+          "type": "number"
+        },
+        "credentials": {
+          "$ref": "#/definitions/MongoCredentials"
+        },
+        "crl": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PEM formatted CRLs (Certificate Revocation Lists)."
+        },
+        "dbName": {
+          "type": "string"
+        },
+        "directConnection": {
+          "description": "Allow a driver to force a Single topology type with a connection string containing one host",
+          "type": "boolean"
+        },
+        "driverInfo": {
+          "$ref": "#/definitions/DriverInfo",
+          "description": "Allows a wrapping driver to amend the client metadata generated by the driver to include information about the wrapping driver"
+        },
+        "ecdhCurve": {
+          "description": "A string describing a named curve or a colon separated list of curve\nNIDs or names, for example P-521:P-384:P-256, to use for ECDH key\nagreement. Set to auto to select the curve automatically. Use\ncrypto.getCurves() to obtain a list of available curve names. On\nrecent releases, openssl ecparam -list_curves will also display the\nname and description of each available elliptic curve. Default:\ntls.DEFAULT_ECDH_CURVE.",
+          "type": "string"
+        },
+        "family": {
+          "type": "number"
+        },
+        "forceServerObjectId": {
+          "description": "Force server to assign `_id` values instead of driver",
+          "type": "boolean"
+        },
+        "heartbeatFrequencyMS": {
+          "description": "heartbeatFrequencyMS controls when the driver checks the state of the MongoDB deployment. Specify the interval (in milliseconds) between checks, counted from the end of the previous check until the beginning of the next one.",
+          "type": "number"
+        },
+        "hints": {
+          "type": "number"
+        },
+        "hosts": {
+          "items": {
+            "$ref": "#/definitions/HostAddress"
+          },
+          "type": "array"
+        },
+        "keepAlive": {
+          "description": "TCP Connection keep alive enabled",
+          "type": "boolean"
+        },
+        "keepAliveInitialDelay": {
+          "description": "The number of milliseconds to wait before initiating keepAlive on the TCP socket",
+          "type": "number"
+        },
+        "key": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "$ref": "#/definitions/KeyObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Private keys in PEM format. PEM allows the option of private keys\nbeing encrypted. Encrypted keys will be decrypted with\noptions.passphrase. Multiple keys using different algorithms can be\nprovided either as an array of unencrypted key strings or buffers,\nor an array of objects in the form {pem: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted keys will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
+        },
+        "loadBalanced": {
+          "type": "boolean"
+        },
+        "localAddress": {
+          "type": "string"
+        },
+        "localPort": {
+          "type": "number"
+        },
+        "localThresholdMS": {
+          "description": "The size (in milliseconds) of the latency window for selecting among multiple suitable MongoDB instances.",
+          "type": "number"
+        },
+        "logger": {
+          "$ref": "#/definitions/Logger",
+          "description": "Custom logger object"
+        },
+        "lookup": {
+          "type": "object"
+        },
+        "maxIdleTimeMS": {
+          "description": "The maximum number of milliseconds that a connection can remain idle in the pool before being removed and closed.",
+          "type": "number"
+        },
+        "maxPoolSize": {
+          "description": "The maximum number of connections in the connection pool.",
+          "type": "number"
+        },
+        "metadata": {
+          "$ref": "#/definitions/ClientMetadata"
+        },
+        "minDHSize": {
+          "type": "number"
+        },
+        "minHeartbeatFrequencyMS": {
+          "description": "Sets the minimum heartbeat frequency. In the event that the driver has to frequently re-check a server's availability, it will wait at least this long since the previous check to avoid wasted effort.",
+          "type": "number"
+        },
+        "minPoolSize": {
+          "description": "The minimum number of connections in the connection pool.",
+          "type": "number"
+        },
+        "monitorCommands": {
+          "description": "Enable command monitoring for this client",
+          "type": "boolean"
+        },
+        "noDelay": {
+          "description": "TCP Connection no delay",
+          "type": "boolean"
+        },
+        "passphrase": {
+          "description": "Shared passphrase used for a single private key and/or a PFX.",
+          "type": "string"
+        },
+        "pfx": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "$ref": "#/definitions/PxfObject"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PFX or PKCS12 encoded private key and certificate chain. pfx is an\nalternative to providing key and cert individually. PFX is usually\nencrypted, if it is, passphrase will be used to decrypt it. Multiple\nPFX can be provided either as an array of unencrypted PFX buffers,\nor an array of objects in the form {buf: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted PFX will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
+        },
+        "pkFactory": {
+          "$ref": "#/definitions/PkFactory",
+          "description": "A primary key factory function for generation of custom `_id` keys"
+        },
+        "promiseLibrary": {
+          "description": "A Promise library class the application wishes to use such as Bluebird, must be ES6 compatible"
+        },
+        "raw": {
+          "description": "Return document results as raw BSON buffers",
+          "type": "boolean"
+        },
+        "readConcern": {
+          "$ref": "#/definitions/ReadConcern"
+        },
+        "readPreference": {
+          "$ref": "#/definitions/ReadPreference"
+        },
+        "rejectUnauthorized": {
+          "default": true,
+          "description": "If true the server will reject any connection which is not\nauthorized with the list of supplied CAs. This option only has an\neffect if requestCert is true.",
+          "type": "boolean"
+        },
+        "replicaSet": {
+          "description": "Specifies the name of the replica set, if the mongod is a member of a replica set.",
+          "type": "string"
+        },
+        "retryReads": {
+          "description": "Enables retryable reads.",
+          "type": "boolean"
+        },
+        "retryWrites": {
+          "description": "Enable retryable writes.",
+          "type": "boolean"
+        },
+        "secureContext": {
+          "$ref": "#/definitions/SecureContext",
+          "description": "An optional TLS context object from tls.createSecureContext()"
+        },
+        "secureProtocol": {
+          "description": "Legacy mechanism to select the TLS protocol version to use, it does\nnot support independent control of the minimum and maximum version,\nand does not support limiting the protocol to TLSv1.3. Use\nminVersion and maxVersion instead. The possible values are listed as\nSSL_METHODS, use the function names as strings. For example, use\n'TLSv1_1_method' to force TLS version 1.1, or 'TLS_method' to allow\nany TLS protocol version up to TLSv1.3. It is not recommended to use\nTLS versions less than 1.2, but it may be required for\ninteroperability. Default: none, see minVersion.",
+          "type": "string"
+        },
+        "serverApi": {
+          "$ref": "#/definitions/ServerApi"
+        },
+        "serverSelectionTimeoutMS": {
+          "description": "Specifies how long (in milliseconds) to block for server selection before throwing an exception.",
+          "type": "number"
+        },
+        "servername": {
+          "type": "string"
+        },
+        "session": {
+          "additionalProperties": false,
+          "description": "An optional Buffer instance containing a TLS session.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "socketTimeoutMS": {
+          "description": "The time in milliseconds to attempt a send or receive on a socket before the attempt times out.",
+          "type": "number"
+        },
+        "srvHost": {
+          "type": "string"
+        },
+        "tls": {
+          "description": "# NOTE ABOUT TLS Options\n\nIf set TLS enabled, equivalent to setting the ssl option.\n\n### Additional options:\n\n|    nodejs option     | MongoDB equivalent                                       | type                                   |\n|:---------------------|--------------------------------------------------------- |:---------------------------------------|\n| `ca`                 | `sslCA`, `tlsCAFile`                                     | `string \\| Buffer \\| Buffer[]`         |\n| `crl`                | `sslCRL`                                                 | `string \\| Buffer \\| Buffer[]`         |\n| `cert`               | `sslCert`, `tlsCertificateFile`, `tlsCertificateKeyFile` | `string \\| Buffer \\| Buffer[]`         |\n| `key`                | `sslKey`, `tlsCertificateKeyFile`                        | `string \\| Buffer \\| KeyObject[]`      |\n| `passphrase`         | `sslPass`, `tlsCertificateKeyFilePassword`               | `string`                               |\n| `rejectUnauthorized` | `sslValidate`                                            | `boolean`                              |",
+          "type": "boolean"
+        },
+        "tlsAllowInvalidCertificates": {
+          "description": "Bypasses validation of the certificates presented by the mongod/mongos instance",
+          "type": "boolean"
+        },
+        "tlsAllowInvalidHostnames": {
+          "description": "Disables hostname validation of the certificate presented by the mongod/mongos instance.",
+          "type": "boolean"
+        },
+        "tlsInsecure": {
+          "description": "Disables various certificate validations.",
+          "type": "boolean"
+        },
+        "waitQueueTimeoutMS": {
+          "description": "The maximum time in milliseconds that a thread can wait for a connection to become available.",
+          "type": "number"
+        },
+        "writeConcern": {
+          "$ref": "#/definitions/WriteConcern"
+        },
+        "zlibCompressionLevel": {
+          "description": "An integer that specifies the compression level if using zlib for network compression.",
+          "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "Partial<CrudityOptions>": {
+      "properties": {
+        "delay": {
+          "type": "number"
+        },
+        "pageSize": {
+          "type": "number"
+        },
+        "storage": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/FileStorageOptions"
+            },
+            {
+              "$ref": "#/definitions/MongoDBStorageOptions"
+            }
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "PkFactory": {
+      "type": "object"
+    },
+    "PxfObject": {
+      "properties": {
+        "buf": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PFX or PKCS12 encoded private key and certificate chain."
+        },
+        "passphrase": {
+          "description": "Optional passphrase.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ReadConcern": {
+      "description": "The MongoDB ReadConcern, which allows for control of the consistency and isolation properties\nof the data read from replica sets and replica set shards.",
+      "properties": {
+        "level": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ReadConcernLevel": {
+      "enum": ["available", "linearizable", "local", "majority", "snapshot"],
+      "type": "string"
+    },
+    "ReadPreference": {
+      "description": "The **ReadPreference** class is a class that represents a MongoDB ReadPreference and is\nused to construct connections.",
+      "properties": {
+        "hedge": {
+          "$ref": "#/definitions/HedgeOptions"
+        },
+        "maxStalenessSeconds": {
+          "type": "number"
+        },
+        "minWireVersion": {
+          "type": "number"
+        },
+        "mode": {
+          "$ref": "#/definitions/ReadPreferenceMode"
+        },
+        "preference": {
+          "$ref": "#/definitions/ReadPreferenceMode"
+        },
+        "tags": {
+          "items": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ReadPreferenceMode": {
+      "enum": [
+        "nearest",
+        "primary",
+        "primaryPreferred",
+        "secondary",
+        "secondaryPreferred"
+      ],
+      "type": "string"
+    },
+    "SecureContext": {
+      "properties": {
+        "context": {}
+      },
+      "type": "object"
+    },
+    "ServerApi": {
+      "properties": {
+        "deprecationErrors": {
+          "type": "boolean"
+        },
+        "strict": {
+          "type": "boolean"
+        },
+        "version": {
+          "enum": ["1"],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "WriteConcern": {
+      "description": "A MongoDB WriteConcern, which describes the level of acknowledgement\nrequested from MongoDB for write operations.",
+      "properties": {
+        "fsync": {
+          "description": "equivalent to the j option",
+          "enum": [1, false, true]
+        },
+        "j": {
+          "description": "request acknowledgment that the write operation has been written to the on-disk journal",
+          "type": "boolean"
+        },
+        "w": {
+          "anyOf": [
+            {
+              "enum": ["majority"],
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "description": "request acknowledgment that the write operation has propagated to a specified number of mongod instances or to mongod instances with specified tags."
+        },
+        "wtimeout": {
+          "description": "specify a time limit to prevent write operations from blocking indefinitely",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "global.NodeJS.Platform": {
+      "enum": [
+        "aix",
+        "android",
+        "cygwin",
+        "darwin",
+        "freebsd",
+        "haiku",
+        "linux",
+        "netbsd",
+        "openbsd",
+        "sunos",
+        "win32"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "cors": {
+      "type": "boolean"
+    },
+    "port": {
+      "type": "number"
+    },
+    "publicDir": {
+      "type": "string"
+    },
+    "resources": {
+      "additionalProperties": {
+        "$ref": "#/definitions/Partial<CrudityOptions>"
+      },
+      "type": "object"
+    },
+    "rootEndPoint": {
+      "type": "string"
+    }
+  },
+  "type": "object"
 }
-
