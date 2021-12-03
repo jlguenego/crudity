@@ -3,7 +3,7 @@ import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
 import {MongoClient, ObjectId} from 'mongodb';
-import {renameId, renameIdForArray} from './utils';
+import {renameId, renameIdForArray, removeId} from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   client = new MongoClient(this.options.uri, this.options.opts);
@@ -25,12 +25,17 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     return renameId<T>(doc);
   }
 
+  async addMany(newItems: T[]): Promise<T[]> {
+    const docs = newItems.map(newItem => removeId(newItem));
+    await this.client.db().collection(this.resourceName).insertMany(docs);
+    return renameIdForArray(docs);
+  }
+
   async get(
     query: CrudityQueryString,
     pageSize: number
   ): Promise<Partial<T>[]> {
     const result = await this.collection.find({}).toArray();
-    console.log('result: ', result);
     return renameIdForArray<T>(result);
   }
 

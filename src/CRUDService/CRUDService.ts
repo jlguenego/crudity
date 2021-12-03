@@ -3,15 +3,10 @@ import {CrudityQueryString} from '../interfaces/CrudityQueryString';
 import {Idable} from '../interfaces/Idable';
 
 export abstract class CRUDService<T extends Idable> extends EventEmitter {
-  constructor(protected resourceName: string) {
-    super();
-  }
   isStarted = false;
 
-  async init(): Promise<void> {
-    await this.start();
-    this.isStarted = true;
-    this.emit('started');
+  constructor(protected resourceName: string) {
+    super();
   }
 
   async finalize(): Promise<void> {
@@ -20,7 +15,14 @@ export abstract class CRUDService<T extends Idable> extends EventEmitter {
     this.emit('stopped');
   }
 
+  async init(): Promise<void> {
+    await this.start();
+    this.isStarted = true;
+    this.emit('started');
+  }
+
   abstract add(item: T): Promise<T>;
+  abstract addMany(newItems: T[]): Promise<T[]>;
   abstract get(
     query: CrudityQueryString,
     pageSize: number

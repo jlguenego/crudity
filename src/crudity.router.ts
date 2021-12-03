@@ -82,10 +82,7 @@ export const crudity = <T extends Idable>(
       try {
         if (req.body instanceof Array) {
           // bulk scenario
-          const array: T[] = [];
-          for (const item of req.body as T[]) {
-            array.push(await crudService.add(item));
-          }
+          const array: T[] = await crudService.addMany(req.body as T[]);
           res.status(201).json(array);
           return;
         }

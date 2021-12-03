@@ -41,16 +41,24 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
       });
   }
 
-  generateId() {
-    return Date.now() + '_' + Math.floor(Math.random() * 1e6);
-  }
-
   async add(item: T): Promise<T> {
     const newItem = {...item};
     newItem.id = this.generateId();
     this.array.push(newItem);
     this.writeFile$.next();
     return item;
+  }
+
+  async addMany(newItems: T[]): Promise<T[]> {
+    const result: T[] = [];
+    for (const item of newItems) {
+      result.push(await this.add(item));
+    }
+    return result;
+  }
+
+  generateId() {
+    return Date.now() + '_' + Math.floor(Math.random() * 1e6);
   }
 
   async get(
