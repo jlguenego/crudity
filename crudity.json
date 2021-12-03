@@ -1,5 +1,5 @@
 {
-  "$schema": "./schema/crudity.json",
+  "$schema": "https://raw.githubusercontent.com/jlguenego/crudity/master/schema/crudity.json",
   "port": 3500,
   "publicDir": "./public",
   "cors": true,

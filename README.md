@@ -8,6 +8,8 @@ A production ready CRUD backend server and node http middleware, working with fi
 npx crudity
 ```
 
+Can be configured with a `crudity.json` file. See [Configuration](#Configuration)
+
 ## Install
 
 ```
@@ -203,6 +205,35 @@ Content-Type: application/json
 
 {"result": {"id":1234, "name": "Pliers", "price": 1.50, "qty": 300},
 "links": ["next": "/ws/articles/1235", "previous": "/ws/articles/1233"]}
+```
+
+## Configuration
+
+[This $schema file](https://raw.githubusercontent.com/jlguenego/crudity/master/schema/crudity.json) can be used to get automatic completion in some IDE (VSCode, etc.)
+
+Example of `crudity.json` file:
+
+```
+{
+  "$schema": "https://raw.githubusercontent.com/jlguenego/crudity/master/schema/crudity.json",
+  "port": 3500,
+  "publicDir": "./public",
+  "cors": true,
+  "resources": {
+    "articles": {
+      "pageSize": 10,
+      "delay": 500
+    },
+    "users": {
+      "pageSize": 15,
+      "storage": {
+        "type": "mongodb",
+        "uri": "mongodb://localhost/crudity"
+      }
+    }
+  },
+  "rootEndPoint": "/api"
+}
 ```
 
 ## TODO
