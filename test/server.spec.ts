@@ -2,7 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import got from 'got';
 import {WebServer} from '../src/WebServer';
-import {twoArticles, a1} from './fixtures/articles';
+import {oneHundredArticles, a1} from './fixtures/articles';
 import {Article} from './misc/Article';
 
 const port = +(process.env.TEST_PORT || 3333);
@@ -44,20 +44,20 @@ describe('Server', () => {
     assert.deepStrictEqual(articles, []);
   });
 
-  it('should add 2 articles in bulk', async () => {
+  it('should add 100 articles in bulk', async () => {
     const newArticles = await got
       .post(`http://localhost:${port}/api/articles`, {
-        body: JSON.stringify(twoArticles),
+        body: JSON.stringify(oneHundredArticles),
         headers: {
           'Content-Type': 'application/json',
         },
       })
       .json<Article[]>();
-    assert.deepStrictEqual(newArticles.length, 2);
+    assert.deepStrictEqual(newArticles.length, 100);
     const articles = await got
       .get(`http://localhost:${port}/api/articles`)
       .json<Article[]>();
-    assert.deepStrictEqual(articles.length, 2);
+    assert.deepStrictEqual(articles.length, 100);
   });
 
   it('should add 1 article', async () => {
@@ -73,6 +73,6 @@ describe('Server', () => {
     const articles = await got
       .get(`http://localhost:${port}/api/articles`)
       .json<Article[]>();
-    assert.deepStrictEqual(articles.length, 3);
+    assert.deepStrictEqual(articles.length, 101);
   });
 });

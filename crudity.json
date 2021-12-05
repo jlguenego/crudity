@@ -6,13 +6,17 @@
   "resources": {
     "articles": {
       "pageSize": 10,
-      "delay": 500
+      "delay": 0,
+      "storage": {
+        "type": "mongodb",
+        "uri": "mongodb://localhost/crudity-unit-test"
+      }
     },
     "users": {
       "pageSize": 15,
       "storage": {
         "type": "mongodb",
-        "uri": "mongodb://localhost/crudity"
+        "uri": "mongodb://localhost/crudity-unit-test"
       }
     }
   },

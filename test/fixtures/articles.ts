@@ -1,4 +1,4 @@
-import {Article} from '../misc/Article';
+import {Article, NewArticle} from '../misc/Article';
 
 export const a1: Article = {
   id: 'a1',
@@ -13,4 +13,11 @@ export const a2: Article = {
   qty: 79,
 };
 
-export const twoArticles = [a1, a2];
+export const oneHundredArticles = new Array(100).fill(0).map(
+  (n, i) =>
+    ({
+      name: 'Truc',
+      price: i / 100,
+      qty: i,
+    } as NewArticle)
+);
