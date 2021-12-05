@@ -3,7 +3,7 @@ import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
-import {Document, Filter, MongoClient, ObjectId} from 'mongodb';
+import {Document, Filter, MongoClient, ObjectId, Sort} from 'mongodb';
 import {renameId, renameIdForArray, removeId, getSortArgs} from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
@@ -36,15 +36,18 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
       query.pageSize === undefined ? defaultPageSize : +query.pageSize;
     const pageNbr = query.page === undefined ? 1 : +query.page;
     const skipNbr = pageSize * (pageNbr - 1);
+
     // find
     let found = this.collection.find();
 
     // orderBy
+    const sortObj: Sort = {};
     if (query.orderBy) {
       for (const orderByItem of query.orderBy.split(',')) {
         const {direction, field} = getSortArgs(orderByItem);
-        found = found.sort(field, direction);
+        sortObj[field] = direction;
       }
+      found = found.sort(sortObj);
     }
 
     const result = await found.skip(skipNbr).limit(pageSize).toArray();
