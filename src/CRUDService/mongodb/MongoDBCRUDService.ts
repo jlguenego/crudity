@@ -17,11 +17,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     // Note that MongoDB API insertOne modifies the item argument by adding _id to it.
     // That is why we clone it before.
     const doc = {...item};
-    const result = await this.client
-      .db()
-      .collection(this.resourceName)
-      .insertOne(doc);
-    console.log('result: ', result);
+    await this.client.db().collection(this.resourceName).insertOne(doc);
     return renameId<T>(doc);
   }
 
