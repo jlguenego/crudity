@@ -53,9 +53,21 @@ export const getFilterObj = (filter: CrudityFilterObject): Filter<Document> => {
     return {};
   }
   const result = Object.entries(filter).map(([field, value]) => {
+    if (typeof value !== 'string') {
+      throw new Error('not supported yet');
+    }
+
+    // case: the string looks like a number
     const num = +value;
     if (!isNaN(num)) {
       return {$or: [{[field]: value}, {[field]: +value}]};
+    }
+
+    // case: it is a regex
+    const regexPattern = /^\/(.*)\/(.*)$/;
+    const array = regexPattern.exec(value);
+    if (array !== null) {
+      return {[field]: {$regex: new RegExp(array[1], array[2])}};
     }
 
     return {[field]: value};
