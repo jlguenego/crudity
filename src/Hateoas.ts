@@ -10,13 +10,20 @@ interface Link {
 
 export class Hateoas<T extends Idable> {
   links: Link[];
+  mode: HateoasMode;
 
   constructor(
     private req: Request,
     private res: Response,
     private pr: PaginatedResult<T>,
-    private mode: HateoasMode
+    defaultMode: HateoasMode
   ) {
+    console.log('req.headers[X-Crudity-Hateoas]: ', req.headers);
+    this.mode = ['none', 'body', 'header'].includes(
+      req.headers['x-crudity-hateoas'] as string
+    )
+      ? (req.headers['x-crudity-hateoas'] as HateoasMode)
+      : defaultMode;
     this.links = [];
     const needsNext = pr.length > pr.page * pr.pageSize;
     const needsPrevious = pr.page > 1;
@@ -69,9 +76,13 @@ export class Hateoas<T extends Idable> {
       this.res.json(this.pr.array);
       return;
     }
-    this.res.json({
-      link: this.links,
-      array: this.pr.array,
-    });
+    if (this.mode === 'body') {
+      this.res.json({
+        link: this.links,
+        array: this.pr.array,
+      });
+      return;
+    }
+    this.res.json(this.pr.array);
   }
 }

@@ -1,1 +1,1 @@
-export type HateoasMode = 'header' | 'body';
+export type HateoasMode = 'header' | 'body' | 'none';

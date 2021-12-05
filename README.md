@@ -183,7 +183,16 @@ DELETE /ws/articles HTTP/1.1
 
 ## HATEOAS
 
-In the HTTP request header you can set the key `X-Crudity-Hateoas: <value>`. The possible values are:
+Hateoas information is provided or not, according the 3 following modes:
+
+- **none**: no hateoas is provided.
+- **header**: the `Link` header is used (default).
+- **body**: the returned body is an object containing two properties:
+
+  - links: contains an array of all related hateoas links.
+  - result: contains the normal result of the request.
+
+You can configure in the crudity options the hateoas, but also overwrite the options directly in the request, using the HTTP header as follows:
 
 - `X-Crudity-Hateoas: none`: No Hateoas info produced (default).
 - `X-Crudity-Hateoas: header`: Hateoas info produced under the HTTP response header `X-Crudity-Link` in a JSON format: .

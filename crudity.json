@@ -6,7 +6,7 @@
   "resources": {
     "articles": {
       "pageSize": 10,
-      "hateoas": "header",
+      "hateoas": "body",
       "delay": 0,
       "storage": {
         "type": "mongodb",
