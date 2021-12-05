@@ -248,9 +248,6 @@ Example of `crudity.json` file:
 ## TODO
 
 - schema for json crudity file.
-- Mongo connection management
-- Mongo implementation
-- Link header
 - Doc for implementing a new service
 - Doc for integrating in express
 - Exemple with validation, authentication, sanitizing, etc.
