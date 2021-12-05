@@ -113,8 +113,7 @@ export const crudity = <T extends Idable>(
         console.log('about to call get');
         const paginatedResult = await crudService.get(query, options.pageSize);
         const hateoas = new Hateoas(req, res, paginatedResult);
-        hateoas.addLink();
-        res.json(paginatedResult.array);
+        hateoas.json();
         return;
       } catch (err) {
         manageError(err, res);

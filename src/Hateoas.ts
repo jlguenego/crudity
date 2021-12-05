@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
+import qs from 'qs';
 import {Idable} from './interfaces/Idable';
 import {PaginatedResult} from './interfaces/PaginatedResult';
-import url from 'url';
 interface Link {
   name: string;
   url: string;
@@ -13,33 +13,56 @@ export class Hateoas<T extends Idable> {
   constructor(
     private req: Request,
     private res: Response,
-    pr: PaginatedResult<T>
+    private pr: PaginatedResult<T>
   ) {
     this.links = [];
-    // const needsNext = pr.length > pr.page * pr.pageSize;
-    // const needsPrevious = pr.page > 1;
+    const needsNext = pr.length > pr.page * pr.pageSize;
+    const needsPrevious = pr.page > 1;
 
-    const endPoint = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log('endPoint: ', endPoint);
+    const endPoint =
+      this.req.protocol +
+      '://' +
+      this.req.get('host') +
+      this.req.originalUrl.replace(/\?.*$/, '');
+    const query = {...req.query};
 
-    // if (needsNext) {
-    //   this.links.push({
-    //     name: 'next',
-    //     url: endPoint +
-    //   });
-    // }
-  }
-
-  addLink() {
-    const val = this.getHeaderLinkValue();
-    if (val.length > 0) {
-      this.res.setHeader('Link', val);
+    if (needsNext) {
+      query.page = (pr.page + 1).toString();
+      this.links.push({
+        name: 'next',
+        url: endPoint + '?' + qs.stringify(query),
+      });
+      query.page = Math.ceil(pr.length / pr.pageSize).toString();
+      this.links.push({
+        name: 'last',
+        url: endPoint + '?' + qs.stringify(query),
+      });
+    }
+    if (needsPrevious) {
+      query.page = (pr.page - 1).toString();
+      this.links.push({
+        name: 'previous',
+        url: endPoint + '?' + qs.stringify(query),
+      });
+      query.page = '1';
+      this.links.push({
+        name: 'first',
+        url: endPoint + '?' + qs.stringify(query),
+      });
     }
   }
 
   getHeaderLinkValue(): string {
+    if (this.links.length === 0) {
+      return 'No links.';
+    }
     return this.links
       .map(link => `<${link.url}>; rel="${link.name}"`)
       .join(', ');
+  }
+
+  json() {
+    this.res.setHeader('Link', this.getHeaderLinkValue());
+    this.res.json(this.pr.array);
   }
 }
