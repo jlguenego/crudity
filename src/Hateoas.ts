@@ -18,7 +18,6 @@ export class Hateoas<T extends Idable> {
     private pr: PaginatedResult<T>,
     defaultMode: HateoasMode
   ) {
-    console.log('req.headers[X-Crudity-Hateoas]: ', req.headers);
     this.mode = ['none', 'body', 'header'].includes(
       req.headers['x-crudity-hateoas'] as string
     )

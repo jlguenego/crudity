@@ -101,7 +101,6 @@ export const crudity = <T extends Idable>(
   });
 
   app.get('/', (req, res) => {
-    console.log('app.get');
     (async () => {
       try {
         const query = req.query as unknown as CrudityQueryString;
@@ -111,7 +110,6 @@ export const crudity = <T extends Idable>(
           res.status(400).end('queryString not well formatted: ' + e);
           return;
         }
-        console.log('about to call get');
         const paginatedResult = await crudService.get(query, options.pageSize);
         const hateoas = new Hateoas(req, res, paginatedResult, options.hateoas);
         hateoas.json();

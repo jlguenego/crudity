@@ -19,5 +19,6 @@ export const oneHundredArticles = new Array(100).fill(0).map(
       name: `Test ${i}`,
       price: (i * 17) % 20,
       qty: (i * 23) % 200,
+      tags: [`tag${i}`, `tag${i + 1}`],
     } as NewArticle)
 );
