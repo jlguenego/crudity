@@ -3,8 +3,8 @@ import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
-import {MongoClient, ObjectId} from 'mongodb';
-import {renameId, renameIdForArray, removeId} from './utils';
+import {Document, Filter, MongoClient, ObjectId} from 'mongodb';
+import {renameId, renameIdForArray, removeId, getSortArgs} from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   client = new MongoClient(this.options.uri, this.options.opts);
@@ -34,20 +34,29 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   ): Promise<PaginatedResult<T>> {
     const pageSize =
       query.pageSize === undefined ? defaultPageSize : +query.pageSize;
-    const pageNbr = +query.page ?? 1;
+    const pageNbr = query.page === undefined ? 1 : +query.page;
     const skipNbr = pageSize * (pageNbr - 1);
-    const result = await this.collection
-      .find({})
-      .skip(skipNbr)
-      .limit(pageSize)
-      .toArray();
-    const length = await this.collection.countDocuments({});
+    // find
+    let found = this.collection.find();
+
+    // orderBy
+    if (query.orderBy) {
+      for (const orderByItem of query.orderBy.split(',')) {
+        const {direction, field} = getSortArgs(orderByItem);
+        found = found.sort(field, direction);
+      }
+    }
+
+    const result = await found.skip(skipNbr).limit(pageSize).toArray();
+    const length = await this.collection.countDocuments();
+    console.log('length: ', length);
     const paginatedResult = {
       array: renameIdForArray<T>(result),
       page: pageNbr,
       pageSize,
       length,
     };
+    console.log('paginatedResult: ', paginatedResult);
     return paginatedResult;
   }
 

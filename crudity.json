@@ -9,8 +9,8 @@
       "hateoas": "header",
       "delay": 0,
       "storage": {
-        "type": "file",
-        "dataDir": "./data/test"
+        "type": "mongodb",
+        "uri": "mongodb://localhost/crudity-unit-test"
       }
     },
     "users": {

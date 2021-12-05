@@ -15,3 +15,24 @@ export const removeId = <T extends Idable>(a: T): Omit<T, 'id'> => {
   delete result.id;
   return result as Omit<T, 'id'>;
 };
+
+export const getSortArgs = (
+  orderByStr: string
+): {direction: 1 | -1; field: string} => {
+  if (orderByStr.startsWith('-')) {
+    return {
+      direction: -1,
+      field: orderByStr.substring(1),
+    };
+  }
+  if (orderByStr.startsWith('+')) {
+    return {
+      direction: 1,
+      field: orderByStr.substring(1),
+    };
+  }
+  return {
+    direction: 1,
+    field: orderByStr,
+  };
+};

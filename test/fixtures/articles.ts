@@ -17,7 +17,7 @@ export const oneHundredArticles = new Array(100).fill(0).map(
   (n, i) =>
     ({
       name: `Test ${i}`,
-      price: (i * 17) % 100,
-      qty: (i * 23) % 100,
+      price: (i * 17) % 150,
+      qty: (i * 23) % 200,
     } as NewArticle)
 );
