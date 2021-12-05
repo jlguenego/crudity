@@ -4,7 +4,13 @@ import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
 import {Document, Filter, MongoClient, ObjectId, Sort} from 'mongodb';
-import {renameId, renameIdForArray, removeId, getSortArgs} from './utils';
+import {
+  renameId,
+  renameIdForArray,
+  removeId,
+  getSortArgs,
+  getSortObj,
+} from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   client = new MongoClient(this.options.uri, this.options.opts);
@@ -41,13 +47,8 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     let found = this.collection.find();
 
     // orderBy
-    const sortObj: Sort = {};
     if (query.orderBy) {
-      for (const orderByItem of query.orderBy.split(',')) {
-        const {direction, field} = getSortArgs(orderByItem);
-        sortObj[field] = direction;
-      }
-      found = found.sort(sortObj);
+      found = found.sort(getSortObj(query.orderBy));
     }
 
     const result = await found.skip(skipNbr).limit(pageSize).toArray();

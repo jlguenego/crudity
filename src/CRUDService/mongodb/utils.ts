@@ -1,4 +1,4 @@
-import {Document} from 'mongodb';
+import {Document, Sort} from 'mongodb';
 import {Idable} from '../../interfaces/Idable';
 
 export const renameId = <T extends Idable>(doc: Document): T => {
@@ -35,4 +35,13 @@ export const getSortArgs = (
     direction: 1,
     field: orderByStr,
   };
+};
+
+export const getSortObj = (orderBySpec: string): Sort => {
+  const sortObj: Sort = {};
+  for (const orderByItem of orderBySpec.split(',')) {
+    const {direction, field} = getSortArgs(orderByItem);
+    sortObj[field] = direction;
+  }
+  return sortObj;
 };
