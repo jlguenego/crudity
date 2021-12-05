@@ -54,7 +54,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     }
 
     const result = await found.skip(skipNbr).limit(pageSize).toArray();
-    const length = await this.collection.countDocuments();
+    const length = await this.collection.countDocuments(filter);
     console.log('length: ', length);
     const paginatedResult = {
       array: renameIdForArray<T>(result),
