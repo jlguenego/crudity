@@ -7,7 +7,11 @@
     "articles": {
       "pageSize": 10,
       "hateoas": "header",
-      "delay": 0
+      "delay": 0,
+      "storage": {
+        "type": "file",
+        "dataDir": "./data/test"
+      }
     },
     "users": {
       "pageSize": 15,

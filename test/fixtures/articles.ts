@@ -16,8 +16,8 @@ export const a2: Article = {
 export const oneHundredArticles = new Array(100).fill(0).map(
   (n, i) =>
     ({
-      name: 'Truc',
-      price: i / 100,
-      qty: i,
+      name: `Test ${i}`,
+      price: (i * 17) % 100,
+      qty: (i * 23) % 100,
     } as NewArticle)
 );
