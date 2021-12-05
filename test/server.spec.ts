@@ -12,10 +12,16 @@ describe('Server', () => {
     port,
     resources: {
       articles: {
-        storage: {
-          type: 'mongodb',
-          uri: 'mongodb://localhost/crudity-unit-test',
-        },
+        storage:
+          process.env.TEST_STORAGE === 'mongo'
+            ? {
+                type: 'mongodb',
+                uri: 'mongodb://localhost/crudity-unit-test',
+              }
+            : {
+                type: 'file',
+                dataDir: './data/test',
+              },
       },
     },
     enableLogs: false,
@@ -27,6 +33,10 @@ describe('Server', () => {
   after(async () => {
     await webServer.stop();
   });
+
+  const testStorage = process.env.TEST_STORAGE === 'mongo' ? 'mongo' : 'file';
+
+  it(`should test with ${testStorage}`, () => {});
 
   it('should read test.txt', async () => {
     const text = await got.get(`http://localhost:${port}/test.txt`).text();
