@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import {CrudityQueryString} from '../interfaces/CrudityQueryString';
 import {Idable} from '../interfaces/Idable';
+import {PaginatedResult} from '../interfaces/PaginatedResult';
 
 export abstract class CRUDService<T extends Idable> extends EventEmitter {
   isStarted = false;
@@ -25,8 +26,8 @@ export abstract class CRUDService<T extends Idable> extends EventEmitter {
   abstract addMany(newItems: T[]): Promise<T[]>;
   abstract get(
     query: CrudityQueryString,
-    pageSize: number
-  ): Promise<Partial<T>[]>;
+    defaultPageSize: number
+  ): Promise<PaginatedResult<T>>;
   abstract getOne(id: string): Promise<T | undefined>;
   abstract patch(id: string, body: Partial<T>): Promise<T>;
   abstract remove(ids: string[]): Promise<void>;

@@ -1,3 +1,4 @@
+import {PaginatedResult} from './../../interfaces/PaginatedResult';
 import fs from 'fs';
 import {dirname} from 'path';
 import {BehaviorSubject, firstValueFrom, Subject} from 'rxjs';
@@ -64,7 +65,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   async get(
     query: CrudityQueryString,
     defaultPageSize: number
-  ): Promise<Partial<T>[]> {
+  ): Promise<PaginatedResult<T>> {
     // filter
     const filteredArray = queryFilter<T>(this.array, query.filter);
 
@@ -86,7 +87,12 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     // unselect
     const unselectArray = unselect<T>(selectArray, query.unselect);
 
-    return unselectArray;
+    return {
+      array: unselectArray,
+      length: array.length,
+      page,
+      pageSize,
+    };
   }
 
   async getOne(id: string): Promise<T | undefined> {

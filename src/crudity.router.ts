@@ -2,6 +2,7 @@ import express, {Response, Router} from 'express';
 import {Server} from 'http';
 import {CrudityConsole} from './CrudityConsole';
 import {CRUDServiceFactory} from './CRUDService/CRUDServiceFactory';
+import {Hateoas} from './hateoas';
 import {CrudityOptions} from './interfaces/CrudityOptions';
 import {CrudityQueryString} from './interfaces/CrudityQueryString';
 import {Idable} from './interfaces/Idable';
@@ -110,9 +111,10 @@ export const crudity = <T extends Idable>(
           return;
         }
         console.log('about to call get');
-        const array = await crudService.get(query, options.pageSize);
-        console.log('array: ', array);
-        res.json(array);
+        const paginatedResult = await crudService.get(query, options.pageSize);
+        const hateoas = new Hateoas(req, res, paginatedResult);
+        hateoas.addLink();
+        res.json(paginatedResult.array);
         return;
       } catch (err) {
         manageError(err, res);

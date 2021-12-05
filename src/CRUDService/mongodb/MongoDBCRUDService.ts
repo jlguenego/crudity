@@ -1,3 +1,4 @@
+import {PaginatedResult} from './../../interfaces/PaginatedResult';
 import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
@@ -29,10 +30,25 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async get(
     query: CrudityQueryString,
-    pageSize: number
-  ): Promise<Partial<T>[]> {
-    const result = await this.collection.find({}).toArray();
-    return renameIdForArray<T>(result);
+    defaultPageSize: number
+  ): Promise<PaginatedResult<T>> {
+    const pageSize =
+      query.pageSize === undefined ? defaultPageSize : query.pageSize;
+    const pageNbr = query.page ?? 0;
+    const skipNbr = pageSize * pageNbr;
+    const result = await this.collection
+      .find({})
+      .skip(skipNbr)
+      .limit(pageSize)
+      .toArray();
+    const length = await this.collection.countDocuments({});
+    const paginatedResult = {
+      array: renameIdForArray<T>(result),
+      page: pageNbr,
+      pageSize,
+      length,
+    };
+    return paginatedResult;
   }
 
   async getOne(id: string): Promise<T | undefined> {
