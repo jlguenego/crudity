@@ -1,5 +1,7 @@
-import {Document, Sort} from 'mongodb';
+import {CrudityFilterObject} from './../../interfaces/CrudityQueryString';
+import {Document, Filter, Sort} from 'mongodb';
 import {Idable} from '../../interfaces/Idable';
+import {result} from 'lodash';
 
 export const renameId = <T extends Idable>(doc: Document): T => {
   const result = {id: doc._id, ...doc} as T;
@@ -44,4 +46,20 @@ export const getSortObj = (orderBySpec: string): Sort => {
     sortObj[field] = direction;
   }
   return sortObj;
+};
+
+export const getFilterObj = (filter: CrudityFilterObject): Filter<Document> => {
+  if (!filter) {
+    return {};
+  }
+  const result = Object.entries(filter).map(([field, value]) => {
+    const num = +value;
+    if (!isNaN(num)) {
+      return {$or: [{[field]: value}, {[field]: +value}]};
+    }
+
+    return {[field]: value};
+  });
+
+  return {$and: result};
 };

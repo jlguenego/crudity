@@ -1,15 +1,15 @@
-import {PaginatedResult} from './../../interfaces/PaginatedResult';
+import {Document, Filter, MongoClient, ObjectId} from 'mongodb';
 import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
 import {CRUDService} from '../CRUDService';
-import {Document, Filter, MongoClient, ObjectId, Sort} from 'mongodb';
+import {PaginatedResult} from '../../interfaces/PaginatedResult';
 import {
+  getFilterObj,
+  getSortObj,
+  removeId,
   renameId,
   renameIdForArray,
-  removeId,
-  getSortArgs,
-  getSortObj,
 } from './utils';
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
@@ -44,7 +44,9 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     const skipNbr = pageSize * (pageNbr - 1);
 
     // find
-    let found = this.collection.find();
+    const filter: Filter<Document> = getFilterObj(query.filter);
+    console.log('filter: ', filter);
+    let found = this.collection.find(filter);
 
     // orderBy
     if (query.orderBy) {
