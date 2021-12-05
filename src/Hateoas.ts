@@ -79,7 +79,7 @@ export class Hateoas<T extends Idable> {
     if (this.mode === 'body') {
       this.res.json({
         link: this.links,
-        array: this.pr.array,
+        result: this.pr.array,
       });
       return;
     }
