@@ -2,7 +2,7 @@ import express, {Response, Router} from 'express';
 import {Server} from 'http';
 import {CrudityConsole} from './CrudityConsole';
 import {CRUDServiceFactory} from './CRUDService/CRUDServiceFactory';
-import {Hateoas} from './hateoas';
+import {Hateoas} from './Hateoas';
 import {CrudityOptions} from './interfaces/CrudityOptions';
 import {CrudityQueryString} from './interfaces/CrudityQueryString';
 import {Idable} from './interfaces/Idable';
@@ -10,6 +10,7 @@ import {checkQueryString} from './querystring';
 
 const defaultOptions: CrudityOptions = {
   pageSize: 15,
+  hateoas: 'header',
   storage: {
     type: 'file',
     dataDir: './data',
@@ -112,7 +113,7 @@ export const crudity = <T extends Idable>(
         }
         console.log('about to call get');
         const paginatedResult = await crudService.get(query, options.pageSize);
-        const hateoas = new Hateoas(req, res, paginatedResult);
+        const hateoas = new Hateoas(req, res, paginatedResult, options.hateoas);
         hateoas.json();
         return;
       } catch (err) {

@@ -1,4 +1,5 @@
 import {MongoClientOptions} from 'mongodb';
+import {HateoasMode} from './HateoasMode';
 
 export interface CrudityOptions {
   /**
@@ -25,6 +26,13 @@ export interface CrudityOptions {
    * @default true
    */
   enableLogs: boolean;
+
+  /**
+   * Set Hateoas information in the body or in the header.
+   *
+   * @default "header"
+   */
+  hateoas: HateoasMode;
 }
 
 export type StorageOptions = (FileStorageOptions | MongoDBStorageOptions) & {

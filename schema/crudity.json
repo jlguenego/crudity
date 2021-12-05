@@ -323,6 +323,13 @@
             },
             "type": "object"
         },
+        "HateoasMode": {
+            "enum": [
+                "body",
+                "header"
+            ],
+            "type": "string"
+        },
         "HedgeOptions": {
             "properties": {
                 "enabled": {
@@ -1566,6 +1573,16 @@
                     "description": "milliseconds of time before sending back an HTTP response (for testing purpose).",
                     "type": "number"
                 },
+                "enableLogs": {
+                    "default": true,
+                    "description": "Enable crudity logging.",
+                    "type": "boolean"
+                },
+                "hateoas": {
+                    "$ref": "#/definitions/HateoasMode",
+                    "default": "header",
+                    "description": "Set Hateoas information in the body or in the header."
+                },
                 "pageSize": {
                     "default": 15,
                     "description": "Size for pagination.",
@@ -1781,6 +1798,11 @@
         "cors": {
             "default": true,
             "description": "true to enable CORS",
+            "type": "boolean"
+        },
+        "enableLogs": {
+            "default": true,
+            "description": "Enable crudity logging.",
             "type": "boolean"
         },
         "port": {

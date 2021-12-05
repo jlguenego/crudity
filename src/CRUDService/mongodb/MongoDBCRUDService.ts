@@ -33,7 +33,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     defaultPageSize: number
   ): Promise<PaginatedResult<T>> {
     const pageSize =
-      query.pageSize === undefined ? defaultPageSize : query.pageSize;
+      query.pageSize === undefined ? defaultPageSize : +query.pageSize;
     const pageNbr = +query.page ?? 1;
     const skipNbr = pageSize * (pageNbr - 1);
     const result = await this.collection

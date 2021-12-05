@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import qs from 'qs';
+import {HateoasMode} from './interfaces/HateoasMode';
 import {Idable} from './interfaces/Idable';
 import {PaginatedResult} from './interfaces/PaginatedResult';
 interface Link {
@@ -13,7 +14,8 @@ export class Hateoas<T extends Idable> {
   constructor(
     private req: Request,
     private res: Response,
-    private pr: PaginatedResult<T>
+    private pr: PaginatedResult<T>,
+    private mode: HateoasMode
   ) {
     this.links = [];
     const needsNext = pr.length > pr.page * pr.pageSize;
@@ -62,7 +64,14 @@ export class Hateoas<T extends Idable> {
   }
 
   json() {
-    this.res.setHeader('Link', this.getHeaderLinkValue());
-    this.res.json(this.pr.array);
+    if (this.mode === 'header') {
+      this.res.setHeader('Link', this.getHeaderLinkValue());
+      this.res.json(this.pr.array);
+      return;
+    }
+    this.res.json({
+      link: this.links,
+      array: this.pr.array,
+    });
   }
 }
