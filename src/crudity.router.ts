@@ -39,6 +39,10 @@ export const crudity = <T extends Idable>(
 
   const service = CRUDServiceFactory.get<T>(resourceName, options.storage);
 
+  const validators = options.validators.map(validator => {
+    return {...validator, fn: ValidatorFactory.get(service, validator.name)};
+  });
+
   (async () => {
     try {
       console.log(
@@ -101,10 +105,9 @@ export const crudity = <T extends Idable>(
       try {
         const resources = req.body instanceof Array ? req.body : [req.body];
         for (const resource of resources) {
-          for (const validator of options.validators) {
-            const validatorObj = ValidatorFactory.get(service, validator.name);
+          for (const validator of validators) {
             try {
-              await validatorObj.validate(resource, validator.args);
+              await validator.fn.validate(resource, validator.args);
             } catch (err) {
               if (err instanceof ValidatorError) {
                 res.status(400).send(err.message);

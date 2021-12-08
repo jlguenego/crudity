@@ -7,6 +7,6 @@ export class ValidatorFactory {
     if (name === 'unique') {
       return new UniqueValidator(crud);
     }
-    throw new Error('unknown validator');
+    throw new Error(`unknown validator: ${name}`);
   }
 }
