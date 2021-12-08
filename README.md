@@ -83,10 +83,17 @@ server.listen(3333, () => {
 
 This module only focus on CRUD operations. **It does not perform**:
 
-- validation (sync and async)
+- synchrone validation
 - sanitizing (xss, trim, etc.)
 - authentication / authorization
 - logging (access log, trace)
+
+However, it offers some async validation operators:
+
+- **unique**: avoid duplicate entry on some fields.
+- that's it for the time being.
+
+Note that you can write your own async validation operators using the CRUDService `crudityRouter.service`.
 
 You can check these projects:
 
