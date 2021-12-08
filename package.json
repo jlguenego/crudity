@@ -1,6 +1,6 @@
 {
   "name": "crudity",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "A production ready CRUD backend server and node http middleware, working with files/mongodb/etc.",
   "bin": "./build/src/bin/crudity.js",
   "main": "build/src/index.js",

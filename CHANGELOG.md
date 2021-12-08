@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.6](https://github.com/jlguenego/crudity/compare/v2.0.5...v2.0.6) (2021-12-08)
+
+
+### Bug Fixes
+
+* listener exceeded... ([e42ec6a](https://github.com/jlguenego/crudity/commit/e42ec6a73fb8b7d29cb045f79b81f8da164409f5))
+
 ### [2.0.5](https://github.com/jlguenego/crudity/compare/v2.0.4...v2.0.5) (2021-12-08)
 
 ### [2.0.4](https://github.com/jlguenego/crudity/compare/v2.0.3...v2.0.4) (2021-12-08)
