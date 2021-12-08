@@ -12,41 +12,69 @@ Can be configured with a `crudity.json` file. See [Configuration](#Configuration
 
 ## Install
 
+### Global mode
+
+```
+npm i crudity -g
+```
+
+### On a local project
+
 ```
 npm i crudity
 ```
 
 ## Usage
 
+### Command line
+
+```
+npx crudity
+```
+
 ### Javascript
 
 ```js
 const express = require('express');
-const {crudity} = require('crudity');
+const {createServer} = require('http');
+const {crudity} = require('../../build/src');
 
 const app = express();
-app.use('/ws/articles', crudity());
-
-app.listen(3000, () => console.log('JS Server started on port 3000'));
+const server = createServer(app);
+app.use(
+  '/api/articles',
+  crudity(server, 'articles', {
+    pageSize: 100,
+    hateoas: 'body',
+  })
+);
+server.listen(3333, () => {
+  console.log(`server started on port ${server.address().port}`);
+});
 ```
 
 ### Typescript
 
 ```ts
 import express from 'express';
-import {Crudity} from 'crudity';
-
-interface Article {
-  id?: string;
-  name: string;
-  price: number;
-  qty: number;
-}
+import {createServer} from 'http';
+import {AddressInfo} from 'net';
+import {crudity} from 'crudity';
 
 const app = express();
-app.use('/ws/articles', crudity<Article>());
-
-app.listen(3000, () => console.log('Server started on port 3000'));
+const server = createServer(app);
+app.use(
+  '/api/articles',
+  crudity(server, 'articles', {
+    pageSize: 100,
+    hateoas: 'body',
+  })
+);
+server.listen(3333, () => {
+  console.log(
+    `server started on port ${(server.address() as AddressInfo).port}`
+  );
+});
 ```
 
 ## Middleware options
@@ -247,7 +275,6 @@ Example of `crudity.json` file:
 
 ## TODO
 
-- schema for json crudity file.
 - Doc for implementing a new service
 - Doc for integrating in express
 - Exemple with validation, authentication, sanitizing, etc.
