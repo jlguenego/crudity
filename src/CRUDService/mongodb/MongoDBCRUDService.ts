@@ -36,7 +36,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async get(
     query: CrudityQueryString,
-    defaultPageSize: number
+    defaultPageSize = 10
   ): Promise<PaginatedResult<T>> {
     const pageSize =
       query.pageSize === undefined ? defaultPageSize : +query.pageSize;

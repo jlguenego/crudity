@@ -64,7 +64,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
 
   async get(
     query: CrudityQueryString,
-    defaultPageSize: number
+    defaultPageSize = 10
   ): Promise<PaginatedResult<T>> {
     // filter
     const filteredArray = queryFilter<T>(this.array, query.filter);

@@ -47,7 +47,9 @@ export const getSortObj = (orderBySpec: string): Sort => {
   return sortObj;
 };
 
-export const getFilterObj = (filter: CrudityFilterObject): Filter<Document> => {
+export const getFilterObj = (
+  filter: CrudityFilterObject | undefined
+): Filter<Document> => {
   if (!filter) {
     return {};
   }

@@ -5,6 +5,7 @@ import {CRUDServiceFactory} from './CRUDService/CRUDServiceFactory';
 import {Hateoas} from './Hateoas';
 import {CrudityOptions} from './interfaces/CrudityOptions';
 import {CrudityQueryString} from './interfaces/CrudityQueryString';
+import {CrudityRouter} from './interfaces/CrudityRouter';
 import {Idable} from './interfaces/Idable';
 import {checkQueryString} from './querystring';
 
@@ -28,19 +29,19 @@ export const crudity = <T extends Idable>(
   server: Server,
   resourceName: string,
   opts: Partial<CrudityOptions> = {}
-) => {
+): CrudityRouter<T> => {
   const options = {...defaultOptions, ...opts};
   const console = new CrudityConsole(options.enableLogs);
   console.log(`crudity options for resource "${resourceName}": `, options);
 
-  const crudService = CRUDServiceFactory.get<T>(resourceName, options.storage);
+  const service = CRUDServiceFactory.get<T>(resourceName, options.storage);
 
   (async () => {
     try {
       console.log(
         `about to start crudity service for resource ${resourceName}(${options.storage.type})`
       );
-      await crudService.init();
+      await service.init();
       console.log(
         `crudity service for resource ${resourceName}(${options.storage.type}) started with success.`
       );
@@ -54,21 +55,22 @@ export const crudity = <T extends Idable>(
     console.log(
       `about to stop crudity service for resource ${resourceName}(${options.storage.type})`
     );
-    await crudService.finalize();
+    await service.finalize();
     console.log(
       `crudity service for resource ${resourceName}(${options.storage.type}) stopped with success.`
     );
   });
 
-  const app = Router();
+  const app = Router() as CrudityRouter<T>;
+  app.service = service;
 
   app.use((req, res, next) => {
     // already started
-    if (crudService.isStarted) {
+    if (service.isStarted) {
       next();
     }
     // not yet started, wait...
-    crudService.once('started', () => {
+    service.once('started', () => {
       next();
     });
   });
@@ -87,12 +89,12 @@ export const crudity = <T extends Idable>(
       try {
         if (req.body instanceof Array) {
           // bulk scenario
-          const array: T[] = await crudService.addMany(req.body as T[]);
+          const array: T[] = await service.addMany(req.body as T[]);
           res.status(201).json(array);
           return;
         }
         const t: T = req.body;
-        const newT = await crudService.add(t);
+        const newT = await service.add(t);
         res.status(201).json(newT);
       } catch (err) {
         manageError(err, res);
@@ -110,7 +112,7 @@ export const crudity = <T extends Idable>(
           res.status(400).end('queryString not well formatted: ' + e);
           return;
         }
-        const paginatedResult = await crudService.get(query, options.pageSize);
+        const paginatedResult = await service.get(query, options.pageSize);
         const hateoas = new Hateoas(req, res, paginatedResult, options.hateoas);
         hateoas.json();
         return;
@@ -124,7 +126,7 @@ export const crudity = <T extends Idable>(
     (async () => {
       try {
         const id = req.params.id;
-        const t = await crudService.getOne(id);
+        const t = await service.getOne(id);
         if (!t) {
           res.status(404).end();
           return;
@@ -140,13 +142,13 @@ export const crudity = <T extends Idable>(
     (async () => {
       try {
         const id = req.params.id;
-        const t = crudService.getOne(id);
+        const t = service.getOne(id);
         if (!t) {
           res.status(404).end();
           return;
         }
         req.body.id = id;
-        const newT = await crudService.rewrite(req.body as T);
+        const newT = await service.rewrite(req.body as T);
         console.log('newT: ', newT);
         res.json(newT);
       } catch (err) {
@@ -159,12 +161,12 @@ export const crudity = <T extends Idable>(
     (async () => {
       try {
         const id = req.params.id;
-        const t = crudService.getOne(id);
+        const t = service.getOne(id);
         if (!t) {
           res.status(404).end();
           return;
         }
-        const newT = await crudService.patch(id, req.body);
+        const newT = await service.patch(id, req.body);
         res.json(newT);
       } catch (err) {
         manageError(err, res);
@@ -176,12 +178,12 @@ export const crudity = <T extends Idable>(
     (async () => {
       try {
         if (!(req.body instanceof Array)) {
-          crudService.removeAll();
+          service.removeAll();
           res.status(204).end();
           return;
         }
         const ids: string[] = req.body;
-        crudService.remove(ids);
+        service.remove(ids);
         res.status(204).end();
       } catch (err) {
         manageError(err, res);
@@ -193,7 +195,7 @@ export const crudity = <T extends Idable>(
     (async () => {
       try {
         const id = req.params.id;
-        crudService.remove([id]);
+        service.remove([id]);
         res.status(204).end();
         return;
       } catch (err) {
