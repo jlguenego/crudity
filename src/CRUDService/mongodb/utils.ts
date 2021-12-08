@@ -1,7 +1,6 @@
 import {CrudityFilterObject} from './../../interfaces/CrudityQueryString';
 import {Document, Filter, Sort} from 'mongodb';
 import {Idable} from '../../interfaces/Idable';
-import {result} from 'lodash';
 
 export const renameId = <T extends Idable>(doc: Document): T => {
   const result = {id: doc._id, ...doc} as T;
