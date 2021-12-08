@@ -4,6 +4,8 @@ A production ready CRUD backend server and node http middleware, working with fi
 
 ## Quick start
 
+Take less than 10 seconds.
+
 ```
 npx crudity
 ```
