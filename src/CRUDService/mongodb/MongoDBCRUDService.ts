@@ -69,13 +69,10 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   async getOne(id: string): Promise<T | undefined> {
     const objectId = new ObjectId(id);
     const result = await this.collection.findOne({_id: objectId});
-    console.log('result: ', result);
     if (!result) {
       throw new Error('not found');
     }
-    const result2 = renameId<T>(result);
-    console.log('result2: ', result2);
-    return result2;
+    return renameId<T>(result);
   }
 
   async patch(id: string, body: Partial<T>): Promise<T> {
@@ -83,13 +80,13 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
 
     const result = await this.collection.findOneAndUpdate(
       {_id: objectId},
-      body
+      {$set: body}
     );
-    console.log('result: ', result);
     if (!result) {
       throw new Error('not found');
     }
-    return body as T;
+
+    return (await this.getOne(id)) as T;
   }
 
   async remove(ids: string[]): Promise<void> {

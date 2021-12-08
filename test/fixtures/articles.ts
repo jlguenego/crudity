@@ -1,13 +1,11 @@
-import {Article, NewArticle} from '../misc/Article';
+import {NewArticle} from '../misc/Article';
 
-export const a1: Article = {
-  id: 'a1',
+export const a1: NewArticle = {
   name: 'Tournevis',
   price: 1.23,
   qty: 345,
 };
-export const a2: Article = {
-  id: 'a2',
+export const a2: NewArticle = {
   name: 'Pince',
   price: 67.0,
   qty: 79,
