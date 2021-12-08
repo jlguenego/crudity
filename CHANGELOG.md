@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.4](https://github.com/jlguenego/crudity/compare/v2.0.3...v2.0.4) (2021-12-08)
+
+
+### Bug Fixes
+
+* console.log ([ac38d49](https://github.com/jlguenego/crudity/commit/ac38d49783ef3b4d8dddec02e20a61b23534c36e))
+* length of result ([39fe1b1](https://github.com/jlguenego/crudity/commit/39fe1b14ec9fe12ca30bb20abb7ed7e9b9cfed96))
+
 ### [2.0.3](https://github.com/jlguenego/crudity/compare/v2.0.2...v2.0.3) (2021-12-03)
 
 ### [2.0.2](https://github.com/jlguenego/crudity/compare/v2.0.1...v2.0.2) (2021-11-28)
