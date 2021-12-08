@@ -12,6 +12,7 @@ describe('Server', () => {
     port,
     resources: {
       articles: {
+        enableLogs: true,
         storage:
           process.env.TEST_STORAGE === 'mongo'
             ? {
@@ -24,7 +25,7 @@ describe('Server', () => {
               },
       },
     },
-    enableLogs: false,
+    enableLogs: true,
   });
   before(async () => {
     await webServer.start();
@@ -84,5 +85,25 @@ describe('Server', () => {
       .get(`http://localhost:${port}/api/articles?pageSize=200`)
       .json<Article[]>();
     assert.deepStrictEqual(articles.length, 101);
+  });
+
+  it('should patch 1 article', async () => {
+    const articles = await got
+      .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
+      .json<Article[]>();
+    const article = articles[0];
+    console.log('article: ', article);
+    assert.deepStrictEqual(article.price, a1.price);
+    const newPrice = 34.56;
+    const patchedArticle = await got
+      .patch(`http://localhost:${port}/api/articles/${article.id}`, {
+        body: JSON.stringify({price: newPrice}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .json<Article>();
+    console.log('patchedArticle: ', patchedArticle);
+    assert.deepStrictEqual(patchedArticle.price, newPrice);
   });
 });

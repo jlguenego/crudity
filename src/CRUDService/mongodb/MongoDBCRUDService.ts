@@ -78,8 +78,18 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     return result2;
   }
 
-  patch(id: string, body: Partial<T>): Promise<T> {
-    throw new Error('not implemented.');
+  async patch(id: string, body: Partial<T>): Promise<T> {
+    const objectId = new ObjectId(id);
+
+    const result = await this.collection.findOneAndUpdate(
+      {_id: objectId},
+      body
+    );
+    console.log('result: ', result);
+    if (!result) {
+      throw new Error('not found');
+    }
+    return body as T;
   }
 
   async remove(ids: string[]): Promise<void> {

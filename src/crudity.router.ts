@@ -163,7 +163,7 @@ export const crudity = <T extends Idable>(
           res.status(404).end();
           return;
         }
-        const newT = crudService.patch(id, req.body);
+        const newT = await crudService.patch(id, req.body);
         res.json(newT);
       } catch (err) {
         manageError(err, res);
