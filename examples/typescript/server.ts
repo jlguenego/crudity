@@ -16,7 +16,7 @@ const articleCrud = crudity<Truc>(server, 'articles', {
   hateoas: 'body',
 });
 
-app.post(
+app.use(
   '/api/articles',
   express.json(),
   checkDuplicate<Truc>(articleCrud, 'name')
