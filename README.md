@@ -77,34 +77,53 @@ server.listen(3333, () => {
 });
 ```
 
-## Middleware options
+## Out of scope
 
-The middleware `crudity(options: CrudityOptions)` has following options:
+This module only focus on CRUD operations. **It does not perform**:
+
+- validation (sync and async)
+- sanitizing (xss, trim, etc.)
+- authentication / authorization
+- logging (access log, trace)
+
+You can check these projects:
+
+- Synchrone validation:
+  - [superstruct](https://github.com/ianstormtaylor/superstruct)
+- Authentication with OAuth2:
+  - [@jlguenego/express-oauth2-client](https://www.npmjs.com/package/@jlguenego/express-oauth2-client)
+- logging access log
+  - [morgan](https://www.npmjs.com/package/morgan)
+
+## Crudity options
+
+The middleware `crudity(server: http.Server, resourceName: string, options: CrudityOptions)` has following options called `CrudityOptions`:
 
 - `pageSize: number` - default page size for _retrieve all_ requests. `20` by default.
-- `validator?: Validator` - optional. If provided, validate and sanatize the request body.
-  You need to subclass the [Validator class](./src/Validator.ts).
-- `resource?: Resource` - optional. If provided the [Resource class](./src/Resource.ts) to be used.
-  It is a subclass of Resource.
-  It is by default `new JsonResource()`.
+- `storage` - an object for specifying how to store the resource (ex: json file storage, mongodb storage). See [Storage options](# Storage options)
+- `hateoas`: `body`, `header`, or `none`. Give hateoas informations through the HTTP request body, or the HTTP request header, or do not give hateoas information. Hateoas are kind of interesting related links (ex: next, previous, first, last page).
+- `delay`: if you want to add slowness to the request (for debugging purpose)
+- `enableLogs`: if you want to see logs.
 
-The `JsonResource` class takes the following options:
+## Storage options
 
-- `filename: string` - path of the database json file. By default it is `crudity.json` in the user directory.
-- `minify: boolean` - Minify the JSON before storing. `false` by default.
-- `debounceTimeDelay: number` - Do not write in the file less than this delay. `2000` by default.
+The storage object always has a `type` that can be:
 
-### Example
+- `file`
+- `mongo`
+- other value if implemented.
 
-```ts
-crudity<Article>({
-  validator: new DTOValidator(Article),
-  resource: new JsonResource({
-    filename: path.resolve(__dirname, './articles.json'),
-    minify: true,
-  }),
-});
-```
+### File (Json)
+
+- `dataDir`: the directory where to store the json file.
+
+### Mongo
+
+- `uri`: The mongo URI to connect to. See the MongoDB doc how to add options to it.
+
+### Other
+
+You can implement your own storage service.
 
 ## Play
 
