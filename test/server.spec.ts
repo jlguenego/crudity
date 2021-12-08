@@ -8,6 +8,7 @@ import {Article} from './misc/Article';
 const port = +(process.env.TEST_PORT || 3333);
 
 describe('Server', () => {
+  const url = `http://localhost:${port}/api/articles`;
   const webServer = new WebServer({
     port,
     resources: {
@@ -49,16 +50,14 @@ describe('Server', () => {
   });
 
   it('should delete all articles', async () => {
-    await got.delete(`http://localhost:${port}/api/articles`);
-    const articles = await got
-      .get(`http://localhost:${port}/api/articles`)
-      .json<Article[]>();
+    await got.delete(url);
+    const articles = await got.get(url).json<Article[]>();
     assert.deepStrictEqual(articles, []);
   });
 
   it('should add 100 articles in bulk', async () => {
     const newArticles = await got
-      .post(`http://localhost:${port}/api/articles`, {
+      .post(url, {
         body: JSON.stringify(oneHundredArticles),
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +73,7 @@ describe('Server', () => {
 
   it('should add 1 article', async () => {
     const newArticles = await got
-      .post(`http://localhost:${port}/api/articles`, {
+      .post(url, {
         body: JSON.stringify(a1),
         headers: {
           'Content-Type': 'application/json',
@@ -122,5 +121,27 @@ describe('Server', () => {
       })
       .json<Article>();
     assert.deepStrictEqual(rewroteArticle.name, a2.name);
+  });
+
+  it('should not add duplicate articles', async () => {
+    await got.delete(url);
+    const articles = await got.get(url).json<Article[]>();
+    assert.deepStrictEqual(articles, []);
+
+    await got.post(url, {
+      body: JSON.stringify(a1),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const response = await got.post(url, {
+      body: JSON.stringify(a1),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      throwHttpErrors: false,
+    });
+    console.log('response: ', response.statusCode);
+    console.log('response: ', response.body);
   });
 });

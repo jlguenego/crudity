@@ -75,6 +75,7 @@ export const crudity = <T extends Idable>(
     // already started
     if (service.isStarted) {
       next();
+      return;
     }
     // not yet started, wait...
     service.once('started', () => {
