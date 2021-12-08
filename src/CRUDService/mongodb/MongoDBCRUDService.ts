@@ -98,8 +98,18 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     await this.collection.deleteMany({});
   }
 
-  rewrite(arg0: T): Promise<T> {
-    throw new Error('not implemented.');
+  async rewrite(newT: T): Promise<T> {
+    const objectId = new ObjectId(newT.id);
+
+    const result = await this.collection.findOneAndReplace(
+      {_id: objectId},
+      newT
+    );
+    if (!result) {
+      throw new Error('not found');
+    }
+
+    return (await this.getOne(newT.id)) as T;
   }
 
   async start(): Promise<void> {

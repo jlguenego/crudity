@@ -146,7 +146,8 @@ export const crudity = <T extends Idable>(
           return;
         }
         req.body.id = id;
-        const newT = crudService.rewrite(req.body as T);
+        const newT = await crudService.rewrite(req.body as T);
+        console.log('newT: ', newT);
         res.json(newT);
       } catch (err) {
         manageError(err, res);

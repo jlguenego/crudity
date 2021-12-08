@@ -7,9 +7,9 @@ export const a1: NewArticle = {
 };
 export const a2: NewArticle = {
   name: 'Pince',
-  price: 67.0,
+  pricexxx: 67.0,
   qty: 79,
-};
+} as unknown as NewArticle;
 
 export const oneHundredArticles = new Array(100).fill(0).map(
   (n, i) =>

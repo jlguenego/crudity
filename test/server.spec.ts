@@ -2,7 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import got from 'got';
 import {WebServer} from '../src/WebServer';
-import {oneHundredArticles, a1} from './fixtures/articles';
+import {oneHundredArticles, a1, a2} from './fixtures/articles';
 import {Article} from './misc/Article';
 
 const port = +(process.env.TEST_PORT || 3333);
@@ -103,5 +103,23 @@ describe('Server', () => {
       })
       .json<Article>();
     assert.deepStrictEqual(patchedArticle.price, newPrice);
+  });
+
+  it('should rewrite 1 article', async () => {
+    const articles = await got
+      .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
+      .json<Article[]>();
+    const article = articles[0];
+    assert.deepStrictEqual(article.name, a1.name);
+
+    const rewroteArticle = await got
+      .put(`http://localhost:${port}/api/articles/${article.id}`, {
+        body: JSON.stringify(a2),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .json<Article>();
+    assert.deepStrictEqual(rewroteArticle.name, a2.name);
   });
 });
