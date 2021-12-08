@@ -155,6 +155,5 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     await firstValueFrom(
       this.writeFileStatus$.pipe(filter(status => status === Status.NO_ORDER))
     );
-    console.log('file closed');
   }
 }

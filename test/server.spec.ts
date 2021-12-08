@@ -141,7 +141,7 @@ describe('Server', () => {
       },
       throwHttpErrors: false,
     });
-    console.log('response: ', response.statusCode);
-    console.log('response: ', response.body);
+    assert.deepStrictEqual(response.statusCode, 400);
+    assert.deepStrictEqual(response.body, 'duplicate name : ' + a1.name);
   });
 });
