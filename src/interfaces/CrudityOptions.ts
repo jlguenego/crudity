@@ -33,6 +33,8 @@ export interface CrudityOptions {
    * @default "header"
    */
   hateoas: HateoasMode;
+
+  validators: AsyncValidator[];
 }
 
 export type StorageOptions = (FileStorageOptions | MongoDBStorageOptions) & {
@@ -64,4 +66,9 @@ export interface MongoDBStorageOptions {
    * MongoClientOptions. See the MongoClient NodeJS drivers options.
    */
   opts?: MongoClientOptions;
+}
+
+export interface AsyncValidator {
+  name: string;
+  args: string[];
 }

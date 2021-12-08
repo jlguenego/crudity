@@ -23,6 +23,7 @@ describe('Server', () => {
                 type: 'file',
                 dataDir: './data/test',
               },
+        validators: [{name: 'unique', args: ['name']}],
       },
     },
     enableLogs: false,

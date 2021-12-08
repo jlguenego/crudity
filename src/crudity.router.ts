@@ -8,6 +8,8 @@ import {CrudityQueryString} from './interfaces/CrudityQueryString';
 import {CrudityRouter} from './interfaces/CrudityRouter';
 import {Idable} from './interfaces/Idable';
 import {checkQueryString} from './querystring';
+import {ValidatorError} from './validators/Validator';
+import {ValidatorFactory} from './validators/ValidatorFactory';
 
 const defaultOptions: CrudityOptions = {
   pageSize: 15,
@@ -18,6 +20,7 @@ const defaultOptions: CrudityOptions = {
   },
   delay: 0,
   enableLogs: false,
+  validators: [],
 };
 
 const manageError = (err: unknown, res: Response) => {
@@ -83,6 +86,39 @@ export const crudity = <T extends Idable>(
   });
 
   app.use(express.json());
+
+  // async validation
+  app.use((req, res, next) => {
+    if (!['POST', 'PUT', 'PATCH'].includes(req.method)) {
+      next();
+      return;
+    }
+    if (!req.body) {
+      next();
+      return;
+    }
+    (async () => {
+      try {
+        const resources = req.body instanceof Array ? req.body : [req.body];
+        for (const resource of resources) {
+          for (const validator of options.validators) {
+            const validatorObj = ValidatorFactory.get(service, validator.name);
+            try {
+              await validatorObj.validate(resource, validator.args);
+            } catch (err) {
+              if (err instanceof ValidatorError) {
+                res.status(400).send(err.message);
+                return;
+              }
+            }
+          }
+        }
+        next();
+      } catch (err) {
+        res.status(500).end();
+      }
+    })();
+  });
 
   app.post('/', (req, res) => {
     (async () => {
