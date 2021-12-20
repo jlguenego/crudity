@@ -124,7 +124,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
       throw new Error('not id provided');
     }
     const index = this.array.findIndex(r => r.id === t.id);
-    if (!index) {
+    if (index === -1) {
       throw new Error('not found');
     }
     this.array[index] = t;

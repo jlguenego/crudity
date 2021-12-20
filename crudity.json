@@ -7,11 +7,7 @@
     "articles": {
       "pageSize": 10,
       "hateoas": "body",
-      "delay": 0,
-      "storage": {
-        "type": "mongodb",
-        "uri": "mongodb://localhost/crudity-unit-test"
-      }
+      "delay": 0
     },
     "users": {
       "pageSize": 15,
