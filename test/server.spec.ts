@@ -66,7 +66,7 @@ describe('Server', () => {
       .json<Article[]>();
     assert.deepStrictEqual(newArticles.length, 100);
     const articles = await got
-      .get(`http://localhost:${port}/api/articles?pageSize=200`)
+      .get(`http://localhost:${port}/api/articles?pageSize=0`)
       .json<Article[]>();
     assert.deepStrictEqual(articles.length, 100);
   });

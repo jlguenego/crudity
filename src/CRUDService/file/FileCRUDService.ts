@@ -73,13 +73,18 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     const array = orderBy<T>(filteredArray, query.orderBy);
 
     // pagination
+
     const pageSize =
       !query.pageSize || isNaN(+query.pageSize)
         ? defaultPageSize
         : +query.pageSize;
-    const page = !query.page || isNaN(+query.page) ? 1 : +query.page;
-    const {start, end} = getPageSlice(pageSize, page);
-    const pagedArray = array.slice(start, end);
+    let pagedArray = array;
+    let page = 1;
+    if (pageSize > 0) {
+      page = !query.page || isNaN(+query.page) ? 1 : +query.page;
+      const {start, end} = getPageSlice(pageSize, page);
+      pagedArray = array.slice(start, end);
+    }
 
     // select
     const selectArray = select<T>(pagedArray, query.select);

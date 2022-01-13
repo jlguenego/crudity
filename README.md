@@ -181,7 +181,7 @@ The query string uses the [`qs` node module format](https://github.com/ljharb/qs
 Crudity query options are:
 
 - `page`: page index starting at 1. Default is `1`.
-- `pageSize`: number of items per page. Default is `20`.
+- `pageSize`: number of items per page. Default is `20`. `0` means no limit.
 - `orderBy`: order by field name.
   - It is a concatenated string of fields that are to be ordered,
     separated by a comma character `,`.
