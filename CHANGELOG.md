@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.8](https://github.com/jlguenego/crudity/compare/v2.0.7...v2.0.8) (2022-01-13)
+
+
+### Bug Fixes
+
+* problem with PUT ([ef49d89](https://github.com/jlguenego/crudity/commit/ef49d898545d4603e1d2850f83424de5db062d83))
+
 ### [2.0.7](https://github.com/jlguenego/crudity/compare/v2.0.6...v2.0.7) (2021-12-20)
 
 ### [2.0.6](https://github.com/jlguenego/crudity/compare/v2.0.5...v2.0.6) (2021-12-08)
