@@ -114,6 +114,22 @@ The middleware `crudity(server: http.Server, resourceName: string, options: Crud
 - `delay`: if you want to add slowness to the request (for debugging purpose)
 - `enableLogs`: if you want to see logs.
 
+Default options are:
+
+```js
+const defaultOptions: CrudityOptions = {
+  pageSize: 15,
+  hateoas: 'header',
+  storage: {
+    type: 'file',
+    dataDir: './data',
+  },
+  delay: 0,
+  enableLogs: false,
+  validators: [],
+};
+```
+
 ## Storage options
 
 The storage object always has a `type` that can be:
