@@ -39,7 +39,7 @@ npx crudity
 ```js
 const express = require('express');
 const {createServer} = require('http');
-const {crudity} = require('../../build/src');
+const {crudity} = require('crudity');
 
 const app = express();
 const server = createServer(app);
