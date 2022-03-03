@@ -1,4 +1,4 @@
-import {createPool, Pool, PoolConnection} from 'mariadb';
+import {createPool, Pool} from 'mariadb';
 import {MariaDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
@@ -6,8 +6,7 @@ import {PaginatedResult} from '../../interfaces/PaginatedResult';
 import {CRUDService} from '../CRUDService';
 
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
-  pool: Pool | undefined = undefined;
-  conn!: PoolConnection;
+  pool!: Pool;
   tableName = this.options.mapping?.tableName || this.resourceName;
 
   constructor(resourceName: string, public options: MariaDBStorageOptions) {
@@ -15,6 +14,20 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async add(item: T): Promise<T> {
+    const colNames =
+      this.options.mapping?.columns?.map(c => c.name) || Object.keys(item);
+    const colValues = this.options.mapping?.columns
+      ?.map(c => {
+        const val = (item as unknown as {[key: string]: unknown})[c.name];
+        return c.type === 'string' ? `'${val}'` : val;
+      })
+      .join(', ');
+
+    const request = `insert into ${this.tableName} (${colNames}) values (${colValues})`;
+    console.log('request: ', request);
+    const conn = await this.pool.getConnection();
+    const result = await conn.query(request);
+    console.log('result: ', result);
     return item;
   }
 
@@ -29,7 +42,10 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     console.log('query: ', query);
     console.log('defaultPageSize: ', defaultPageSize);
 
-    const result = await this.conn.query('select * from events;');
+    const conn = await this.pool.getConnection();
+
+    const result = await conn.query('select * from events;');
+    console.log('result: ', result);
 
     const paginatedResult = {
       array: result,
@@ -67,21 +83,19 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async start(): Promise<void> {
     this.pool = createPool(this.options.config);
-    this.conn = await this.pool.getConnection();
     console.log('mariadb connection successful.');
-    await this.checkTable();
+    await this.createTableIfNeeded();
   }
 
   async stop(): Promise<void> {
-    await this.conn?.end();
     await this.pool?.end();
-    this.pool = undefined;
   }
 
-  async checkTable() {
+  async createTableIfNeeded() {
+    const conn = await this.pool.getConnection();
     const request = `SHOW TABLES LIKE '${this.tableName}';`;
     console.log('request: ', request);
-    const result = await this.conn.query(request);
+    const result = await conn.query(request);
     console.log('result: ', result);
     if (result.length > 0) {
       return;
@@ -91,7 +105,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
         `Table ${this.tableName} does not exist and options.mapping.tableCreationSQLRequest is not defined. Cannot create table ${this.tableName}.`
       );
     }
-    const tableCreatedResult = await this.conn.query(
+    const tableCreatedResult = await conn.query(
       this.options.mapping?.tableCreationSQLRequest
     );
     console.log('tableCreatedResult: ', tableCreatedResult);

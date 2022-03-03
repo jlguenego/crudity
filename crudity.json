@@ -31,7 +31,11 @@
           "socketTimeout": 1000
         },
         "mapping": {
-          "tableCreationSQLRequest": "create table events (id TEXT, description TEXT)"
+          "tableCreationSQLRequest": "create table events (id INT(11) NOT NULL AUTO_INCREMENT, description TEXT, qty INT(11), PRIMARY KEY (id))",
+          "columns": [
+            {"name": "description", "type": "string"},
+            {"name": "qty", "type": "number"}
+          ]
         }
       }
     }
