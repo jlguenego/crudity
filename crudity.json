@@ -26,7 +26,12 @@
           "database": "crudity_test",
           "port": 3306,
           "user": "root",
-          "password": "admin"
+          "password": "admin",
+          "connectTimeout": 2000,
+          "socketTimeout": 1000
+        },
+        "mapping": {
+          "tableCreationSQLRequest": "create table events (id TEXT, description TEXT)"
         }
       }
     }

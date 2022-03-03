@@ -80,9 +80,16 @@ export interface MariaDBStorageOptions {
    * PoolConfig. See the MariaDB NodeJS drivers options.
    */
   config: PoolConfig;
+
+  mapping?: MariaDBMapping;
 }
 
 export interface AsyncValidator {
   name: string;
   args: string[];
+}
+
+export interface MariaDBMapping {
+  tableName?: string;
+  tableCreationSQLRequest?: string;
 }

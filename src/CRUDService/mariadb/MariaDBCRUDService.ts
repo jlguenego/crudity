@@ -1,4 +1,4 @@
-import {createPool, Pool} from 'mariadb';
+import {createPool, Pool, PoolConnection} from 'mariadb';
 import {MariaDBStorageOptions} from '../../interfaces/CrudityOptions';
 import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
 import {Idable} from '../../interfaces/Idable';
@@ -7,6 +7,8 @@ import {CRUDService} from '../CRUDService';
 
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   pool: Pool | undefined = undefined;
+  conn!: PoolConnection;
+  tableName = this.options.mapping?.tableName || this.resourceName;
 
   constructor(resourceName: string, public options: MariaDBStorageOptions) {
     super(resourceName);
@@ -24,14 +26,15 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     query: CrudityQueryString,
     defaultPageSize = 10
   ): Promise<PaginatedResult<T>> {
-    const pageSize =
-      query.pageSize === undefined ? defaultPageSize : +query.pageSize;
-    const pageNbr = query.page === undefined ? 1 : +query.page;
+    console.log('query: ', query);
+    console.log('defaultPageSize: ', defaultPageSize);
+
+    const result = await this.conn.query('select * from events;');
 
     const paginatedResult = {
-      array: [],
-      page: pageNbr,
-      pageSize,
+      array: result,
+      page: 1,
+      pageSize: 1e6,
       length: 0,
     };
     return paginatedResult;
@@ -64,13 +67,33 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async start(): Promise<void> {
     this.pool = createPool(this.options.config);
+    this.conn = await this.pool.getConnection();
+    console.log('mariadb connection successful.');
+    await this.checkTable();
   }
 
   async stop(): Promise<void> {
-    if (this.pool === undefined) {
+    await this.conn?.end();
+    await this.pool?.end();
+    this.pool = undefined;
+  }
+
+  async checkTable() {
+    const request = `SHOW TABLES LIKE '${this.tableName}';`;
+    console.log('request: ', request);
+    const result = await this.conn.query(request);
+    console.log('result: ', result);
+    if (result.length > 0) {
       return;
     }
-    this.pool.end();
-    this.pool = undefined;
+    if (!this.options.mapping?.tableCreationSQLRequest) {
+      throw new Error(
+        `Table ${this.tableName} does not exist and options.mapping.tableCreationSQLRequest is not defined. Cannot create table ${this.tableName}.`
+      );
+    }
+    const tableCreatedResult = await this.conn.query(
+      this.options.mapping?.tableCreationSQLRequest
+    );
+    console.log('tableCreatedResult: ', tableCreatedResult);
   }
 }
