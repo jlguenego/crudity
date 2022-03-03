@@ -15,6 +15,14 @@
         "type": "mongodb",
         "uri": "mongodb://localhost/crudity-unit-test"
       }
+    },
+    "events": {
+      "pageSize": 12,
+      "delay": 0,
+      "storage": {
+        "type": "mariadb",
+        "uri": "mariadb://localhost:3306/crudity_test"
+      }
     }
   },
   "rootEndPoint": "/api"

@@ -1,6 +1,6 @@
 # Crudity
 
-A production ready CRUD backend server and node http middleware, working with files/mongodb/etc.
+A production ready CRUD backend server and node http middleware, working with files/mongodb/mariadb/etc.
 
 ## Quick start
 
@@ -136,6 +136,7 @@ The storage object always has a `type` that can be:
 
 - `file`
 - `mongo`
+- `mariadb`
 - other value if implemented.
 
 ### File (Json)

@@ -1,3 +1,4 @@
+import {PoolConfig} from 'mariadb';
 import {MongoClientOptions} from 'mongodb';
 import {HateoasMode} from './HateoasMode';
 
@@ -9,7 +10,7 @@ export interface CrudityOptions {
    */
   pageSize: number;
   /**
-   * Storage options object (file storage or mongodb storage)
+   * Storage options object (file storage or mongodb storage, or mariadb storage)
    *
    */
   storage: StorageOptions;
@@ -37,11 +38,15 @@ export interface CrudityOptions {
   validators: AsyncValidator[];
 }
 
-export type StorageOptions = (FileStorageOptions | MongoDBStorageOptions) & {
+export type StorageOptions = (
+  | FileStorageOptions
+  | MongoDBStorageOptions
+  | MariaDBStorageOptions
+) & {
   /**
-   * Storage type (ex: file, mongodb, etc.).
+   * Storage type (ex: file, mongodb, mariadb, etc.).
    *
-   * @default 'file'
+   * @default file
    */
   type: string;
 };
@@ -66,6 +71,15 @@ export interface MongoDBStorageOptions {
    * MongoClientOptions. See the MongoClient NodeJS drivers options.
    */
   opts?: MongoClientOptions;
+}
+
+export interface MariaDBStorageOptions {
+  type: 'mariadb';
+
+  /**
+   * PoolConfig. See the MariaDB NodeJS drivers options.
+   */
+  config: PoolConfig;
 }
 
 export interface AsyncValidator {
