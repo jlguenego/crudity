@@ -92,5 +92,6 @@ export interface AsyncValidator {
 export interface MariaDBMapping {
   tableName?: string;
   tableCreationSQLRequest?: string;
-  columns?: {name: string; type: 'string' | 'number'}[];
+  columns?: {name: string; type: 'string' | 'number'; alias?: string}[];
+  id: {name: string; type: 'string' | 'number'};
 }

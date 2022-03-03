@@ -32,7 +32,12 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async addMany(newItems: T[]): Promise<T[]> {
-    return newItems;
+    const result: T[] = [];
+    for (const item of newItems) {
+      const newItem = await this.add(item);
+      result.push(newItem);
+    }
+    return result;
   }
 
   async get(
@@ -42,9 +47,16 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     console.log('query: ', query);
     console.log('defaultPageSize: ', defaultPageSize);
 
+    const cols =
+      this.options.mapping?.id.name +
+      ', ' +
+      this.options.mapping?.columns
+        ?.map(c => `${c.name} as ${c.alias || c.name}`)
+        .join(', ');
+
     const conn = await this.pool.getConnection();
 
-    const result = await conn.query(`select * from ${this.tableName};`);
+    const result = await conn.query(`select ${cols} from ${this.tableName};`);
     console.log('result: ', result);
 
     const paginatedResult = {
