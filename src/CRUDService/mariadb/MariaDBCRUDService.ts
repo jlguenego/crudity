@@ -44,7 +44,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
     const conn = await this.pool.getConnection();
 
-    const result = await conn.query('select * from events;');
+    const result = await conn.query(`select * from ${this.tableName};`);
     console.log('result: ', result);
 
     const paginatedResult = {
