@@ -1697,7 +1697,7 @@
                                 {
                                     "properties": {
                                         "type": {
-                                            "default": "'file'",
+                                            "default": "file",
                                             "description": "Storage type (ex: file, mongodb, mariadb, etc.).",
                                             "type": "string"
                                         }
@@ -1714,7 +1714,7 @@
                                 {
                                     "properties": {
                                         "type": {
-                                            "default": "'file'",
+                                            "default": "file",
                                             "description": "Storage type (ex: file, mongodb, mariadb, etc.).",
                                             "type": "string"
                                         }
@@ -1731,7 +1731,7 @@
                                 {
                                     "properties": {
                                         "type": {
-                                            "default": "'file'",
+                                            "default": "file",
                                             "description": "Storage type (ex: file, mongodb, mariadb, etc.).",
                                             "type": "string"
                                         }
