@@ -91,7 +91,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     await this.pool?.end();
   }
 
-  async createTableIfNeeded() {
+  async createTableIfNeeded(): Promise<void> {
     const conn = await this.pool.getConnection();
     const request = `SHOW TABLES LIKE '${this.tableName}';`;
     console.log('request: ', request);
