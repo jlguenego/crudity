@@ -18,7 +18,9 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
       this.options.mapping?.columns?.map(c => c.name) || Object.keys(item);
     const colValues = this.options.mapping?.columns
       ?.map(c => {
-        const val = (item as unknown as {[key: string]: unknown})[c.name];
+        const val = (item as unknown as {[key: string]: unknown})[
+          c.alias || c.name
+        ];
         return c.type === 'string' ? `'${val}'` : val;
       })
       .join(', ');
