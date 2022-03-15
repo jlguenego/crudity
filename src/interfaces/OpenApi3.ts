@@ -29,11 +29,7 @@ export interface ServerObject {
 }
 
 export interface PathsObject {
-  [path: `/${string}`]: {
-    [method: string]: {
-      description: string;
-    };
-  };
+  [path: `/${string}`]: PathItemObject;
 }
 
 export interface ComponentsObject {
@@ -74,4 +70,36 @@ export interface ServerVariableObject {
   enum?: string[];
   default: string;
   description?: string;
+}
+
+export type PathItemObject = {
+  $ref: string;
+} & {
+  [operation in HTTPMethod]?: OperationObject;
+};
+
+export type HTTPMethod =
+  | "get"
+  | "put"
+  | "post"
+  | "delete"
+  | "options"
+  | "head"
+  | "patch"
+  | "trace";
+
+export interface OperationObject {
+  responses: ResponsesObject;
+}
+
+export interface ResponsesObject {
+  default?: ResponseObject | ReferenceObject;
+}
+
+export interface ResponseObject {
+  description: string;
+}
+
+export interface ReferenceObject {
+  $ref: string;
 }

@@ -29,7 +29,14 @@ export class Swagger {
         },
       ],
       paths: {
-        "/": {},
+        "/": {
+          $ref: "coucou",
+          get: {
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+        },
       },
     };
   }
