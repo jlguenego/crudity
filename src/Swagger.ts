@@ -30,8 +30,48 @@ export class Swagger {
       ],
       paths: {
         "/": {
-          $ref: "coucou",
+          description: `CRUD on ${this.resourceName}`,
           get: {
+            description: `Return a list of ${this.resourceName}`,
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+          post: {
+            description: `Create new ${this.resourceName}`,
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+          delete: {
+            description: `Delete ${this.resourceName}`,
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+        },
+        "/{id}": {
+          description: `CRUD on a specific instance given by id among all ${this.resourceName}`,
+          get: {
+            description: `Return a specific instance among all ${this.resourceName}`,
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+          put: {
+            description: `Replace new ${this.resourceName}`,
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+          patch: {
+            description: `Update new ${this.resourceName}`,
+            responses: {
+              default: { description: "truc bidule" },
+            },
+          },
+          delete: {
+            description: `Delete ${this.resourceName}`,
             responses: {
               default: { description: "truc bidule" },
             },

@@ -73,7 +73,8 @@ export interface ServerVariableObject {
 }
 
 export type PathItemObject = {
-  $ref: string;
+  $ref?: string;
+  description?: string;
 } & {
   [operation in HTTPMethod]?: OperationObject;
 };
@@ -89,6 +90,7 @@ export type HTTPMethod =
   | "trace";
 
 export interface OperationObject {
+  description?: string;
   responses: ResponsesObject;
 }
 

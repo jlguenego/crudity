@@ -100,7 +100,8 @@ export const crudity = <T extends Idable>(
     const yml = YAML.stringify(
       new Swagger(req, resourceName, options).generate()
     );
-    res.setHeader("content-type", "application/x-yaml");
+    // res.setHeader("content-type", "application/x-yaml");
+    res.setHeader("content-type", "text/plain");
     res.send(yml);
   });
 
