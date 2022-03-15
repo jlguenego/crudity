@@ -1,3 +1,4 @@
+import { Swagger } from "./Swagger";
 import express, { Response, Router } from "express";
 import { Server } from "http";
 import { CrudityConsole } from "./CrudityConsole";
@@ -92,11 +93,12 @@ export const crudity = <T extends Idable>(
   });
 
   app.get("/swagger.json", (req, res) => {
-    res.json({});
+    res.json(new Swagger(resourceName, options).generate());
   });
 
   app.get("/swagger.yml", (req, res) => {
-    const yml = YAML.stringify({ coucou: "tt=oto" });
+    const yml = YAML.stringify(new Swagger(resourceName, options).generate());
+    res.setHeader("content-type", "application/x-yaml");
     res.send(yml);
   });
 
