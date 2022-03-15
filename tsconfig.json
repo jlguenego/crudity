@@ -15,7 +15,8 @@
     "target": "es2018",
     "rootDir": ".",
     "outDir": "build",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts", "test/**/*.ts"]
