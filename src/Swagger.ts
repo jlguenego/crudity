@@ -6,7 +6,7 @@ export class Swagger {
 
   generate(): OpenApi3 {
     return {
-      openapi: "3.0.0",
+      openapi: "3.0.3",
       info: {
         title: `Crudity ${this.resourceName}`,
         version: "1.0.0",

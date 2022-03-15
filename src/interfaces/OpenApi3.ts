@@ -1,5 +1,7 @@
+export type SemVer = `${number}.${number}.${number}`;
+
 export interface OpenApi3 {
-  openapi: "3.0.0";
+  openapi: SemVer;
   info?: {
     title: string;
     version: string;
