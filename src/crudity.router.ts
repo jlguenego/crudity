@@ -93,11 +93,13 @@ export const crudity = <T extends Idable>(
   });
 
   app.get("/openapi.json", (req, res) => {
-    res.json(new Swagger(resourceName, options).generate());
+    res.json(new Swagger(req, resourceName, options).generate());
   });
 
   app.get("/openapi.yml", (req, res) => {
-    const yml = YAML.stringify(new Swagger(resourceName, options).generate());
+    const yml = YAML.stringify(
+      new Swagger(req, resourceName, options).generate()
+    );
     res.setHeader("content-type", "application/x-yaml");
     res.send(yml);
   });

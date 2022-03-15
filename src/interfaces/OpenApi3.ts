@@ -22,11 +22,14 @@ export interface InfoObject {
 
 export interface ServerObject {
   url: string;
-  description: string;
+  description?: string;
+  variables?: {
+    [name: string]: ServerVariableObject;
+  };
 }
 
 export interface PathsObject {
-  [path: string]: {
+  [path: `/${string}`]: {
     [method: string]: {
       description: string;
     };
@@ -65,4 +68,10 @@ export interface ContactObject {
 export interface LicenseObject {
   name: string;
   url?: string;
+}
+
+export interface ServerVariableObject {
+  enum?: string[];
+  default: string;
+  description?: string;
 }
