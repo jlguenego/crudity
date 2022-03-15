@@ -28,7 +28,6 @@
     "lint": "eslint .",
     "clean": "gts clean",
     "compile": "tsc",
-    "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run lint",
@@ -64,6 +63,7 @@
     "qs": "^6.10.1",
     "rxjs": "^7.4.0",
     "serve-index": "^1.9.1",
-    "typescript-json-schema": "^0.52.0"
+    "typescript-json-schema": "^0.52.0",
+    "yaml": "^1.10.2"
   }
 }

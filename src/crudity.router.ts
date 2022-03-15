@@ -1,22 +1,23 @@
-import express, {Response, Router} from 'express';
-import {Server} from 'http';
-import {CrudityConsole} from './CrudityConsole';
-import {CRUDServiceFactory} from './CRUDService/CRUDServiceFactory';
-import {Hateoas} from './Hateoas';
-import {CrudityOptions} from './interfaces/CrudityOptions';
-import {CrudityQueryString} from './interfaces/CrudityQueryString';
-import {CrudityRouter} from './interfaces/CrudityRouter';
-import {Idable} from './interfaces/Idable';
-import {checkQueryString} from './querystring';
-import {ValidatorError} from './validators/Validator';
-import {ValidatorFactory} from './validators/ValidatorFactory';
+import express, { Response, Router } from "express";
+import { Server } from "http";
+import { CrudityConsole } from "./CrudityConsole";
+import { CRUDServiceFactory } from "./CRUDService/CRUDServiceFactory";
+import { Hateoas } from "./Hateoas";
+import { CrudityOptions } from "./interfaces/CrudityOptions";
+import { CrudityQueryString } from "./interfaces/CrudityQueryString";
+import { CrudityRouter } from "./interfaces/CrudityRouter";
+import { Idable } from "./interfaces/Idable";
+import { checkQueryString } from "./querystring";
+import { ValidatorError } from "./validators/Validator";
+import { ValidatorFactory } from "./validators/ValidatorFactory";
+import YAML from "yaml";
 
 const defaultOptions: CrudityOptions = {
   pageSize: 15,
-  hateoas: 'header',
+  hateoas: "header",
   storage: {
-    type: 'file',
-    dataDir: './data',
+    type: "file",
+    dataDir: "./data",
   },
   delay: 0,
   enableLogs: false,
@@ -24,7 +25,7 @@ const defaultOptions: CrudityOptions = {
 };
 
 const manageError = (err: unknown, res: Response) => {
-  console.error('err: ', err);
+  console.error("err: ", err);
   res.status(500).end();
 };
 
@@ -33,14 +34,14 @@ export const crudity = <T extends Idable>(
   resourceName: string,
   opts: Partial<CrudityOptions> = {}
 ): CrudityRouter<T> => {
-  const options = {...defaultOptions, ...opts};
+  const options = { ...defaultOptions, ...opts };
   const console = new CrudityConsole(options.enableLogs);
   console.log(`crudity options for resource "${resourceName}": `, options);
 
   const service = CRUDServiceFactory.get<T>(resourceName, options.storage);
 
-  const validators = options.validators.map(validator => {
-    return {...validator, fn: ValidatorFactory.get(service, validator.name)};
+  const validators = options.validators.map((validator) => {
+    return { ...validator, fn: ValidatorFactory.get(service, validator.name) };
   });
 
   (async () => {
@@ -53,12 +54,12 @@ export const crudity = <T extends Idable>(
         `crudity service for resource ${resourceName}(${options.storage.type}) started with success.`
       );
     } catch (err) {
-      console.log('err: ', err);
+      console.log("err: ", err);
       throw err;
     }
   })();
 
-  server.on('close', async () => {
+  server.on("close", async () => {
     console.log(
       `about to stop crudity service for resource ${resourceName}(${options.storage.type})`
     );
@@ -78,23 +79,32 @@ export const crudity = <T extends Idable>(
       return;
     }
     // not yet started, wait...
-    service.once('started', () => {
+    service.once("started", () => {
       next();
     });
   });
 
   app.use((req, res, next) => {
-    console.log('crudity req.url', req.url);
+    console.log("crudity req.url", req.url);
     setTimeout(() => {
       next();
     }, options.delay);
+  });
+
+  app.get("/swagger.json", (req, res) => {
+    res.json({});
+  });
+
+  app.get("/swagger.yml", (req, res) => {
+    const yml = YAML.stringify({ coucou: "tt=oto" });
+    res.send(yml);
   });
 
   app.use(express.json());
 
   // async validation
   app.use((req, res, next) => {
-    if (!['POST', 'PUT', 'PATCH'].includes(req.method)) {
+    if (!["POST", "PUT", "PATCH"].includes(req.method)) {
       next();
       return;
     }
@@ -124,7 +134,7 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.post('/', (req, res) => {
+  app.post("/", (req, res) => {
     (async () => {
       try {
         if (req.body instanceof Array) {
@@ -142,14 +152,14 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.get('/', (req, res) => {
+  app.get("/", (req, res) => {
     (async () => {
       try {
         const query = req.query as unknown as CrudityQueryString;
         try {
           checkQueryString(query);
         } catch (e) {
-          res.status(400).end('queryString not well formatted: ' + e);
+          res.status(400).end("queryString not well formatted: " + e);
           return;
         }
         const paginatedResult = await service.get(query, options.pageSize);
@@ -162,7 +172,7 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.get('/:id', (req, res) => {
+  app.get("/:id", (req, res) => {
     (async () => {
       try {
         const id = req.params.id;
@@ -178,7 +188,7 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.put('/:id', (req, res) => {
+  app.put("/:id", (req, res) => {
     (async () => {
       try {
         const id = req.params.id;
@@ -189,7 +199,7 @@ export const crudity = <T extends Idable>(
         }
         req.body.id = id;
         const newT = await service.rewrite(req.body as T);
-        console.log('newT: ', newT);
+        console.log("newT: ", newT);
         res.json(newT);
       } catch (err) {
         manageError(err, res);
@@ -197,7 +207,7 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.patch('/:id', (req, res) => {
+  app.patch("/:id", (req, res) => {
     (async () => {
       try {
         const id = req.params.id;
@@ -214,7 +224,7 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.delete('/', (req, res) => {
+  app.delete("/", (req, res) => {
     (async () => {
       try {
         if (!(req.body instanceof Array)) {
@@ -231,7 +241,7 @@ export const crudity = <T extends Idable>(
     })();
   });
 
-  app.delete('/:id', (req, res) => {
+  app.delete("/:id", (req, res) => {
     (async () => {
       try {
         const id = req.params.id;

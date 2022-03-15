@@ -32,10 +32,10 @@
         },
         "mapping": {
           "tableCreationSQLRequest": "create table events (event_id INT(11) NOT NULL AUTO_INCREMENT, description TEXT, qty INT(11), PRIMARY KEY (event_id))",
-          "id": {"name": "event_id", "type": "string"},
+          "id": { "name": "event_id", "type": "string" },
           "columns": [
-            {"name": "description", "type": "string"},
-            {"name": "qty", "type": "number"}
+            { "name": "description", "type": "string" },
+            { "name": "qty", "type": "number" }
           ]
         }
       }
