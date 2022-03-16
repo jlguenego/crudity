@@ -47,7 +47,7 @@ export interface TagObject {
 }
 
 export interface SchemaObject {
-  [name: string]: unknown;
+  type?: string;
 }
 
 export interface ExternalDocumentationObject {
@@ -77,6 +77,7 @@ export type PathItemObject = {
   summary?: string;
   description?: string;
   parameters?: (ParameterObject | ReferenceObject)[];
+  servers?: ServerObject[];
 } & {
   [operation in HTTPMethod]?: OperationObject;
 };
@@ -98,6 +99,7 @@ export interface OperationObject {
   externalDocs?: ExternalDocumentationObject;
   operationId?: string;
   parameters?: (ParameterObject | ReferenceObject)[];
+  requestBody?: RequestBodyObject | ReferenceObject;
 }
 
 export type ParameterObject = {
@@ -114,7 +116,12 @@ export type ParameterObject = {
       in: "query" | "header" | "cookie";
       required?: boolean;
     }
-);
+) & {
+    style?: "simple" | "form";
+    explode?: boolean;
+    allowReserved?: boolean;
+    schema?: SchemaObject | ReferenceObject;
+  };
 
 export interface ResponsesObject {
   default?: ResponseObject | ReferenceObject;
@@ -127,3 +134,38 @@ export interface ResponseObject {
 export interface ReferenceObject {
   $ref: string;
 }
+
+export interface RequestBodyObject {
+  description?: string;
+  content: {
+    [key: string]: MediaTypeObject;
+  };
+  required?: boolean;
+}
+
+export interface MediaTypeObject {
+  schema?: SchemaObject | ReferenceObject;
+  example?: unknown;
+  examples?: {
+    [key: string]: ExampleObject | ReferenceObject;
+  };
+  encoding?: {
+    [key: string]: EncodingObject;
+  };
+}
+
+export interface ExampleObject {
+  summary?: string;
+  description?: string;
+  value?: unknown;
+  externalValue?: string;
+}
+
+export interface EncodingObject {
+  contentType?: string;
+  headers?: {
+    [key: string]: HeaderObject | ReferenceObject;
+  };
+}
+
+export type HeaderObject = Omit<ParameterObject, "in" | "name">;

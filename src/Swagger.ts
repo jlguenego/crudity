@@ -59,6 +59,17 @@ export class Swagger {
             description: `Create a new ${this.singularResourceName}`,
             externalDocs,
             operationId: `Create${pascalize(this.singularResourceName)}`,
+            requestBody: {
+              description: `A JSON object reflecting the ${this.singularResourceName}`,
+              required: true,
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Article",
+                  },
+                },
+              },
+            },
             responses: {
               default: { description: "truc bidule" },
             },
@@ -81,6 +92,9 @@ export class Swagger {
               in: "path",
               required: true,
               description: `Unique id of the ${this.singularResourceName}.`,
+              schema: {
+                type: "integer",
+              },
             },
           ],
           get: {
