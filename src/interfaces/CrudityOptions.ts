@@ -1,8 +1,13 @@
-import {PoolConfig} from 'mariadb';
-import {MongoClientOptions} from 'mongodb';
-import {HateoasMode} from './HateoasMode';
+import { PoolConfig } from "mariadb";
+import { MongoClientOptions } from "mongodb";
+import { HateoasMode } from "./HateoasMode";
 
 export interface CrudityOptions {
+  /**
+   * Singular name of the resource.
+   */
+  singularResourceName?: string;
+
   /**
    * Size for pagination.
    *
@@ -52,7 +57,7 @@ export type StorageOptions = (
 };
 
 export interface FileStorageOptions {
-  type: 'file';
+  type: "file";
   /**
    * Directory where to store the file. The filename will be <resourcename>.json.
    */
@@ -60,7 +65,7 @@ export interface FileStorageOptions {
 }
 
 export interface MongoDBStorageOptions {
-  type: 'mongodb';
+  type: "mongodb";
 
   /**
    * MongoDB URI connection string.
@@ -74,7 +79,7 @@ export interface MongoDBStorageOptions {
 }
 
 export interface MariaDBStorageOptions {
-  type: 'mariadb';
+  type: "mariadb";
 
   /**
    * PoolConfig. See the MariaDB NodeJS drivers options.
@@ -92,6 +97,6 @@ export interface AsyncValidator {
 export interface MariaDBMapping {
   tableName?: string;
   tableCreationSQLRequest?: string;
-  columns?: {name: string; type: 'string' | 'number'; alias?: string}[];
-  id: {name: string; type: 'string' | 'number'};
+  columns?: { name: string; type: "string" | "number"; alias?: string }[];
+  id: { name: string; type: "string" | "number" };
 }

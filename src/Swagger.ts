@@ -2,12 +2,25 @@ import { CrudityOptions } from "./interfaces/CrudityOptions";
 import { OpenApi3 } from "./interfaces/OpenApi3";
 import npmPackage from "../package.json";
 import { Request } from "express";
+import { pascalize } from "./misc/utils";
 
 function getEndPoint(req: Request) {
   return req.protocol + "://" + req.get("host") + req.baseUrl;
 }
 
+function getSingular(resourceName: string, options: CrudityOptions) {
+  if (options.singularResourceName) {
+    return options.singularResourceName;
+  }
+  return resourceName.replace(/s$/, "");
+}
+
+const externalDocs = {
+  url: "https://github.com/jlguenego/crudity",
+};
+
 export class Swagger {
+  private singularResourceName = getSingular(this.resourceName, this.options);
   constructor(
     private req: Request,
     private resourceName: string,
@@ -30,48 +43,78 @@ export class Swagger {
       ],
       paths: {
         "/": {
-          description: `CRUD on ${this.resourceName}`,
+          summary: `CRUD on ${this.resourceName}`,
+          description: `Create Retrieve Update Delete some or all ${this.resourceName}.`,
           get: {
-            description: `Return a list of ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Return a list of ${this.resourceName}.`,
+            externalDocs,
+            operationId: `RetrieveAll${pascalize(this.resourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },
           },
           post: {
-            description: `Create new ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Create a new ${this.singularResourceName}`,
+            externalDocs,
+            operationId: `Create${pascalize(this.singularResourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },
           },
           delete: {
-            description: `Delete ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Delete some ${this.resourceName}`,
+            externalDocs,
+            operationId: `Delete${pascalize(this.resourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },
           },
         },
         "/{id}": {
-          description: `CRUD on a specific instance given by id among all ${this.resourceName}`,
+          description: `CRUD on a specific ${this.singularResourceName}.`,
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              description: `Unique id of the ${this.singularResourceName}.`,
+            },
+          ],
           get: {
-            description: `Return a specific instance among all ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Get a ${this.singularResourceName} given its id.`,
+            externalDocs,
+            operationId: `RetrieveOne${pascalize(this.singularResourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },
           },
           put: {
-            description: `Replace new ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Replace an existing ${this.singularResourceName}`,
+            externalDocs,
+            operationId: `ReplaceOne${pascalize(this.singularResourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },
           },
           patch: {
-            description: `Update new ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Patch an existing ${this.singularResourceName}`,
+            externalDocs,
+            operationId: `PatchOne${pascalize(this.singularResourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },
           },
           delete: {
-            description: `Delete ${this.resourceName}`,
+            tags: [this.resourceName],
+            description: `Delete a ${this.singularResourceName}`,
+            externalDocs,
+            operationId: `DeleteOne${pascalize(this.singularResourceName)}`,
             responses: {
               default: { description: "truc bidule" },
             },

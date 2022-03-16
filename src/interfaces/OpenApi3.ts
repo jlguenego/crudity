@@ -43,7 +43,7 @@ export interface SecurityRequirementObject {
 export interface TagObject {
   name: string;
   description?: string;
-  externalDocs: ExternalDocumentationObject;
+  externalDocs?: ExternalDocumentationObject;
 }
 
 export interface SchemaObject {
@@ -51,8 +51,8 @@ export interface SchemaObject {
 }
 
 export interface ExternalDocumentationObject {
-  description?: string;
   url: string;
+  description?: string;
 }
 
 export interface ContactObject {
@@ -74,7 +74,9 @@ export interface ServerVariableObject {
 
 export type PathItemObject = {
   $ref?: string;
+  summary?: string;
   description?: string;
+  parameters?: (ParameterObject | ReferenceObject)[];
 } & {
   [operation in HTTPMethod]?: OperationObject;
 };
@@ -90,9 +92,29 @@ export type HTTPMethod =
   | "trace";
 
 export interface OperationObject {
+  tags?: string[];
   description?: string;
   responses: ResponsesObject;
+  externalDocs?: ExternalDocumentationObject;
+  operationId?: string;
+  parameters?: (ParameterObject | ReferenceObject)[];
 }
+
+export type ParameterObject = {
+  name: string;
+  description?: string;
+  deprecated?: boolean;
+  allowEmptyValue?: boolean;
+} & (
+  | {
+      in: "path";
+      required: boolean;
+    }
+  | {
+      in: "query" | "header" | "cookie";
+      required?: boolean;
+    }
+);
 
 export interface ResponsesObject {
   default?: ResponseObject | ReferenceObject;
