@@ -46,9 +46,17 @@ export const getWhereClause = (
   return whereClause;
 };
 
+export const isIdColumn = (options: MariaDBStorageOptions, key: string) => {
+  return options.mapping?.id.name === key;
+};
+
 export const parseRow = (options: MariaDBStorageOptions, row: object) => {
   const result: { [key: string]: unknown } = {};
   for (const [key, value] of Object.entries(row)) {
+    if (isIdColumn(options, key)) {
+      result["id"] = value + "";
+      continue;
+    }
     if (getColType(options, key) === "number") {
       if (typeof value === "string") {
         result[key] = +value;

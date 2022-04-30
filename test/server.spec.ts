@@ -13,7 +13,7 @@ describe("Server", () => {
     port,
     resources: {
       articles: {
-        enableLogs: false,
+        enableLogs: true,
         storage:
           process.env.TEST_STORAGE === "mongo"
             ? {
@@ -50,7 +50,7 @@ describe("Server", () => {
         validators: [{ name: "unique", args: ["name"] }],
       },
     },
-    enableLogs: false,
+    enableLogs: true,
   });
   before(async () => {
     await webServer.start();
@@ -114,6 +114,7 @@ describe("Server", () => {
       .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
       .json<Article[]>();
     const article = articles[0];
+    console.log("article: ", article);
     assert.deepStrictEqual(article.price, a1.price);
     const newPrice = 34.56;
     const patchedArticle = await got
