@@ -4,7 +4,7 @@ import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
 import { Idable } from "../../interfaces/Idable";
 import { PaginatedResult } from "../../interfaces/PaginatedResult";
 import { CRUDService } from "../CRUDService";
-import { getColNames, getColValues, getWhereClause } from "./utils";
+import { getColNames, getColValues, getWhereClause, parseRows } from "./utils";
 
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   pool!: Pool;
@@ -22,7 +22,6 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     const colValues = getColValues(this.options, item);
 
     const request = `insert into ${this.tableName} (${colNameStr}) values (${questionMarkStr})`;
-    console.log("request: ", request);
     const conn = await this.getDbConnection();
     await conn.query(request, colValues);
     return item;
@@ -70,9 +69,10 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     const conn = await this.getDbConnection();
     const request = `select ${cols} from ${this.tableName} ${whereClause};`;
     const result = await conn.query(request);
+    const items = parseRows(this.options, result);
 
     const paginatedResult = {
-      array: result,
+      array: items,
       page: 1,
       pageSize: 1e6,
       length: 0,

@@ -1,12 +1,12 @@
-import {NewArticle} from '../misc/Article';
+import { NewArticle } from "../misc/Article";
 
 export const a1: NewArticle = {
-  name: 'Tournevis',
+  name: "Tournevis",
   price: 1.23,
   qty: 345,
 };
 export const a2: NewArticle = {
-  name: 'Pince',
+  name: "Pince",
   pricexxx: 67.0,
   qty: 79,
 } as unknown as NewArticle;

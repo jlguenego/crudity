@@ -30,7 +30,6 @@ export const getWhereClause = (
   options: MariaDBStorageOptions,
   query: CrudityQueryString
 ) => {
-  console.log("query: ", query);
   if (!query.filter) {
     return "";
   }
@@ -46,3 +45,20 @@ export const getWhereClause = (
   const whereClause = "WHERE " + conditions.join(" AND ");
   return whereClause;
 };
+
+export const parseRow = (options: MariaDBStorageOptions, row: object) => {
+  const result: { [key: string]: unknown } = {};
+  for (const [key, value] of Object.entries(row)) {
+    if (getColType(options, key) === "number") {
+      if (typeof value === "string") {
+        result[key] = +value;
+        continue;
+      }
+    }
+    result[key] = value;
+  }
+  return result;
+};
+
+export const parseRows = (options: MariaDBStorageOptions, rows: any[]): any[] =>
+  rows.map((row) => parseRow(options, row));

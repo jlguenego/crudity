@@ -109,23 +109,23 @@ describe("Server", () => {
     assert.deepStrictEqual(articles.length, 101);
   });
 
-  // it("should patch 1 article", async () => {
-  //   const articles = await got
-  //     .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
-  //     .json<Article[]>();
-  //   const article = articles[0];
-  //   assert.deepStrictEqual(article.price, a1.price);
-  //   const newPrice = 34.56;
-  //   const patchedArticle = await got
-  //     .patch(`http://localhost:${port}/api/articles/${article.id}`, {
-  //       body: JSON.stringify({ price: newPrice }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     .json<Article>();
-  //   assert.deepStrictEqual(patchedArticle.price, newPrice);
-  // });
+  it("should patch 1 article", async () => {
+    const articles = await got
+      .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
+      .json<Article[]>();
+    const article = articles[0];
+    assert.deepStrictEqual(article.price, a1.price);
+    const newPrice = 34.56;
+    const patchedArticle = await got
+      .patch(`http://localhost:${port}/api/articles/${article.id}`, {
+        body: JSON.stringify({ price: newPrice }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .json<Article>();
+    assert.deepStrictEqual(patchedArticle.price, newPrice);
+  });
 
   // it("should rewrite 1 article", async () => {
   //   const articles = await got
