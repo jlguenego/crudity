@@ -21,9 +21,9 @@
       "delay": 0,
       "storage": {
         "type": "mariadb",
+        "database": "crudity_test",
         "config": {
           "host": "localhost",
-          "database": "crudity_test",
           "port": 3306,
           "user": "root",
           "password": "admin",

@@ -87,6 +87,11 @@ export interface MariaDBStorageOptions {
   config: PoolConfig;
 
   mapping?: MariaDBMapping;
+
+  /**
+   * Database to select. The database will be created if not already existing.
+   */
+  database: string;
 }
 
 export interface AsyncValidator {
