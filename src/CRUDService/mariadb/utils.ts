@@ -2,9 +2,9 @@ import { MariaDBStorageOptions } from "../../interfaces/CrudityOptions";
 import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
 import { Idable } from "../../interfaces/Idable";
 
-export const getColNames = (options: MariaDBStorageOptions, item: Idable) => {
+export const getColNames = (options: MariaDBStorageOptions, item?: Idable) => {
   const colNames =
-    options.mapping?.columns?.map((c) => c.name) || Object.keys(item);
+    options.mapping?.columns?.map((c) => c.name) || Object.keys(item || {});
   return colNames;
 };
 
@@ -70,3 +70,17 @@ export const parseRow = (options: MariaDBStorageOptions, row: object) => {
 
 export const parseRows = (options: MariaDBStorageOptions, rows: any[]): any[] =>
   rows.map((row) => parseRow(options, row));
+
+export const getSetClause = (
+  options: MariaDBStorageOptions,
+  body: { [key: string]: unknown }
+) => {
+  return Object.entries(body).map(([key, value]) => {
+    const valueStr = value;
+    return key + " = " + valueStr;
+  });
+};
+
+export const getIdColName = (options: MariaDBStorageOptions) => {
+  return options.mapping?.id.name || "id";
+};

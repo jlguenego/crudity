@@ -4,7 +4,14 @@ import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
 import { Idable } from "../../interfaces/Idable";
 import { PaginatedResult } from "../../interfaces/PaginatedResult";
 import { CRUDService } from "../CRUDService";
-import { getColNames, getColValues, getWhereClause, parseRows } from "./utils";
+import {
+  getColNames,
+  getColValues,
+  getIdColName,
+  getSetClause,
+  getWhereClause,
+  parseRows,
+} from "./utils";
 
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   pool!: Pool;
@@ -46,7 +53,6 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
       await conn.commit();
     } catch (err) {
-      console.log("err: ", err);
       await conn.rollback();
     }
 
@@ -57,17 +63,13 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     query: CrudityQueryString,
     defaultPageSize = 10
   ): Promise<PaginatedResult<T>> {
-    const cols =
-      this.options.mapping?.id.name +
-      ", " +
-      this.options.mapping?.columns
-        ?.map((c) => `${c.name} as ${c.alias || c.name}`)
-        .join(", ");
+    const cols = getColNames(this.options).join(", ");
+    const idColName = getIdColName(this.options);
 
     const whereClause = getWhereClause(this.options, query);
 
     const conn = await this.getDbConnection();
-    const request = `select ${cols} from ${this.tableName} ${whereClause};`;
+    const request = `select ${idColName}, ${cols} from ${this.tableName} ${whereClause};`;
     const result = await conn.query(request);
     const items = parseRows(this.options, result);
 
@@ -81,18 +83,36 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async getOne(id: string): Promise<T | undefined> {
-    console.log("id: ", id);
-    return undefined;
+    const cols = getColNames(this.options).join(", ");
+    const idColName = getIdColName(this.options);
+    const idValue = id;
+
+    const request = `select ${idColName}, ${cols} from ${this.tableName} WHERE ${idColName} = ${idValue};`;
+
+    const conn = await this.getDbConnection();
+    const result = await conn.query(request);
+    const items: T[] = parseRows(this.options, result);
+    return items[0];
   }
 
   async patch(id: string, body: Partial<T>): Promise<T> {
-    console.log("body: ", body);
-    console.log("id: ", id);
-    throw new Error("todo");
+    const idValue = id;
+    const setClause = getSetClause(this.options, body);
+    const idColName = getIdColName(this.options);
+
+    const conn = await this.getDbConnection();
+    const request = `update ${this.tableName} set ${setClause} WHERE ${idColName} = ${idValue};`;
+    const result = await conn.query(request);
+    const item = await this.getOne(id);
+    if (!item) {
+      throw new Error(
+        "should not happen. but we cannot find the updated item."
+      );
+    }
+    return item;
   }
 
   async remove(ids: string[]): Promise<void> {
-    console.log("ids: ", ids);
     throw new Error("todo");
   }
 
@@ -102,13 +122,12 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async rewrite(newT: T): Promise<T> {
-    console.log("newT: ", newT);
     throw new Error("todo");
   }
 
   async start(): Promise<void> {
     this.pool = createPool(this.options.config);
-    console.log("mariadb connection successful.");
+
     await this.createDatabaseIfNeeded();
     await this.createTableIfNeeded();
   }
@@ -149,6 +168,5 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     const tableCreatedResult = await conn.query(
       this.options.mapping?.tableCreationSQLRequest
     );
-    console.log("tableCreatedResult: ", tableCreatedResult);
   }
 }
