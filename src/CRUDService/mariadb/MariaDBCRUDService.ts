@@ -4,6 +4,7 @@ import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
 import { Idable } from "../../interfaces/Idable";
 import { PaginatedResult } from "../../interfaces/PaginatedResult";
 import { CRUDService } from "../CRUDService";
+import { getColNames, getColValues } from "./utils";
 
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   pool!: Pool;
@@ -15,24 +16,15 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async add(item: T): Promise<T> {
-    const colNames =
-      this.options.mapping?.columns?.map((c) => c.name) || Object.keys(item);
+    const colNames = getColNames(this.options, item);
     const colNameStr = colNames.join(", ");
     const questionMarkStr = colNames.map(() => "?").join(", ");
-    const colValues = this.options.mapping?.columns
-      ?.map((c) => {
-        const val = (item as unknown as { [key: string]: unknown })[
-          c.alias || c.name
-        ];
-        return c.type === "string" ? `'${val}'` : val;
-      })
-      .join(", ");
+    const colValues = getColValues(this.options, item);
 
     const request = `insert into ${this.tableName} (${colNameStr}) values (${questionMarkStr})`;
     console.log("request: ", request);
     const conn = await this.getDbConnection();
-    const result = await conn.query(request, colValues);
-    console.log("result: ", result);
+    await conn.query(request, colValues);
     return item;
   }
 
@@ -40,27 +32,18 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     if (newItems.length === 0) {
       return [];
     }
-    const colNames =
-      this.options.mapping?.columns?.map((c) => c.name) ||
-      Object.keys(newItems[0]);
+    const colNames = getColNames(this.options, newItems[0]);
     const colNameStr = colNames.join(", ");
     const questionMarkStr = colNames.map(() => "?").join(", ");
 
     const request = `INSERT INTO \`${this.tableName}\` (${colNameStr}) VALUES (${questionMarkStr})`;
 
-    const array = newItems.map((item) => {
-      return this.options.mapping?.columns?.map((c) => {
-        const val = (item as unknown as { [key: string]: unknown })[
-          c.alias || c.name
-        ];
-        return val;
-      });
-    });
+    const values = newItems.map((item) => getColValues(this.options, item));
 
     const conn = await this.getDbConnection();
     await conn.beginTransaction();
     try {
-      await conn.batch(request, array);
+      await conn.batch(request, values);
 
       await conn.commit();
     } catch (err) {

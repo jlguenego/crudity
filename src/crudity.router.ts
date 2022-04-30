@@ -86,7 +86,6 @@ export const crudity = <T extends Idable>(
   });
 
   app.use((req, res, next) => {
-    console.log("crudity req.url", req.url);
     setTimeout(() => {
       next();
     }, options.delay);
@@ -117,14 +116,12 @@ export const crudity = <T extends Idable>(
       next();
       return;
     }
-    console.log("start to validate");
     (async () => {
       try {
         const resources = req.body instanceof Array ? req.body : [req.body];
         for (const resource of resources) {
           for (const validator of validators) {
             try {
-              console.log("start to validate resource");
               await validator.fn.validate(resource, validator.args);
             } catch (err) {
               if (err instanceof ValidatorError) {

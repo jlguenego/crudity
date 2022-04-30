@@ -13,7 +13,7 @@ describe("Server", () => {
     port,
     resources: {
       articles: {
-        enableLogs: true,
+        enableLogs: false,
         storage:
           process.env.TEST_STORAGE === "mongo"
             ? {
