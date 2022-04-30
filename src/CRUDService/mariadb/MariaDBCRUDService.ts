@@ -1,3 +1,4 @@
+import { connect } from "http2";
 import { createPool, Pool, PoolConnection } from "mariadb";
 import { MariaDBStorageOptions } from "../../interfaces/CrudityOptions";
 import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
@@ -27,7 +28,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
     const request = `insert into ${this.tableName} (${colNames}) values (${colValues})`;
     console.log("request: ", request);
-    const conn = await this.pool.getConnection();
+    const conn = await this.getDbConnection();
     const result = await conn.query(request);
     console.log("result: ", result);
     return item;
@@ -56,8 +57,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
         ?.map((c) => `${c.name} as ${c.alias || c.name}`)
         .join(", ");
 
-    const conn = await this.pool.getConnection();
-
+    const conn = await this.getDbConnection();
     const result = await conn.query(`select ${cols} from ${this.tableName};`);
     console.log("result: ", result);
 
@@ -108,10 +108,8 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async getDbConnection(): Promise<PoolConnection> {
     const conn = await this.pool.getConnection();
-    const request = `USE \`${this.options.database}\`;`;
-    console.log("request: ", request);
-    const result = await conn.query(request);
-    console.log("result: ", result);
+    const useResult = await conn.query(`USE \`${this.options.database}\`;`);
+    console.log("useResult: ", useResult);
     return conn;
   }
 
