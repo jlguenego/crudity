@@ -7,6 +7,7 @@ import { CRUDService } from "../CRUDService";
 
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   pool!: Pool;
+  conn!: PoolConnection;
   tableName = this.options.mapping?.tableName || this.resourceName;
 
   constructor(resourceName: string, public options: MariaDBStorageOptions) {
@@ -14,9 +15,10 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async add(item: T): Promise<T> {
-    const colNames = (
-      this.options.mapping?.columns?.map((c) => c.name) || Object.keys(item)
-    ).join(", ");
+    const colNames =
+      this.options.mapping?.columns?.map((c) => c.name) || Object.keys(item);
+    const colNameStr = colNames.join(", ");
+    const questionMarkStr = colNames.map(() => "?").join(", ");
     const colValues = this.options.mapping?.columns
       ?.map((c) => {
         const val = (item as unknown as { [key: string]: unknown })[
@@ -26,10 +28,10 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
       })
       .join(", ");
 
-    const request = `insert into ${this.tableName} (${colNames}) values (${colValues})`;
+    const request = `insert into ${this.tableName} (${colNameStr}) values (${questionMarkStr})`;
     console.log("request: ", request);
     const conn = await this.getDbConnection();
-    const result = await conn.query(request);
+    const result = await conn.query(request, colValues);
     console.log("result: ", result);
     return item;
   }
@@ -58,12 +60,12 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     const conn = await this.getDbConnection();
     await conn.beginTransaction();
     try {
-      conn.batch(request, array);
+      await conn.batch(request, array);
 
-      conn.commit();
+      await conn.commit();
     } catch (err) {
       console.log("err: ", err);
-      conn.rollback();
+      await conn.rollback();
     }
 
     return [];
@@ -81,7 +83,8 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
         .join(", ");
 
     const conn = await this.getDbConnection();
-    const result = await conn.query(`select ${cols} from ${this.tableName};`);
+    const request = `select ${cols} from ${this.tableName};`;
+    const result = await conn.query(request);
 
     const paginatedResult = {
       array: result,
@@ -130,9 +133,14 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async getDbConnection(): Promise<PoolConnection> {
-    const conn = await this.pool.getConnection();
-    await conn.query(`USE \`${this.options.database}\`;`);
-    return conn;
+    try {
+      await this.conn.query(`USE \`${this.options.database}\`;`);
+      return this.conn;
+    } catch (err) {
+      this.conn = await this.pool.getConnection();
+      await this.conn.query(`USE \`${this.options.database}\`;`);
+      return this.conn;
+    }
   }
 
   async createDatabaseIfNeeded(): Promise<void> {

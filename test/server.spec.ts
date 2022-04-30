@@ -13,7 +13,7 @@ describe("Server", () => {
     port,
     resources: {
       articles: {
-        enableLogs: false,
+        enableLogs: true,
         storage:
           process.env.TEST_STORAGE === "mongo"
             ? {
@@ -87,27 +87,27 @@ describe("Server", () => {
       },
     });
     assert.deepStrictEqual(response.statusCode, 201);
-    // const articles = await got
-    //   .get(`http://localhost:${port}/api/articles?pageSize=0`)
-    //   .json<Article[]>();
-    // assert.deepStrictEqual(articles.length, 100);
+    const articles = await got
+      .get(`http://localhost:${port}/api/articles?pageSize=0`)
+      .json<Article[]>();
+    assert.deepStrictEqual(articles.length, 100);
   });
 
-  // it("should add 1 article", async () => {
-  //   const newArticles = await got
-  //     .post(url, {
-  //       body: JSON.stringify(a1),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     .json<Article>();
-  //   assert.deepStrictEqual(newArticles.price, a1.price);
-  //   const articles = await got
-  //     .get(`http://localhost:${port}/api/articles?pageSize=200`)
-  //     .json<Article[]>();
-  //   assert.deepStrictEqual(articles.length, 101);
-  // });
+  it("should add 1 article", async () => {
+    const newArticles = await got
+      .post(url, {
+        body: JSON.stringify(a1),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .json<Article>();
+    assert.deepStrictEqual(newArticles.price, a1.price);
+    const articles = await got
+      .get(`http://localhost:${port}/api/articles?pageSize=200`)
+      .json<Article[]>();
+    assert.deepStrictEqual(articles.length, 101);
+  });
 
   // it("should patch 1 article", async () => {
   //   const articles = await got
