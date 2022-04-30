@@ -5,9 +5,11 @@ import { Idable } from "../../interfaces/Idable";
 import { PaginatedResult } from "../../interfaces/PaginatedResult";
 import { CRUDService } from "../CRUDService";
 import {
+  getAllColNames,
   getColNames,
   getColValues,
   getIdColName,
+  getIdColValue,
   getSetClause,
   getWhereClause,
   parseRows,
@@ -24,9 +26,15 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async add(item: T): Promise<T> {
     const colNames = getColNames(this.options, item);
+    if (item.id) {
+      colNames.unshift(getIdColName(this.options));
+    }
     const colNameStr = colNames.join(", ");
     const questionMarkStr = colNames.map(() => "?").join(", ");
     const colValues = getColValues(this.options, item);
+    if (item.id) {
+      colValues.unshift(getIdColValue(this.options, item));
+    }
 
     const request = `insert into ${this.tableName} (${colNameStr}) values (${questionMarkStr})`;
     const conn = await this.getDbConnection();
@@ -43,7 +51,6 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     const questionMarkStr = colNames.map(() => "?").join(", ");
 
     const request = `INSERT INTO \`${this.tableName}\` (${colNameStr}) VALUES (${questionMarkStr})`;
-
     const values = newItems.map((item) => getColValues(this.options, item));
 
     const conn = await this.getDbConnection();
@@ -63,13 +70,12 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     query: CrudityQueryString,
     defaultPageSize = 10
   ): Promise<PaginatedResult<T>> {
-    const cols = getColNames(this.options).join(", ");
-    const idColName = getIdColName(this.options);
+    const cols = getAllColNames(this.options).join(", ");
 
     const whereClause = getWhereClause(this.options, query);
 
     const conn = await this.getDbConnection();
-    const request = `select ${idColName}, ${cols} from ${this.tableName} ${whereClause};`;
+    const request = `select ${cols} from ${this.tableName} ${whereClause};`;
     const result = await conn.query(request);
     const items = parseRows(this.options, result);
 
@@ -83,11 +89,11 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async getOne(id: string): Promise<T | undefined> {
-    const cols = getColNames(this.options).join(", ");
+    const cols = getAllColNames(this.options).join(", ");
     const idColName = getIdColName(this.options);
     const idValue = id;
 
-    const request = `select ${idColName}, ${cols} from ${this.tableName} WHERE ${idColName} = ${idValue};`;
+    const request = `select ${cols} from ${this.tableName} WHERE ${idColName} = ${idValue};`;
 
     const conn = await this.getDbConnection();
     const result = await conn.query(request);
@@ -113,7 +119,12 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async remove(ids: string[]): Promise<void> {
-    throw new Error("todo");
+    const idStr = getIdColName(this.options);
+    const questionMarkStr = ids.map(() => "?").join(", ");
+    const values = ids.map((id) => getIdColValue(this.options, { id }));
+    const conn = await this.getDbConnection();
+    const request = `DELETE FROM ${this.tableName} WHERE ${idStr} IN (${questionMarkStr})`;
+    const result = await conn.query(request, values);
   }
 
   async removeAll(): Promise<void> {
@@ -122,7 +133,9 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async rewrite(newT: T): Promise<T> {
-    throw new Error("todo");
+    // remove and insert
+    await this.remove([newT.id]);
+    return await this.add(newT);
   }
 
   async start(): Promise<void> {

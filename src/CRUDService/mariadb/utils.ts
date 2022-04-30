@@ -2,20 +2,34 @@ import { MariaDBStorageOptions } from "../../interfaces/CrudityOptions";
 import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
 import { Idable } from "../../interfaces/Idable";
 
-export const getColNames = (options: MariaDBStorageOptions, item?: Idable) => {
-  const colNames =
-    options.mapping?.columns?.map((c) => c.name) || Object.keys(item || {});
+export const getAllColNames = (options: MariaDBStorageOptions) => {
+  const colNames = options.mapping?.columns?.map((c) => c.name) || [];
+  colNames.unshift(getIdColName(options));
+  return colNames;
+};
+
+export const getColNames = (options: MariaDBStorageOptions, item: Idable) => {
+  const colNames = Object.keys(item);
+  // check if colNames are configured in the config file
+  if (options.mapping?.columns) {
+    const optColNames = options.mapping.columns.map((c) => c.name);
+    const filteredColNames = colNames.filter((name) =>
+      optColNames.includes(name)
+    );
+    return filteredColNames;
+  }
   return colNames;
 };
 
 export const getColValues = (options: MariaDBStorageOptions, item: Idable) => {
-  const colValues = options.mapping?.columns?.map((c) => {
+  const colValues = getColNames(options, item).map((colName) => {
+    const c = options.mapping?.columns?.find((col) => col.name === colName);
     const val = (item as unknown as { [key: string]: unknown })[
-      c.alias || c.name
+      c?.alias || c?.name || colName
     ];
     return val;
   });
-  return colValues;
+  return colValues || [];
 };
 
 export const getColType = (options: MariaDBStorageOptions, colName: string) => {
@@ -83,4 +97,11 @@ export const getSetClause = (
 
 export const getIdColName = (options: MariaDBStorageOptions) => {
   return options.mapping?.id.name || "id";
+};
+
+export const getIdColValue = (options: MariaDBStorageOptions, item: Idable) => {
+  if (options.mapping?.id.type === "number") {
+    return +item.id;
+  }
+  return item.id;
 };

@@ -202,6 +202,7 @@ export const crudity = <T extends Idable>(
           return;
         }
         req.body.id = id;
+        console.log("should call service rewrite");
         const newT = await service.rewrite(req.body as T);
         console.log("newT: ", newT);
         res.json(newT);

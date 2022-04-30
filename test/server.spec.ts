@@ -34,8 +34,8 @@ describe("Server", () => {
                 },
                 mapping: {
                   tableCreationSQLRequest:
-                    "create table articles (article_id INT(11) NOT NULL AUTO_INCREMENT, name TEXT, price DECIMAL(11,2), qty INT(11), PRIMARY KEY (article_id))",
-                  id: { name: "article_id", type: "string" },
+                    "create table articles (article_id INT(11) NOT NULL AUTO_INCREMENT, name TEXT, price DECIMAL(11,2) NULL, qty INT(11), PRIMARY KEY (article_id))",
+                  id: { name: "article_id", type: "number" },
                   columns: [
                     { name: "name", type: "string" },
                     { name: "price", type: "number" },
@@ -127,23 +127,23 @@ describe("Server", () => {
     assert.deepStrictEqual(patchedArticle.price, newPrice);
   });
 
-  // it("should rewrite 1 article", async () => {
-  //   const articles = await got
-  //     .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
-  //     .json<Article[]>();
-  //   const article = articles[0];
-  //   assert.deepStrictEqual(article.name, a1.name);
-
-  //   const rewroteArticle = await got
-  //     .put(`http://localhost:${port}/api/articles/${article.id}`, {
-  //       body: JSON.stringify(a2),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     .json<Article>();
-  //   assert.deepStrictEqual(rewroteArticle.name, a2.name);
-  // });
+  it("should rewrite 1 article", async function () {
+    this.timeout(10000);
+    const articles = await got
+      .get(`http://localhost:${port}/api/articles?filter[name]=${a1.name}`)
+      .json<Article[]>();
+    const article = articles[0];
+    assert.deepStrictEqual(article.name, a1.name);
+    const rewroteArticle = await got
+      .put(`http://localhost:${port}/api/articles/${article.id}`, {
+        body: JSON.stringify(a2),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .json<Article>();
+    assert.deepStrictEqual(rewroteArticle.name, a2.name);
+  });
 
   // it("should not add duplicate articles", async () => {
   //   await got.delete(url);
