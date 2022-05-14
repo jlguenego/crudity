@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.10](https://github.com/jlguenego/crudity/compare/v2.0.9...v2.0.10) (2022-05-14)
+
+
+### Bug Fixes
+
+* manage id inside result from mariadb ([84d0dc0](https://github.com/jlguenego/crudity/commit/84d0dc08a0970c210ea4b901982aa90cd629d2ec))
+
 ### [2.0.9](https://github.com/jlguenego/crudity/compare/v2.0.8...v2.0.9) (2022-02-12)
 
 ### [2.0.8](https://github.com/jlguenego/crudity/compare/v2.0.7...v2.0.8) (2022-01-13)
