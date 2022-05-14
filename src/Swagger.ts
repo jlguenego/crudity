@@ -65,7 +65,9 @@ export class Swagger {
               content: {
                 "application/json": {
                   schema: {
-                    $ref: "#/components/schemas/Article",
+                    $ref: `#/components/schemas/${pascalize(
+                      this.singularResourceName
+                    )}`,
                   },
                 },
               },
@@ -133,6 +135,11 @@ export class Swagger {
               default: { description: "truc bidule" },
             },
           },
+        },
+      },
+      components: {
+        schemas: {
+          [pascalize(this.singularResourceName)]: {},
         },
       },
     };
