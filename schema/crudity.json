@@ -435,11 +435,65 @@
             ],
             "type": "string"
         },
+        "MariaDBMapping": {
+            "properties": {
+                "columns": {
+                    "items": {
+                        "properties": {
+                            "alias": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "enum": [
+                                    "number",
+                                    "string"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "id": {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "enum": [
+                                "number",
+                                "string"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "tableCreationSQLRequest": {
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "MariaDBStorageOptions": {
             "properties": {
                 "config": {
                     "$ref": "#/definitions/PoolConfig",
                     "description": "PoolConfig. See the MariaDB NodeJS drivers options."
+                },
+                "database": {
+                    "description": "Database to select. The database will be created if not already existing.",
+                    "type": "string"
+                },
+                "mapping": {
+                    "$ref": "#/definitions/MariaDBMapping"
                 },
                 "type": {
                     "enum": [
@@ -1683,9 +1737,13 @@
                     "description": "Set Hateoas information in the body or in the header."
                 },
                 "pageSize": {
-                    "default": 15,
+                    "default": 20,
                     "description": "Size for pagination.",
                     "type": "number"
+                },
+                "singularResourceName": {
+                    "description": "Singular name of the resource.",
+                    "type": "string"
                 },
                 "storage": {
                     "anyOf": [

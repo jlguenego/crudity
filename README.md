@@ -91,6 +91,7 @@ This module only focus on CRUD operations. **It does not perform API management*
 - sanitizing (xss, trim, etc.)
 - authentication / authorization
 - logging (access log, trace)
+- CORS checking
 
 However, it offers some async validation operators:
 
@@ -122,7 +123,7 @@ Default options are:
 
 ```js
 const defaultOptions: CrudityOptions = {
-  pageSize: 15,
+  pageSize: 20,
   hateoas: "header",
   storage: {
     type: "file",
@@ -155,7 +156,9 @@ The storage object always has a `type` that can be:
 
 You can implement your own storage service.
 
-## Play
+## Playing with Crudity
+
+With an HTTP Client you can call the server following this:
 
 ### Create
 

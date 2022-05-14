@@ -11,7 +11,7 @@ export interface CrudityOptions {
   /**
    * Size for pagination.
    *
-   * @default 15
+   * @default 20
    */
   pageSize: number;
   /**

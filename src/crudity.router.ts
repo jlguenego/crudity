@@ -14,7 +14,7 @@ import { ValidatorFactory } from "./validators/ValidatorFactory";
 import YAML from "yaml";
 
 const defaultOptions: CrudityOptions = {
-  pageSize: 15,
+  pageSize: 20,
   hateoas: "header",
   storage: {
     type: "file",
