@@ -293,7 +293,9 @@ Content-Type: application/json
 
 ## Configuration
 
-[This $schema file](https://raw.githubusercontent.com/jlguenego/crudity/master/schema/crudity.json) can be used to get automatic completion in some IDE (VSCode, etc.)
+Crudity can read a `crudity.json` file (or a javascript `crudity.js` file).
+
+[This $schema file](https://raw.githubusercontent.com/jlguenego/crudity/master/schema/crudity.json) can be used to get automatic completion in some IDE (VSCode, etc.) for the JSON file.
 
 Example of `crudity.json` file:
 
