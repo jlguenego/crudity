@@ -1,24 +1,28 @@
-import _ from 'lodash';
-import {CrudityFilterObject} from '../../interfaces/CrudityQueryString';
+import _ from "lodash";
+import { CrudityFilterObject } from "../../interfaces/CrudityQueryString";
 
 export function getPageSlice(pageSize: number, page: number) {
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
-  return {start, end};
+  return { start, end };
 }
 
 export function orderBy<T>(array: T[], orderBySpec?: string): T[] {
   if (!orderBySpec) {
     return array;
   }
-  const fields = orderBySpec.split(',').map(s => s.replace(/^[-+]/, ''));
+  const fields = orderBySpec.split(",").map((s) => s.replace(/^[-+]/, ""));
   const ascArray = orderBySpec
-    .split(',')
-    .map(s => (s.startsWith('-') ? 'desc' : 'asc'));
+    .split(",")
+    .map((s) => (s.startsWith("-") ? "desc" : "asc"));
   return _.orderBy(array, fields, ascArray);
 }
 
-const REGEXP = /^\/(.*)\/(i?)$/;
+const STARTS_AND_ENDS_WITH_SLASH = /^\/(.*)\/(i?)$/;
+
+export function isRegExp(str: string) {
+  return str.match(STARTS_AND_ENDS_WITH_SLASH);
+}
 
 export function queryFilter<T>(
   array: T[],
@@ -40,7 +44,7 @@ export function queryFilter<T>(
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const value = getDeepValue(filterSpec, deepKeys);
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       removeDeepValue(newFilterSpec, deepKeys);
       break;
     }
@@ -48,15 +52,15 @@ export function queryFilter<T>(
   }
   const filterValue = getDeepValue(filterSpec, deepKeys);
 
-  let checkFn: (v: string) => boolean = v => filterValue === v;
-  if (filterValue.match(REGEXP)) {
-    const spec = filterValue.replace(REGEXP, '$1');
-    const flags = filterValue.replace(REGEXP, '$2');
+  let checkFn: (v: string) => boolean = (v) => filterValue === v;
+  if (isRegExp(filterValue)) {
+    const spec = filterValue.replace(STARTS_AND_ENDS_WITH_SLASH, "$1");
+    const flags = filterValue.replace(STARTS_AND_ENDS_WITH_SLASH, "$2");
     const regexp = new RegExp(spec, flags);
-    checkFn = v => regexp.test(v);
+    checkFn = (v: string) => regexp.test(v);
   }
   return queryFilter(
-    array.filter(t => {
+    array.filter((t) => {
       return checkFn(getDeepValue(t, deepKeys));
     }),
     newFilterSpec
@@ -64,11 +68,11 @@ export function queryFilter<T>(
 }
 
 export function select<T>(array: T[], selectSpec?: string): Partial<T>[] {
-  if (!selectSpec || selectSpec === '*') {
+  if (!selectSpec || selectSpec === "*") {
     return array;
   }
-  const keys: (keyof T)[] = selectSpec.split(',') as (keyof T)[];
-  return array.map(t => {
+  const keys: (keyof T)[] = selectSpec.split(",") as (keyof T)[];
+  return array.map((t) => {
     const newT: Partial<T> = {};
     for (const key of keys) {
       if (key in t) {
@@ -83,13 +87,13 @@ export function unselect<T>(
   array: Partial<T>[],
   unselectSpec?: string
 ): Partial<T>[] {
-  const spec = unselectSpec ?? '';
-  if (spec === '') {
+  const spec = unselectSpec ?? "";
+  if (spec === "") {
     return array;
   }
-  const keys: (keyof T)[] = spec.split(',') as (keyof T)[];
-  return array.map(t => {
-    const newT: Partial<T> = {...t};
+  const keys: (keyof T)[] = spec.split(",") as (keyof T)[];
+  return array.map((t) => {
+    const newT: Partial<T> = { ...t };
     for (const key of keys) {
       if (key in t) {
         delete newT[key];
@@ -102,6 +106,12 @@ export function unselect<T>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getDeepValue(t: any, keys: string[]): any {
   if (keys.length === 0 || t === undefined) {
+    if (typeof t === "number") {
+      return t + "";
+    }
+    if (typeof t === "boolean") {
+      return t + "";
+    }
     return t;
   }
   return getDeepValue(t[keys[0]], keys.slice(1));
@@ -129,7 +139,7 @@ export function removeKeys(t: any, key: string) {
   if (t instanceof Array) {
     const index = +key;
     if (isNaN(index)) {
-      throw new Error('key must be an index number: ' + key);
+      throw new Error("key must be an index number: " + key);
     }
     t.splice(index, 1);
     return t.filter((n, i) => i !== index);
