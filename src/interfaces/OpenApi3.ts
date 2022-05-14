@@ -48,6 +48,8 @@ export interface TagObject {
 
 export interface SchemaObject {
   type?: string;
+  default?: unknown;
+  items?: SchemaObject;
 }
 
 export interface ExternalDocumentationObject {
@@ -117,7 +119,7 @@ export type ParameterObject = {
       required?: boolean;
     }
 ) & {
-    style?: "simple" | "form";
+    style?: "simple" | "form" | "deepObject";
     explode?: boolean;
     allowReserved?: boolean;
     schema?: SchemaObject | ReferenceObject;

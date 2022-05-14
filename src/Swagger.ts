@@ -54,11 +54,55 @@ export class Swagger {
               {
                 name: "pageSize",
                 description:
-                  "The page size for pagination. Must be a positive integer. " +
+                  "Number of items per page. " +
                   "0 means no pagination (dangerous if billion of records.).",
                 in: "query",
                 schema: {
                   type: "integer",
+                  default: 20,
+                },
+              },
+              {
+                name: "page",
+                description: "Page index starting at 1.",
+                in: "query",
+                schema: {
+                  type: "integer",
+                  default: 1,
+                },
+              },
+              {
+                name: "orderBy",
+                description:
+                  "order by a given fields. " +
+                  "Prefix + or - for ascendant or descendant order. " +
+                  "Separate field with comma.",
+                in: "query",
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                },
+              },
+              {
+                name: "filter",
+                description: "filter by fields.",
+                in: "query",
+                style: "deepObject",
+                schema: {
+                  type: "string",
+                },
+              },
+              {
+                name: "select",
+                description: "Return only the fields listed",
+                in: "query",
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
                 },
               },
             ],

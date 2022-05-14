@@ -213,7 +213,6 @@ Crudity query options are:
     `+` is also a optional prefix for ascending.
 - `filter`: filter on field name given a javascript regex to be matched or simply a string to be equal to. The filter key must be an object with the same interface as the resource. The value are the regex or string wanted on the fields.
 - `select`: list of fields to be returned, comma separated. `*` to return all. Default is `*`.
-- `unselect`: list of fields to not be returned, comma separated. Default is empty.
 
 Retrieve one
 
