@@ -10,7 +10,9 @@ Take less than 10 seconds.
 npx crudity
 ```
 
-Can be configured with a `crudity.json` file. See [Configuration](#Configuration)
+Open a browser on `http://localhost:3000/api`: It works!.
+
+You can start configuring a `crudity.json` file. See [Configuration](#Configuration)
 
 ## Install
 
@@ -37,17 +39,17 @@ npx crudity
 ### Javascript
 
 ```js
-const express = require('express');
-const {createServer} = require('http');
-const {crudity} = require('crudity');
+const express = require("express");
+const { createServer } = require("http");
+const { crudity } = require("crudity");
 
 const app = express();
 const server = createServer(app);
 app.use(
-  '/api/articles',
-  crudity(server, 'articles', {
+  "/api/articles",
+  crudity(server, "articles", {
     pageSize: 100,
-    hateoas: 'body',
+    hateoas: "body",
   })
 );
 server.listen(3333, () => {
@@ -58,18 +60,18 @@ server.listen(3333, () => {
 ### Typescript
 
 ```ts
-import express from 'express';
-import {createServer} from 'http';
-import {AddressInfo} from 'net';
-import {crudity} from 'crudity';
+import express from "express";
+import { createServer } from "http";
+import { AddressInfo } from "net";
+import { crudity } from "crudity";
 
 const app = express();
 const server = createServer(app);
 app.use(
-  '/api/articles',
-  crudity(server, 'articles', {
+  "/api/articles",
+  crudity(server, "articles", {
     pageSize: 100,
-    hateoas: 'body',
+    hateoas: "body",
   })
 );
 server.listen(3333, () => {
@@ -119,10 +121,10 @@ Default options are:
 ```js
 const defaultOptions: CrudityOptions = {
   pageSize: 15,
-  hateoas: 'header',
+  hateoas: "header",
   storage: {
-    type: 'file',
-    dataDir: './data',
+    type: "file",
+    dataDir: "./data",
   },
   delay: 0,
   enableLogs: false,
