@@ -60,7 +60,7 @@ describe("Server", () => {
     await webServer.stop();
   });
 
-  const testStorage = process.env.TEST_STORAGE === "mongo" ? "mongo" : "file";
+  const testStorage = process.env.TEST_STORAGE ?? "file";
 
   it(`should test with ${testStorage}`, () => {});
 
