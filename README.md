@@ -36,7 +36,9 @@ npm i crudity
 npx crudity
 ```
 
-### Javascript
+### Using crudity in express
+
+#### Javascript
 
 ```js
 const express = require("express");
@@ -53,7 +55,7 @@ app.use(
   })
 );
 server.listen(3333, () => {
-  console.log(`server started on port ${server.address().port}`);
+  console.log(`Server started on port ${server.address().port}`);
 });
 ```
 
@@ -76,16 +78,16 @@ app.use(
 );
 server.listen(3333, () => {
   console.log(
-    `server started on port ${(server.address() as AddressInfo).port}`
+    `Server started on port ${(server.address() as AddressInfo).port}`
   );
 });
 ```
 
 ## Out of scope
 
-This module only focus on CRUD operations. **It does not perform**:
+This module only focus on CRUD operations. **It does not perform API management**:
 
-- synchrone validation
+- validation (sync or async)
 - sanitizing (xss, trim, etc.)
 - authentication / authorization
 - logging (access log, trace)
