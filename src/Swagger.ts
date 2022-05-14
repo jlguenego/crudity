@@ -50,6 +50,18 @@ export class Swagger {
             description: `Return a list of ${this.resourceName}.`,
             externalDocs,
             operationId: `RetrieveAll${pascalize(this.resourceName)}`,
+            parameters: [
+              {
+                name: "pageSize",
+                description:
+                  "The page size for pagination. Must be a positive integer. " +
+                  "0 means no pagination (dangerous if billion of records.).",
+                in: "query",
+                schema: {
+                  type: "integer",
+                },
+              },
+            ],
             responses: {
               default: { description: "truc bidule" },
             },

@@ -327,6 +327,16 @@ Example of `crudity.json` file:
 }
 ```
 
+## Open API
+
+For a given resource, you can add the suffix `/openapi.yml` or `/openapi.json` to get the Open API specification document regarding the Crudity API.
+
+Example:
+
+```
+http://localhost:3500/api/articles/openapi.yml
+```
+
 ## TODO
 
 - Doc for implementing a new service
