@@ -271,7 +271,7 @@ Hateoas information is provided or not, according the 3 following modes:
   - links: contains an array of all related hateoas links.
   - result: contains the normal result of the request.
 
-You can configure in the crudity options the hateoas, but also overwrite the options directly in the request, using the query parameter `hateoas` or the HTTP header.
+You can configure in the crudity options the hateoas, but also overwrite the options directly in the request, using the query parameter `hateoas` or the HTTP header. The query string parameter has priority over the header.
 
 ### Hateoas in query parameters
 
