@@ -68,6 +68,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async get(
     query: CrudityQueryString,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     defaultPageSize = 10
   ): Promise<PaginatedResult<T>> {
     const cols = getAllColNames(this.options).join(", ");
@@ -108,7 +109,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
 
     const conn = await this.getDbConnection();
     const request = `update ${this.tableName} set ${setClause} WHERE ${idColName} = ${idValue};`;
-    const result = await conn.query(request);
+    await conn.query(request);
     const item = await this.getOne(id);
     if (!item) {
       throw new Error(
@@ -124,7 +125,7 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
     const values = ids.map((id) => getIdColValue(this.options, { id }));
     const conn = await this.getDbConnection();
     const request = `DELETE FROM ${this.tableName} WHERE ${idStr} IN (${questionMarkStr})`;
-    const result = await conn.query(request, values);
+    await conn.query(request, values);
   }
 
   async removeAll(): Promise<void> {
@@ -178,8 +179,6 @@ export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
         `Table ${this.tableName} does not exist and options.mapping.tableCreationSQLRequest is not defined. Cannot create table ${this.tableName}.`
       );
     }
-    const tableCreatedResult = await conn.query(
-      this.options.mapping?.tableCreationSQLRequest
-    );
+    await conn.query(this.options.mapping?.tableCreationSQLRequest);
   }
 }

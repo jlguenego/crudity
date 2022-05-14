@@ -82,6 +82,7 @@ export const parseRow = (options: MariaDBStorageOptions, row: object) => {
   return result;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseRows = (options: MariaDBStorageOptions, rows: any[]): any[] =>
   rows.map((row) => parseRow(options, row));
 
