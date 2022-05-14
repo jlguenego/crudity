@@ -145,25 +145,25 @@ describe("Server", () => {
     assert.deepStrictEqual(rewroteArticle.name, a2.name);
   });
 
-  // it("should not add duplicate articles", async () => {
-  //   await got.delete(url);
-  //   const articles = await got.get(url).json<Article[]>();
-  //   assert.deepStrictEqual(articles, []);
+  it("should not add duplicate articles", async () => {
+    await got.delete(url);
+    const articles = await got.get(url).json<Article[]>();
+    assert.deepStrictEqual(articles, []);
 
-  //   await got.post(url, {
-  //     body: JSON.stringify(a1),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  //   const response = await got.post(url, {
-  //     body: JSON.stringify(a1),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     throwHttpErrors: false,
-  //   });
-  //   assert.deepStrictEqual(response.statusCode, 400);
-  //   assert.deepStrictEqual(response.body, "duplicate name : " + a1.name);
-  // });
+    await got.post(url, {
+      body: JSON.stringify(a1),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const response = await got.post(url, {
+      body: JSON.stringify(a1),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      throwHttpErrors: false,
+    });
+    assert.deepStrictEqual(response.statusCode, 400);
+    assert.deepStrictEqual(response.body, "duplicate name : " + a1.name);
+  });
 });
