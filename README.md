@@ -271,7 +271,15 @@ Hateoas information is provided or not, according the 3 following modes:
   - links: contains an array of all related hateoas links.
   - result: contains the normal result of the request.
 
-You can configure in the crudity options the hateoas, but also overwrite the options directly in the request, using the HTTP header as follows:
+You can configure in the crudity options the hateoas, but also overwrite the options directly in the request, using the query parameter `hateoas` or the HTTP header.
+
+### Hateoas in query parameters
+
+- `?hateoas=none`: No hateoas info.
+- `?hateoas=header`: Hateoas info in the HTTP response header.
+- `?hateoas=body`: Hateoas info in the HTTP response body.
+
+### Hateoas in HTTP headers
 
 - `X-Crudity-Hateoas: none`: No Hateoas info produced (default).
 - `X-Crudity-Hateoas: header`: Hateoas info produced under the HTTP response header `X-Crudity-Link` in a JSON format: .

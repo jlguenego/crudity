@@ -43,6 +43,16 @@ export class Swagger {
       ],
       paths: {
         "/": {
+          parameters: [
+            {
+              name: "hateoas",
+              in: "query",
+              schema: {
+                type: "string",
+                enum: ["none", "header", "body"],
+              },
+            },
+          ],
           summary: `CRUD on ${this.resourceName}`,
           description: `Create Retrieve Update Delete some or all ${this.resourceName}.`,
           get: {

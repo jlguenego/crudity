@@ -50,6 +50,7 @@ export interface SchemaObject {
   type?: string;
   default?: unknown;
   items?: SchemaObject;
+  enum?: unknown[];
 }
 
 export interface ExternalDocumentationObject {
