@@ -49,7 +49,7 @@ export interface TagObject {
 export interface SchemaObject {
   type?: string;
   default?: unknown;
-  items?: SchemaObject;
+  items?: SchemaObject | ReferenceObject;
   enum?: unknown[];
 }
 
@@ -127,11 +127,15 @@ export type ParameterObject = {
   };
 
 export interface ResponsesObject {
+  [responseCode: HttpStatusCode]: ResponseObject | ReferenceObject;
   default?: ResponseObject | ReferenceObject;
 }
 
 export interface ResponseObject {
   description: string;
+  content?: {
+    [key: string]: MediaTypeObject;
+  };
 }
 
 export interface ReferenceObject {
@@ -172,3 +176,5 @@ export interface EncodingObject {
 }
 
 export type HeaderObject = Omit<ParameterObject, "in" | "name">;
+
+export type HttpStatusCode = `${number}${number}${number}`;

@@ -117,7 +117,21 @@ export class Swagger {
               },
             ],
             responses: {
-              default: { description: "truc bidule" },
+              "200": {
+                description: "successful operation",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: {
+                        $ref: `#/components/schemas/${pascalize(
+                          this.singularResourceName
+                        )}`,
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
           post: {
@@ -205,7 +219,9 @@ export class Swagger {
       },
       components: {
         schemas: {
-          [pascalize(this.singularResourceName)]: {},
+          [pascalize(this.singularResourceName)]: {
+            type: "object",
+          },
         },
       },
     };
