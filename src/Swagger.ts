@@ -91,7 +91,7 @@ export class Swagger {
                 in: "query",
                 style: "deepObject",
                 schema: {
-                  type: "string",
+                  type: "object",
                 },
               },
               {
