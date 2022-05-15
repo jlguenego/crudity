@@ -154,12 +154,12 @@ export class Swagger {
             externalDocs,
             operationId: `Create${pascalize(this.singularResourceName)}`,
             requestBody: {
-              description: `A JSON object reflecting the ${this.singularResourceName}`,
+              description: `A JSON object reflecting the new ${this.singularResourceName} to be added.`,
               required: true,
               content: {
                 "application/json": {
                   schema: {
-                    $ref: `#/components/schemas/${pascalize(
+                    $ref: `#/components/schemas/New${pascalize(
                       this.singularResourceName
                     )}`,
                   },
@@ -167,7 +167,18 @@ export class Swagger {
               },
             },
             responses: {
-              default: { description: "truc bidule" },
+              "201": {
+                description: `${this.singularResourceName} added with success.`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/${pascalize(
+                        this.singularResourceName
+                      )}`,
+                    },
+                  },
+                },
+              },
             },
           },
           delete: {
@@ -233,6 +244,10 @@ export class Swagger {
       },
       components: {
         schemas: {
+          ["New" + pascalize(this.singularResourceName)]: {
+            type: "object",
+            additionalProperties: {},
+          },
           [pascalize(this.singularResourceName)]: {
             type: "object",
             properties: {
