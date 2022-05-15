@@ -1,13 +1,13 @@
-import {PaginatedResult} from './../../interfaces/PaginatedResult';
-import fs from 'fs';
-import {dirname} from 'path';
-import {BehaviorSubject, firstValueFrom, Subject} from 'rxjs';
-import {debounceTime, filter, tap} from 'rxjs/operators';
-import {FileStorageOptions} from '../../interfaces/CrudityOptions';
-import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
-import {Idable} from '../../interfaces/Idable';
-import {CRUDService} from '../CRUDService';
-import {getPageSlice, orderBy, queryFilter, select, unselect} from './misc';
+import { PaginatedResult } from "./../../interfaces/PaginatedResult";
+import fs from "fs";
+import { dirname } from "path";
+import { BehaviorSubject, firstValueFrom, Subject } from "rxjs";
+import { debounceTime, filter, tap } from "rxjs/operators";
+import { FileStorageOptions } from "../../interfaces/CrudityOptions";
+import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
+import { Idable } from "../../interfaces/Idable";
+import { CRUDService } from "../CRUDService";
+import { getPageSlice, orderBy, queryFilter, select, unselect } from "./misc";
 
 enum Status {
   NO_ORDER = 0,
@@ -43,11 +43,11 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async add(item: T): Promise<T> {
-    const newItem = {...item};
+    const newItem = { ...item };
     newItem.id = this.generateId();
     this.array.push(newItem);
     this.writeFile$.next();
-    return item;
+    return newItem;
   }
 
   async addMany(newItems: T[]): Promise<T[]> {
@@ -59,7 +59,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   generateId() {
-    return Date.now() + '_' + Math.floor(Math.random() * 1e6);
+    return Date.now() + "_" + Math.floor(Math.random() * 1e6);
   }
 
   async get(
@@ -82,7 +82,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
     let page = 1;
     if (pageSize > 0) {
       page = !query.page || isNaN(+query.page) ? 1 : +query.page;
-      const {start, end} = getPageSlice(pageSize, page);
+      const { start, end } = getPageSlice(pageSize, page);
       pagedArray = array.slice(start, end);
     }
 
@@ -101,13 +101,13 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async getOne(id: string): Promise<T | undefined> {
-    return this.array.find(r => r.id === id);
+    return this.array.find((r) => r.id === id);
   }
 
   async patch(id: string, body: Partial<T>): Promise<T> {
-    const resource = this.array.find(r => r.id === id);
+    const resource = this.array.find((r) => r.id === id);
     if (!resource) {
-      throw new Error('not found');
+      throw new Error("not found");
     }
     Object.assign(resource, body);
     this.writeFile$.next();
@@ -115,7 +115,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   }
 
   async remove(ids: string[]): Promise<void> {
-    this.array = this.array.filter(r => !ids.includes(r.id));
+    this.array = this.array.filter((r) => !ids.includes(r.id));
     this.writeFile$.next();
   }
 
@@ -126,11 +126,11 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
 
   async rewrite(t: T): Promise<T> {
     if (!t.id) {
-      throw new Error('not id provided');
+      throw new Error("not id provided");
     }
-    const index = this.array.findIndex(r => r.id === t.id);
+    const index = this.array.findIndex((r) => r.id === t.id);
     if (index === -1) {
-      throw new Error('not found');
+      throw new Error("not found");
     }
     this.array[index] = t;
     this.writeFile$.next();
@@ -140,17 +140,17 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   async start(): Promise<void> {
     // do your stuff before super.start()
     try {
-      await fs.promises.mkdir(dirname(this.dbFilename), {recursive: true});
+      await fs.promises.mkdir(dirname(this.dbFilename), { recursive: true });
       await fs.promises.access(
         this.dbFilename,
         fs.constants.W_OK | fs.constants.R_OK
       );
     } catch (err) {
-      await fs.promises.writeFile(this.dbFilename, '[]');
+      await fs.promises.writeFile(this.dbFilename, "[]");
     }
 
     const str = await fs.promises.readFile(this.dbFilename, {
-      encoding: 'utf-8',
+      encoding: "utf-8",
     });
     this.array = JSON.parse(str);
   }
@@ -158,7 +158,7 @@ export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   async stop(): Promise<void> {
     // wait for status === NO_ORDER
     await firstValueFrom(
-      this.writeFileStatus$.pipe(filter(status => status === Status.NO_ORDER))
+      this.writeFileStatus$.pipe(filter((status) => status === Status.NO_ORDER))
     );
   }
 }
