@@ -84,7 +84,7 @@ export class Swagger {
               {
                 name: "orderBy",
                 description:
-                  "order by a given fields. " +
+                  "Order by a given fields. " +
                   "Prefix + or - for ascendant or descendant order. " +
                   "Separate field with comma.",
                 in: "query",
@@ -97,7 +97,7 @@ export class Swagger {
               },
               {
                 name: "filter",
-                description: "filter by fields.",
+                description: "Filter by fields.",
                 in: "query",
                 style: "deepObject",
                 schema: {
@@ -106,7 +106,7 @@ export class Swagger {
               },
               {
                 name: "select",
-                description: "Return only the fields listed",
+                description: "Return only the listed fields.",
                 in: "query",
                 schema: {
                   type: "array",
@@ -122,12 +122,26 @@ export class Swagger {
                 content: {
                   "application/json": {
                     schema: {
-                      type: "array",
-                      items: {
-                        $ref: `#/components/schemas/${pascalize(
-                          this.singularResourceName
-                        )}`,
-                      },
+                      oneOf: [
+                        {
+                          $ref: `#/components/schemas/${pascalize(
+                            this.singularResourceName
+                          )}Array`,
+                        },
+                        {
+                          type: "object",
+                          properties: {
+                            links: {
+                              type: "array",
+                            },
+                            result: {
+                              $ref: `#/components/schemas/${pascalize(
+                                this.singularResourceName
+                              )}Array`,
+                            },
+                          },
+                        },
+                      ],
                     },
                   },
                 },
@@ -221,6 +235,21 @@ export class Swagger {
         schemas: {
           [pascalize(this.singularResourceName)]: {
             type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+            },
+            required: ["id"],
+            additionalProperties: {},
+          },
+          [pascalize(this.singularResourceName) + "Array"]: {
+            type: "array",
+            items: {
+              $ref: `#/components/schemas/${pascalize(
+                this.singularResourceName
+              )}`,
+            },
           },
         },
       },

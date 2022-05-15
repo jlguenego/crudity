@@ -51,6 +51,10 @@ export interface SchemaObject {
   default?: unknown;
   items?: SchemaObject | ReferenceObject;
   enum?: unknown[];
+  properties?: { [key: string]: SchemaObject | ReferenceObject };
+  required?: string[];
+  additionalProperties?: unknown;
+  oneOf?: (SchemaObject | ReferenceObject)[];
 }
 
 export interface ExternalDocumentationObject {
