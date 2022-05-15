@@ -154,14 +154,26 @@ export class Swagger {
             externalDocs,
             operationId: `Create${pascalize(this.singularResourceName)}`,
             requestBody: {
-              description: `A JSON object reflecting the new ${this.singularResourceName} to be added.`,
+              description: `A JSON object reflecting the new ${this.singularResourceName} to be added or a bulk ${this.singularResourceName} list.`,
               required: true,
               content: {
                 "application/json": {
                   schema: {
-                    $ref: `#/components/schemas/New${pascalize(
-                      this.singularResourceName
-                    )}`,
+                    oneOf: [
+                      {
+                        $ref: `#/components/schemas/New${pascalize(
+                          this.singularResourceName
+                        )}`,
+                      },
+                      {
+                        type: "array",
+                        items: {
+                          $ref: `#/components/schemas/New${pascalize(
+                            this.singularResourceName
+                          )}`,
+                        },
+                      },
+                    ],
                   },
                 },
               },
@@ -172,12 +184,27 @@ export class Swagger {
                 content: {
                   "application/json": {
                     schema: {
-                      $ref: `#/components/schemas/${pascalize(
-                        this.singularResourceName
-                      )}`,
+                      oneOf: [
+                        {
+                          $ref: `#/components/schemas/${pascalize(
+                            this.singularResourceName
+                          )}`,
+                        },
+                        {
+                          type: "array",
+                          items: {
+                            $ref: `#/components/schemas/${pascalize(
+                              this.singularResourceName
+                            )}`,
+                          },
+                        },
+                      ],
                     },
                   },
                 },
+              },
+              "400": {
+                description: `Bad request. Probably the request body is not correct.`,
               },
             },
           },
