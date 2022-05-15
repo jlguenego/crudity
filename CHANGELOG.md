@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.11](https://github.com/jlguenego/crudity/compare/v2.0.10...v2.0.11) (2022-05-15)
+
+
+### Bug Fixes
+
+* added id while creating a new resource. ([f5fae20](https://github.com/jlguenego/crudity/commit/f5fae20ccdbc2e6861f74fbc9e35959b543a47d7))
+
 ### [2.0.10](https://github.com/jlguenego/crudity/compare/v2.0.9...v2.0.10) (2022-05-14)
 
 
