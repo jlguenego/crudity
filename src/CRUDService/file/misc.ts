@@ -67,7 +67,10 @@ export function queryFilter<T>(
   );
 }
 
-export function select<T>(array: T[], selectSpec?: string): Partial<T>[] {
+export function select<T extends object>(
+  array: T[],
+  selectSpec?: string
+): Partial<T>[] {
   if (!selectSpec || selectSpec === "*") {
     return array;
   }

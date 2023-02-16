@@ -18,10 +18,11 @@ import {
 export class MariaDBCRUDService<T extends Idable> extends CRUDService<T> {
   pool!: Pool;
   conn!: PoolConnection;
-  tableName = this.options.mapping?.tableName || this.resourceName;
+  tableName: string;
 
   constructor(resourceName: string, public options: MariaDBStorageOptions) {
     super(resourceName);
+    this.tableName = this.options.mapping?.tableName || this.resourceName;
   }
 
   async add(item: T): Promise<T> {

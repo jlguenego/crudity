@@ -1,35 +1,37 @@
-import {Document, Filter, MongoClient, ObjectId} from 'mongodb';
-import {MongoDBStorageOptions} from '../../interfaces/CrudityOptions';
-import {CrudityQueryString} from '../../interfaces/CrudityQueryString';
-import {Idable} from '../../interfaces/Idable';
-import {CRUDService} from '../CRUDService';
-import {PaginatedResult} from '../../interfaces/PaginatedResult';
+import { Collection, Document, Filter, MongoClient, ObjectId } from "mongodb";
+import { MongoDBStorageOptions } from "../../interfaces/CrudityOptions";
+import { CrudityQueryString } from "../../interfaces/CrudityQueryString";
+import { Idable } from "../../interfaces/Idable";
+import { CRUDService } from "../CRUDService";
+import { PaginatedResult } from "../../interfaces/PaginatedResult";
 import {
   getFilterObj,
   getSortObj,
   removeId,
   renameId,
   renameIdForArray,
-} from './utils';
+} from "./utils";
 
 export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
-  client = new MongoClient(this.options.uri, this.options.opts);
-  collection = this.client.db().collection(this.resourceName);
+  client: MongoClient;
+  collection: Collection<Document>;
 
   constructor(resourceName: string, public options: MongoDBStorageOptions) {
     super(resourceName);
+    this.client = new MongoClient(this.options.uri, this.options.opts);
+    this.collection = this.client.db().collection(this.resourceName);
   }
 
   async add(item: T): Promise<T> {
     // Note that MongoDB API insertOne modifies the item argument by adding _id to it.
     // That is why we clone it before.
-    const doc = {...item};
+    const doc = { ...item };
     await this.client.db().collection(this.resourceName).insertOne(doc);
     return renameId<T>(doc);
   }
 
   async addMany(newItems: T[]): Promise<T[]> {
-    const docs = newItems.map(newItem => removeId(newItem));
+    const docs = newItems.map((newItem) => removeId(newItem));
     await this.client.db().collection(this.resourceName).insertMany(docs);
     return renameIdForArray(docs);
   }
@@ -65,9 +67,9 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
 
   async getOne(id: string): Promise<T | undefined> {
     const objectId = new ObjectId(id);
-    const result = await this.collection.findOne({_id: objectId});
+    const result = await this.collection.findOne({ _id: objectId });
     if (!result) {
-      throw new Error('not found');
+      throw new Error("not found");
     }
     return renameId<T>(result);
   }
@@ -76,11 +78,11 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     const objectId = new ObjectId(id);
 
     const result = await this.collection.findOneAndUpdate(
-      {_id: objectId},
-      {$set: body}
+      { _id: objectId },
+      { $set: body }
     );
     if (!result) {
-      throw new Error('not found');
+      throw new Error("not found");
     }
 
     return (await this.getOne(id)) as T;
@@ -89,7 +91,7 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
   async remove(ids: string[]): Promise<void> {
     await this.collection.deleteMany({
       _id: {
-        $in: ids.map(id => new ObjectId(id)),
+        $in: ids.map((id) => new ObjectId(id)),
       },
     });
   }
@@ -102,11 +104,11 @@ export class MongoDBCRUDService<T extends Idable> extends CRUDService<T> {
     const objectId = new ObjectId(newT.id);
 
     const result = await this.collection.findOneAndReplace(
-      {_id: objectId},
+      { _id: objectId },
       newT
     );
     if (!result) {
-      throw new Error('not found');
+      throw new Error("not found");
     }
 
     return (await this.getOne(newT.id)) as T;

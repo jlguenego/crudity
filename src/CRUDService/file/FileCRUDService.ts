@@ -17,12 +17,13 @@ enum Status {
 
 export class FileCRUDService<T extends Idable> extends CRUDService<T> {
   array: T[] = [];
-  dbFilename = `${this.options.dataDir}/${this.resourceName}.json`;
+  dbFilename: string;
   writeFile$ = new Subject<void>();
   writeFileStatus$ = new BehaviorSubject<Status>(Status.NO_ORDER);
 
   constructor(resourceName: string, public options: FileStorageOptions) {
     super(resourceName);
+    this.dbFilename = `${this.options.dataDir}/${this.resourceName}.json`;
     this.writeFile$
       .pipe(
         tap(() => {
