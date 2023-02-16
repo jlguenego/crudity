@@ -2,9 +2,9 @@
   "name": "crudity",
   "version": "2.0.12",
   "description": "A production ready CRUD backend server and node http middleware, working with files/mongodb/etc.",
-  "bin": "./build/src/bin/crudity.js",
-  "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
+  "bin": "./build/bin/crudity.js",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "files": [
     "build/src"
   ],
