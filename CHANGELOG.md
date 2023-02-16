@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.13](https://github.com/jlguenego/crudity/compare/v2.0.12...v2.0.13) (2023-02-16)
+
+
+### Bug Fixes
+
+* bad bin main types values in package.json ([f920e7e](https://github.com/jlguenego/crudity/commit/f920e7e2a0a835e97c171b57c4f9b5a1a063e56c))
+
 ### [2.0.12](https://github.com/jlguenego/crudity/compare/v2.0.11...v2.0.12) (2023-02-16)
 
 ### [2.0.11](https://github.com/jlguenego/crudity/compare/v2.0.10...v2.0.11) (2022-05-15)
